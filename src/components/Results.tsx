@@ -45,6 +45,16 @@ export default function Results({ creators, onMore, onRestart, onNewCampaign, lo
           </div>
         ) : (
           <div className="space-y-4">
+            {creators.length > 0 && creators.length < 3 && (
+              <div className="bg-brand-soft border border-border rounded-2xl p-4 text-center text-sm font-bold text-foreground animate-fade-in-up">
+                מצאנו פחות יוצרים — אבל רק כאלה שבאמת מתאימים לקמפיין שלך
+              </div>
+            )}
+            {creators.length === 0 && (
+              <div className="bg-card border border-border rounded-2xl p-6 text-center text-sm font-bold text-foreground animate-fade-in-up">
+                לא מצאנו יוצרים שמתאימים מספיק לקמפיין שלך — נסו לעדכן את ההגדרות
+              </div>
+            )}
             {creators.map((c, i) => (
               <CreatorCard key={c.id} creator={c} index={i} />
             ))}

@@ -45,7 +45,7 @@ const Index = () => {
   };
 
   const handleLoadingDone = () => {
-    if (creators.length > 0) setScreen("results");
+    setScreen("results");
   };
 
   const handleMore = async () => {
