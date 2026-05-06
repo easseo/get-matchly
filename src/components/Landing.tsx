@@ -194,7 +194,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       </section>
 
       {/* 5. Match previews */}
-      <section className="px-5 py-12 bg-muted/30">
+      <section className="px-5 pt-10 pb-6 bg-muted/30">
         <div className="text-center mb-8">
           <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">דוגמאות התאמה</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">ככה נראית התאמה אמיתית</h2>
@@ -301,7 +301,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       </section>
 
       {/* 6. Final CTA */}
-      <section className="px-5 py-12 text-center">
+      <section className="px-5 pt-4 pb-10 text-center">
         <div className="bg-brand rounded-[2rem] p-7 shadow-cta-lg text-primary-foreground">
           <h2 className="text-2xl sm:text-3xl font-black mb-3 leading-tight">
             מוכנים למצוא את שיתוף הפעולה הבא שלכם?
