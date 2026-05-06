@@ -29,10 +29,18 @@ export default function Results({ creators, onMore, onRestart, onNewCampaign, lo
             <Check className="w-3.5 h-3.5" style={{ color: "hsl(var(--brand-pink))" }} />
             <span className="text-[11px] font-bold text-muted-foreground">ההתאמות מוכנות</span>
           </div>
-          <h1 className="text-2xl font-black mb-1.5 leading-tight">
-            מצאנו לכם <span className="text-brand">{creators.length} {creators.length === 1 ? "יוצר" : "יוצרים"}</span> שמתאימים בול
-          </h1>
-          <p className="text-sm text-muted-foreground font-medium px-2">בחרו את מי שהכי מדבר אליכם - והקמפיין יוצא לדרך</p>
+          {creators.length === 0 ? (
+            <h1 className="text-2xl font-black mb-1.5 leading-tight">
+              לא מצאנו <span className="text-brand">התאמה מדויקת</span>
+            </h1>
+          ) : (
+            <h1 className="text-2xl font-black mb-1.5 leading-tight">
+              מצאנו לכם <span className="text-brand">{creators.length} {creators.length === 1 ? "יוצר" : "יוצרים"}</span> שמתאימים בול
+            </h1>
+          )}
+          <p className="text-sm text-muted-foreground font-medium px-2">
+            {creators.length === 0 ? "נסו לעדכן את ההגדרות של הקמפיין כדי לקבל התאמות" : "בחרו את מי שהכי מדבר אליכם - והקמפיין יוצא לדרך"}
+          </p>
         </div>
 
         {loadingMore ? (
