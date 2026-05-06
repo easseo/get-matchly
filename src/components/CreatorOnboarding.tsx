@@ -96,7 +96,7 @@ export default function CreatorOnboarding({ onBack }: CreatorOnboardingProps) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             maxLength={60}
-            placeholder="ישראל ישראלי"
+            placeholder="Israel Israeli"
             className="w-full bg-transparent outline-none font-semibold placeholder:text-muted-foreground/60"
           />
         </Field>
