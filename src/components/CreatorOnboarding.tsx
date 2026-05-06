@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Sparkles, User, AtSign, Tag, Users, MapPin, Mail, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Sparkles, User, Instagram, Tag, Users, MapPin, Mail, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface CreatorOnboardingProps {
@@ -13,7 +13,6 @@ const cities = ["תל אביב", "ירושלים", "חיפה", "באר שבע", 
 export default function CreatorOnboarding({ onBack }: CreatorOnboardingProps) {
   const [name, setName] = useState("");
   const [handle, setHandle] = useState("");
-  const [platform, setPlatform] = useState<"Instagram" | "TikTok">("Instagram");
   const [niche, setNiche] = useState("");
   const [followers, setFollowers] = useState("");
   const [city, setCity] = useState("");
