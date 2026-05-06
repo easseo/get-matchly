@@ -162,11 +162,11 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
                 ליוצר · בחירה: {formatILS(budget)}
               </p>
 
-              {/* Custom slider */}
-              <div className="relative h-10 flex items-center" dir="ltr">
+              {/* Custom slider - RTL */}
+              <div className="relative h-10 flex items-center" dir="rtl">
                 <div className="absolute inset-x-0 h-2 rounded-full bg-muted overflow-hidden">
                   <div
-                    className="h-full bg-brand rounded-full transition-all"
+                    className="h-full bg-brand rounded-full transition-all absolute right-0 top-0"
                     style={{ width: `${sliderPct}%` }}
                   />
                 </div>
@@ -178,10 +178,11 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
                   value={budget}
                   onChange={(e) => setBudget(Number(e.target.value))}
                   className="custom-range absolute inset-0 w-full h-10 appearance-none bg-transparent cursor-pointer"
+                  style={{ direction: "rtl" }}
                 />
               </div>
 
-              <div className="flex justify-between text-[11px] text-muted-foreground mt-1.5 font-semibold ltr-num" dir="ltr">
+              <div className="flex justify-between text-[11px] text-muted-foreground mt-1.5 font-semibold ltr-num" dir="rtl">
                 <span>₪100</span>
                 <span>₪10,000</span>
               </div>
