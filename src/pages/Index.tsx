@@ -51,7 +51,7 @@ const Index = () => {
     if (screen === "loading")
       return (
         <Loading
-          message="אנחנו מנתחים את הקמפיין שלך ובוחרים את היוצרים הכי מתאימים..."
+          message="מנתחים את הקמפיין שלכם ובוחרים את היוצרים שיביאו תוצאות"
           onDone={handleLoadingDone}
         />
       );
