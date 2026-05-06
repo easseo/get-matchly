@@ -6,15 +6,16 @@ interface ResultsProps {
   creators: ScoredCreator[];
   onMore: () => void;
   onRestart: () => void;
+  onNewCampaign?: () => void;
   loadingMore: boolean;
 }
 
-export default function Results({ creators, onMore, onRestart, loadingMore }: ResultsProps) {
+export default function Results({ creators, onMore, onRestart, onNewCampaign, loadingMore }: ResultsProps) {
   return (
     <div className="min-h-screen bg-mesh flex flex-col">
       <header className="sticky top-0 z-20 backdrop-blur-lg bg-background/80 border-b border-border">
         <div className="px-4 py-3.5 flex items-center justify-between">
-          <button onClick={onRestart} className="text-xs font-bold text-muted-foreground tap-scale px-2 py-1">
+          <button onClick={onNewCampaign ?? onRestart} className="text-xs font-bold text-muted-foreground tap-scale px-2 py-1">
             קמפיין חדש +
           </button>
           <span className="font-extrabold text-brand">Matchly</span>
