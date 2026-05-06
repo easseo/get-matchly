@@ -173,7 +173,10 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       </section>
 
       {/* 4. Features */}
-      <section className="px-5 py-10">
+      <section className="px-5 py-12 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-yellow) / 0.06) 0%, hsl(var(--brand-pink) / 0.10) 50%, hsl(var(--brand-purple) / 0.08) 100%)" }}>
+        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-30 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-purple))" }} />
+        <div className="relative">
         <div className="text-center mb-7">
           <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">למה Matchly</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">היתרונות שעושים את ההבדל</h2>
