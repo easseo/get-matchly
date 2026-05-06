@@ -48,7 +48,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
           </h1>
 
           <p className="text-sm sm:text-base text-muted-foreground font-medium mb-6 animate-fade-in-up px-2 leading-relaxed" style={{ animationDelay: "0.2s" }}>
-            הדרך החכמה למצוא שיתופי פעולה שמתאימים לקמפיין שלך — תוך דקות.
+            הדרך החכמה למצוא שיתופי פעולה שמתאימים לקמפיין שלך - תוך דקות.
           </p>
 
           <div className="flex flex-col gap-2.5 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
@@ -111,7 +111,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
           {[
             { n: "1", t: "פותחים קמפיין", d: "מגדירים מטרה, תקציב, פלטפורמה וקהל יעד." },
             { n: "2", t: "אנחנו מנתחים", d: "המערכת מדרגת יוצרים לפי התאמה אמיתית לקמפיין." },
-            { n: "3", t: "מקבלים 3 התאמות", d: "במקום לחפש שעות — מקבלים 3 יוצרים מדויקים." },
+            { n: "3", t: "מקבלים 3 התאמות", d: "במקום לחפש שעות - מקבלים 3 יוצרים מדויקים." },
             { n: "4", t: "מתחילים שיתוף פעולה", d: "שולחים הצעה ליוצר ומתקדמים לקמפיין." },
           ].map((s) => (
             <div key={s.n} className="flex gap-4 bg-card rounded-3xl p-4 shadow-soft border border-border">
@@ -193,7 +193,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
             מוכנים למצוא את שיתוף הפעולה הבא שלכם?
           </h2>
           <p className="text-sm font-medium mb-6 opacity-95 leading-relaxed">
-            בין אם אתם עסק שמחפש יוצרים או יוצרים שמחפשים קמפיינים — Matchly מחברת אתכם נכון.
+            בין אם אתם עסק שמחפש יוצרים או יוצרים שמחפשים קמפיינים - Matchly מחברת אתכם נכון.
           </p>
           <div className="flex flex-col gap-2.5">
             <button
