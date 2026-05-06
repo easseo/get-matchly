@@ -63,6 +63,12 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      fontFamily: {
+        sans: ['Heebo', 'system-ui', 'sans-serif'],
+      },
+      backgroundImage: {
+        'gradient-brand': 'var(--gradient-brand)',
+      },
       keyframes: {
         "accordion-down": {
           from: {
