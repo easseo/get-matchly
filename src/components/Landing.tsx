@@ -239,10 +239,9 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
             </div>
           ))}
         </div>
-      </section>
-
         </div>
       </section>
+
 
       {/* 5. Match previews */}
       <section className="px-5 pt-12 pb-8 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-purple) / 0.08) 0%, hsl(var(--brand-orange) / 0.06) 100%)" }}>
