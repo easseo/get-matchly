@@ -15,7 +15,7 @@ export default function Results({ creators, onMore, onRestart, loadingMore }: Re
       <header className="sticky top-0 z-20 backdrop-blur-lg bg-background/80 border-b border-border">
         <div className="px-4 py-3.5 flex items-center justify-between">
           <button onClick={onRestart} className="text-xs font-bold text-muted-foreground tap-scale px-2 py-1">
-            קמפיין חדש
+            קמפיין חדש +
           </button>
           <span className="font-extrabold text-brand">Matchly</span>
           <div className="w-16" />
@@ -29,9 +29,9 @@ export default function Results({ creators, onMore, onRestart, loadingMore }: Re
             <span className="text-[11px] font-bold text-muted-foreground">ההתאמות מוכנות</span>
           </div>
           <h1 className="text-2xl font-black mb-1.5 leading-tight">
-            מצאנו לך <span className="text-brand">3 יוצרים</span> מדויקים
+            מצאנו לכם <span className="text-brand">3 יוצרים</span> שמתאימים בול
           </h1>
-          <p className="text-sm text-muted-foreground font-medium px-2">בחר את היוצר שמדבר אליך והתחל את הקמפיין</p>
+          <p className="text-sm text-muted-foreground font-medium px-2">בחרו את מי שהכי מדבר אליכם — והקמפיין יוצא לדרך</p>
         </div>
 
         {loadingMore ? (
@@ -40,7 +40,7 @@ export default function Results({ creators, onMore, onRestart, loadingMore }: Re
               <div className="w-14 h-14 rounded-full bg-brand opacity-20 blur-2xl absolute inset-0" />
               <div className="w-14 h-14 rounded-full border-4 border-muted border-t-transparent animate-spin-slow relative" style={{ borderTopColor: "hsl(var(--brand-pink))" }} />
             </div>
-            <p className="mt-5 text-sm text-muted-foreground font-bold">מחפש 3 יוצרים אחרים...</p>
+            <p className="mt-5 text-sm text-muted-foreground font-bold">מחפשים לכם 3 יוצרים נוספים…</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -57,7 +57,7 @@ export default function Results({ creators, onMore, onRestart, loadingMore }: Re
               className="w-full py-4 rounded-full font-bold text-sm bg-card border-2 border-border text-foreground shadow-soft tap-scale flex items-center justify-center gap-2"
             >
               <RefreshCw className="w-4 h-4" />
-              לא התחברת? קבל עוד 3
+              לא התחברתם? הראו לי 3 נוספים
             </button>
           </div>
         )}
@@ -103,19 +103,19 @@ function CreatorCard({ creator, index }: { creator: ScoredCreator; index: number
 
       <div className="grid grid-cols-2 gap-2.5 mb-4">
         <div className="bg-muted/50 rounded-2xl p-2.5 text-center">
-          <div className="text-[10px] text-muted-foreground font-bold mb-0.5">מחיר משוער</div>
-          <div className="font-black text-base">{creator.price.toLocaleString()} ₪</div>
+          <div className="text-[10px] text-muted-foreground font-bold mb-0.5">עלות משוערת</div>
+          <div className="font-black text-base">₪{creator.price.toLocaleString()}</div>
         </div>
         <div className="bg-muted/50 rounded-2xl p-2.5 text-center">
           <div className="text-[10px] text-muted-foreground font-bold mb-0.5 flex items-center justify-center gap-1">
-            <TrendingUp className="w-3 h-3" /> סיכוי הצלחה
+            <TrendingUp className="w-3 h-3" /> סיכויי הצלחה
           </div>
           <div className="font-black text-base text-brand">{creator.successProbability}%</div>
         </div>
       </div>
 
       <div className="mb-4">
-        <h4 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider mb-2">למה הוא מתאים</h4>
+        <h4 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider mb-2">למה זו התאמה מנצחת</h4>
         <ul className="space-y-1.5">
           {creator.reasons.map((r, idx) => (
             <li key={idx} className="flex items-start gap-2 text-xs">
@@ -131,8 +131,8 @@ function CreatorCard({ creator, index }: { creator: ScoredCreator; index: number
       <button
         onClick={() =>
           toast({
-            title: `ההצעה נשלחה ל-${creator.name} 🎉`,
-            description: "ניצור איתך קשר ברגע שהיוצר יאשר את הקמפיין.",
+            title: `ההצעה נשלחה ל${creator.name} 🎉`,
+            description: "נחזור אליכם ברגע שהיוצר יאשר את הקמפיין.",
           })
         }
         className="group relative w-full overflow-hidden rounded-full border border-white/20 bg-brand py-4 text-base font-black text-primary-foreground shadow-cta transition-all duration-150 ease-out hover:-translate-y-0.5 hover:shadow-cta-lg active:translate-y-0 active:scale-[0.92] active:shadow-none flex items-center justify-center gap-2"

@@ -58,14 +58,14 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
           <button onClick={onBack} className="p-2 -mr-2 rounded-full hover:bg-muted tap-scale">
             <ArrowLeft className="w-5 h-5 rotate-180" />
           </button>
-          <span className="font-bold text-brand">צור קמפיין</span>
+          <span className="font-bold text-brand">קמפיין חדש</span>
           <div className="w-9" />
         </div>
       </header>
 
       <main className="flex-1 px-4 py-6 space-y-7 pb-32">
         {/* Business */}
-        <Section title="סוג העסק" subtitle="במה אתם עוסקים?">
+        <Section title="תחום העסק" subtitle="במה אתם עוסקים?">
           <div className="grid grid-cols-3 gap-2.5">
             {businesses.map(({ value, icon: Icon }) => (
               <ChipCard key={value} active={business === value} onClick={() => setBusiness(value)}>
@@ -77,7 +77,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         </Section>
 
         {/* Goal */}
-        <Section title="המטרה שלך" subtitle="מה הכי חשוב לקמפיין?">
+        <Section title="מטרת הקמפיין" subtitle="מה הכי חשוב לכם להשיג?">
           <div className="grid grid-cols-3 gap-2.5">
             {goals.map(({ value, icon: Icon }) => (
               <ChipCard key={value} active={goal === value} onClick={() => setGoal(value)}>
@@ -89,7 +89,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         </Section>
 
         {/* Budget */}
-        <Section title="תקציב" subtitle="כמה תרצו להשקיע?">
+        <Section title="תקציב" subtitle="כמה תרצו להשקיע בקמפיין?">
           <div className="bg-card rounded-3xl p-5 shadow-card border border-border">
             <div className="flex items-baseline justify-center gap-1.5 mb-5">
               <span className="text-4xl font-black text-brand">{budget.toLocaleString()}</span>
@@ -110,7 +110,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         </Section>
 
         {/* Location */}
-        <Section title="מיקום" subtitle="איפה הקהל שלך?">
+        <Section title="קהל יעד" subtitle="איפה נמצאים הלקוחות שלכם?">
           <div className="relative">
             <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
             <select
@@ -124,7 +124,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         </Section>
 
         {/* Platform */}
-        <Section title="פלטפורמה" subtitle="איפה הקמפיין יעלה?">
+        <Section title="פלטפורמה" subtitle="איפה הקמפיין ירוץ?">
           <div className="bg-brand p-0.5 rounded-2xl shadow-glow">
             <div className="bg-card rounded-[14px] py-3.5 px-4 flex items-center gap-3">
               <Instagram className="w-5 h-5" style={{ color: "hsl(var(--brand-pink))" }} />
@@ -135,7 +135,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         </Section>
 
         {/* Content type */}
-        <Section title="סוג תוכן" subtitle="מה תרצו שהיוצרים יפיקו?">
+        <Section title="פורמט התוכן" subtitle="איזה סוג תוכן שיפיקו לכם?">
           <div className="grid grid-cols-3 gap-2.5">
             {contentTypes.map(({ value, icon: Icon }) => (
               <ChipCard key={value} active={contentType === value} onClick={() => setContentType(value)}>
@@ -154,7 +154,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
           disabled={!canSubmit}
           className="w-full py-4 rounded-full font-bold text-base text-primary-foreground bg-brand shadow-glow disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed tap-scale"
         >
-          מצא לי יוצרים
+          מצאו לי יוצרים
         </button>
       </div>
     </div>

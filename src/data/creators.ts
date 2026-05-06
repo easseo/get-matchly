@@ -94,7 +94,7 @@ function scoreCreator(c: Creator, campaign: CampaignInput) {
   const overlap = c.niches.filter((n) => targets.includes(n)).length;
   if (overlap > 0) {
     score += overlap === c.niches.length ? 40 : 30;
-    reasons.push(`התמחות מדויקת בתחום ${c.niches[0]}`);
+    reasons.push(`מומחה.ית בתחום ה${c.niches[0]} — בדיוק הקהל שלכם`);
   } else {
     score += 8;
   }
@@ -102,52 +102,52 @@ function scoreCreator(c: Creator, campaign: CampaignInput) {
   // Platform match
   if (c.platform === campaign.platform) {
     score += 15;
-    reasons.push(`נוכחות חזקה ב-${c.platform}`);
+    reasons.push(`פעיל.ה במיוחד ב־${c.platform}`);
   }
 
   // Location match
   if (campaign.location === "כל הארץ" || c.location === campaign.location) {
     score += 12;
     if (campaign.location !== "כל הארץ") {
-      reasons.push(`קהל מקומי ב${c.location}`);
+      reasons.push(`קהל מקומי ומחובר באזור ${c.location}`);
     }
   } else {
     score += 4;
   }
 
-  // Budget fit (closer to or under budget = better)
+  // Budget fit
   const budgetRatio = c.price / campaign.budget;
   if (budgetRatio <= 1) {
     score += 18 - Math.abs(1 - budgetRatio) * 8;
-    if (budgetRatio <= 0.85) reasons.push(`מחיר משתלם בתקציב שלך`);
+    if (budgetRatio <= 0.85) reasons.push(`מתאים בול לתקציב שלכם`);
   } else if (budgetRatio <= 1.2) {
     score += 6;
   } else {
     score -= 5;
   }
 
-  // Engagement rate (huge weight for goal "מכירות"/"לקוחות")
+  // Engagement
   const goalEngagementBoost =
     campaign.goal === "יותר מכירות" || campaign.goal === "יותר לקוחות" ? 2.2 : 1.4;
   score += c.engagementRate * goalEngagementBoost;
   if (c.engagementRate >= 6) {
-    reasons.push(`אחוזי מעורבות גבוהים (${c.engagementRate}%)`);
+    reasons.push(`מעורבות גבוהה במיוחד (${c.engagementRate}%) — קהל שמגיב`);
   }
 
-  // Reach (followers) - boost for "חשיפה"
+  // Reach
   const reachBoost = campaign.goal === "יותר חשיפה" ? 1 : 0.4;
   score += Math.log10(c.followers) * reachBoost * 4;
   if (campaign.goal === "יותר חשיפה" && c.followers >= 150000) {
-    reasons.push(`חשיפה רחבה ל-${formatFollowers(c.followers)} עוקבים`);
+    reasons.push(`חשיפה רחבה לקהל של ${formatFollowers(c.followers)} עוקבים`);
   }
 
-  // Filler reasons if needed
+  // Fillers
   if (reasons.length < 3) {
     const fillers = [
-      `קהילה איכותית של ${formatFollowers(c.followers)} עוקבים`,
-      `סגנון תוכן שמתאים ל${campaign.contentType || "פורמט שבחרת"}`,
-      `ביצועי המרה חזקים בקמפיינים דומים`,
-      `אמון גבוה של העוקבים במותגים`,
+      `קהילה אותנטית של ${formatFollowers(c.followers)} עוקבים`,
+      `התוכן שלו.ה מתאים מצוין ל${campaign.contentType || "פורמט שבחרתם"}`,
+      `שיתופי פעולה מוצלחים עם מותגים דומים`,
+      `אמון גבוה של הקהל בהמלצות שלו.ה`,
     ];
     for (const f of fillers) {
       if (reasons.length >= 3) break;
