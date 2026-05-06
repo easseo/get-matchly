@@ -10,9 +10,9 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
   const goCreator = () => onCreatorJoin?.();
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden flex flex-col">
+    <div className="min-h-screen relative overflow-hidden flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-30 backdrop-blur-lg bg-background/80 border-b border-border">
+      <header className="sticky top-0 z-30 backdrop-blur-xl bg-background/70 border-b border-border/60">
         <div className="px-5 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src={matchlyIcon} alt="" className="h-[46px] w-[46px] object-contain" />
