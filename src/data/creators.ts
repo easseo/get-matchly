@@ -107,5 +107,5 @@ export function pickThree(exclude: string[] = []): Creator[] {
   const available = allCreators.filter((c) => !exclude.includes(c.id));
   const pool = available.length >= 3 ? available : allCreators;
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, 3);
+  return shuffled.slice(0, 3).sort((a, b) => b.successProbability - a.successProbability);
 }
