@@ -13,6 +13,8 @@ export type CampaignData = {
   business: string;
   goal: string;
   budget: number;
+  budgetMin: number;
+  budgetMax: number;
   location: string;
   platform: string;
   contentType: string;
@@ -139,6 +141,8 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
       business,
       goal,
       budget,
+      budgetMin: low,
+      budgetMax: high,
       location,
       platform: "Instagram",
       contentType: contentTypeStr,
