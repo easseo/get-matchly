@@ -177,8 +177,10 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
       </section>
 
       {/* Features */}
-      <section id="features" className="py-20">
-        <div className="max-w-7xl mx-auto px-8">
+      <section id="features" className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-yellow) / 0.06) 0%, hsl(var(--brand-pink) / 0.10) 50%, hsl(var(--brand-purple) / 0.08) 100%)" }}>
+        <div className="absolute top-1/4 -right-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-orange))" }} />
+        <div className="absolute bottom-1/4 -left-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="max-w-7xl mx-auto px-8 relative">
           <div className="text-center mb-12">
             <span className="inline-block text-xs font-bold tracking-wider uppercase text-brand mb-2">למה Matchly</span>
             <h2 className="text-4xl font-black mb-3 leading-tight">היתרונות שעושים את ההבדל</h2>
