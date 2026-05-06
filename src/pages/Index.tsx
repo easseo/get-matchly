@@ -88,7 +88,7 @@ const Index = () => {
           onDone={handleLoadingDone}
         />
       );
-    return <Results creators={creators} onMore={handleMore} onRestart={handleRestart} loadingMore={loadingMore} />;
+    return <Results creators={creators} onMore={handleMore} onRestart={handleRestart} onNewCampaign={() => setScreen("form")} loadingMore={loadingMore} />;
   };
 
   if (!isMobile && screen === "landing") {
