@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Landing from "@/components/Landing";
+import DesktopLanding from "@/components/DesktopLanding";
+import { useIsMobile } from "@/hooks/use-mobile";
 import CampaignForm, { type CampaignData } from "@/components/CampaignForm";
 import Loading from "@/components/Loading";
 import Results from "@/components/Results";
@@ -9,6 +11,7 @@ import { matchCreators, type ScoredCreator } from "@/data/creators";
 type Screen = "landing" | "form" | "loading" | "results" | "creator-onboarding";
 
 const Index = () => {
+  const isMobile = useIsMobile();
   const [screen, setScreen] = useState<Screen>("landing");
   const [campaign, setCampaign] = useState<CampaignData | null>(null);
   const [creators, setCreators] = useState<ScoredCreator[]>([]);
@@ -66,6 +69,16 @@ const Index = () => {
       );
     return <Results creators={creators} onMore={handleMore} onRestart={handleRestart} loadingMore={loadingMore} />;
   };
+
+  // Desktop landing on wide screens; all other screens stay in mobile shell
+  if (!isMobile && screen === "landing") {
+    return (
+      <DesktopLanding
+        onStart={() => setScreen("form")}
+        onCreatorJoin={() => setScreen("creator-onboarding")}
+      />
+    );
+  }
 
   return (
     <div className="md:min-h-screen md:flex md:items-start md:justify-center md:py-6 mobile-bg">
