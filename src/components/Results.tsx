@@ -83,19 +83,19 @@ function CreatorCard({ creator, index }: { creator: ScoredCreator; index: number
           <div className="flex items-center gap-1.5 flex-wrap">
             <h3 className="font-extrabold text-base">{creator.name}</h3>
             <span className="px-2 py-0.5 rounded-full bg-brand-soft text-[10px] font-bold text-foreground">
-              {creator.successProbability}% התאמה
+              <span className="ltr-num">{creator.successProbability}%</span> התאמה
             </span>
           </div>
           <p className="text-xs text-muted-foreground font-medium mt-0.5">{creator.niches.join(" · ")} · {creator.location}</p>
           <div className="flex items-center gap-3 mt-1.5 text-[11px] text-muted-foreground font-semibold">
             <span className="flex items-center gap-1">
-              <Instagram className="w-3 h-3" /> {creator.platform}
+              <Instagram className="w-3 h-3" /> <span className="ltr-num">{creator.platform}</span>
             </span>
             <span className="flex items-center gap-1">
-              <Users className="w-3 h-3" /> {creator.followersLabel}
+              <Users className="w-3 h-3" /> <span className="ltr-num">{creator.followersLabel}</span>
             </span>
             <span className="flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" /> {creator.engagementRate}%
+              <TrendingUp className="w-3 h-3" /> <span className="ltr-num">{creator.engagementRate}%</span>
             </span>
           </div>
         </div>
@@ -104,13 +104,13 @@ function CreatorCard({ creator, index }: { creator: ScoredCreator; index: number
       <div className="grid grid-cols-2 gap-2.5 mb-4">
         <div className="bg-muted/50 rounded-2xl p-2.5 text-center">
           <div className="text-[10px] text-muted-foreground font-bold mb-0.5">עלות משוערת</div>
-          <div className="font-black text-base">₪{creator.price.toLocaleString()}</div>
+          <div className="font-black text-base"><span className="ltr-num">₪{creator.price.toLocaleString("en-US")}</span></div>
         </div>
         <div className="bg-muted/50 rounded-2xl p-2.5 text-center">
           <div className="text-[10px] text-muted-foreground font-bold mb-0.5 flex items-center justify-center gap-1">
             <TrendingUp className="w-3 h-3" /> סיכויי הצלחה
           </div>
-          <div className="font-black text-base text-brand">{creator.successProbability}%</div>
+          <div className="font-black text-base text-brand"><span className="ltr-num">{creator.successProbability}%</span></div>
         </div>
       </div>
 
