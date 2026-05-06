@@ -6,7 +6,9 @@ import CampaignForm, { type CampaignData } from "@/components/CampaignForm";
 import Loading from "@/components/Loading";
 import Results from "@/components/Results";
 import CreatorOnboarding from "@/components/CreatorOnboarding";
-import { matchCreators, type ScoredCreator } from "@/data/creators";
+import { type ScoredCreator } from "@/data/creators";
+import { saveCampaign, matchAndSave } from "@/lib/matching";
+import { toast } from "@/hooks/use-toast";
 
 type Screen = "landing" | "form" | "loading" | "results" | "creator-onboarding";
 
@@ -14,37 +16,58 @@ const Index = () => {
   const isMobile = useIsMobile();
   const [screen, setScreen] = useState<Screen>("landing");
   const [campaign, setCampaign] = useState<CampaignData | null>(null);
+  const [campaignId, setCampaignId] = useState<string | null>(null);
   const [creators, setCreators] = useState<ScoredCreator[]>([]);
   const [seenIds, setSeenIds] = useState<string[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const handleSubmit = (data: CampaignData) => {
+  const handleSubmit = async (data: CampaignData) => {
     setCampaign(data);
     setScreen("loading");
+    try {
+      const id = await saveCampaign({
+        business: data.business,
+        goal: data.goal,
+        budget: data.budget,
+        location: data.location,
+        platform: data.platform,
+        contentType: data.contentType,
+        contents: data.contents,
+        deadline: data.deadline,
+      });
+      setCampaignId(id);
+      const matches = await matchAndSave(id, data, []);
+      setCreators(matches);
+      setSeenIds(matches.map((c) => c.id));
+    } catch (e: any) {
+      console.error(e);
+      toast({ title: "שגיאה", description: e?.message ?? "לא הצלחנו לשמור את הקמפיין", variant: "destructive" });
+      setScreen("form");
+    }
   };
 
   const handleLoadingDone = () => {
-    if (!campaign) return;
-    const initial = matchCreators(campaign, []);
-    setCreators(initial);
-    setSeenIds(initial.map((c) => c.id));
-    setScreen("results");
+    if (creators.length > 0) setScreen("results");
   };
 
-  const handleMore = () => {
-    if (!campaign) return;
+  const handleMore = async () => {
+    if (!campaign || !campaignId) return;
     setLoadingMore(true);
-    setTimeout(() => {
-      const next = matchCreators(campaign, seenIds);
+    try {
+      const next = await matchAndSave(campaignId, campaign, seenIds);
       setCreators(next);
       setSeenIds((prev) => [...prev, ...next.map((c) => c.id)]);
+    } catch (e: any) {
+      toast({ title: "שגיאה", description: e?.message ?? "לא הצלחנו לטעון יוצרים נוספים", variant: "destructive" });
+    } finally {
       setLoadingMore(false);
-    }, 1500);
+    }
   };
 
   const handleRestart = () => {
     setScreen("landing");
     setCampaign(null);
+    setCampaignId(null);
     setCreators([]);
     setSeenIds([]);
   };
@@ -70,7 +93,6 @@ const Index = () => {
     return <Results creators={creators} onMore={handleMore} onRestart={handleRestart} loadingMore={loadingMore} />;
   };
 
-  // Desktop landing on wide screens; all other screens stay in mobile shell
   if (!isMobile && screen === "landing") {
     return (
       <DesktopLanding
