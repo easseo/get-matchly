@@ -45,7 +45,7 @@ export default function Landing({ onStart }: LandingProps) {
             { num: "92%", label: "דיוק התאמה" },
           ].map((s) => (
             <div key={s.label} className="bg-card/70 backdrop-blur rounded-2xl p-3 shadow-soft border border-border">
-              <div className="text-xl font-black text-brand">{s.num}</div>
+              <div className="text-xl font-black text-brand ltr-num">{s.num}</div>
               <div className="text-[11px] text-muted-foreground font-semibold mt-0.5">{s.label}</div>
             </div>
           ))}
