@@ -91,9 +91,8 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         {/* Budget */}
         <Section title="תקציב" subtitle="כמה תרצו להשקיע בקמפיין?">
           <div className="bg-card rounded-3xl p-5 shadow-card border border-border">
-            <div className="flex items-baseline justify-center gap-1.5 mb-5">
-              <span className="text-4xl font-black text-brand">{budget.toLocaleString()}</span>
-              <span className="text-lg font-bold text-muted-foreground">₪</span>
+            <div className="flex items-baseline justify-center gap-1.5 mb-5" dir="ltr">
+              <span className="text-4xl font-black text-brand ltr-num">₪{budget.toLocaleString("en-US")}</span>
             </div>
             <input
               type="range" min={500} max={5000} step={100}
@@ -103,8 +102,8 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
               style={{ background: `linear-gradient(to left, hsl(var(--brand-pink)) 0%, hsl(var(--brand-purple)) ${((budget - 500) / 4500) * 100}%, hsl(var(--muted)) ${((budget - 500) / 4500) * 100}%)` }}
             />
             <div className="flex justify-between text-[11px] text-muted-foreground mt-2 font-semibold">
-              <span>5,000 ₪</span>
-              <span>500 ₪</span>
+              <span className="ltr-num">₪5,000</span>
+              <span className="ltr-num">₪500</span>
             </div>
           </div>
         </Section>
