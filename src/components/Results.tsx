@@ -1,9 +1,9 @@
 import { Instagram, Users, TrendingUp, Check, Send, RefreshCw } from "lucide-react";
-import type { Creator } from "@/data/creators";
+import type { ScoredCreator } from "@/data/creators";
 import { toast } from "@/hooks/use-toast";
 
 interface ResultsProps {
-  creators: Creator[];
+  creators: ScoredCreator[];
   onMore: () => void;
   onRestart: () => void;
   loadingMore: boolean;
@@ -66,7 +66,7 @@ export default function Results({ creators, onMore, onRestart, loadingMore }: Re
   );
 }
 
-function CreatorCard({ creator, index }: { creator: Creator; index: number }) {
+function CreatorCard({ creator, index }: { creator: ScoredCreator; index: number }) {
   return (
     <article
       className="bg-card rounded-3xl p-5 shadow-card border border-border animate-fade-in-up"
@@ -86,13 +86,16 @@ function CreatorCard({ creator, index }: { creator: Creator; index: number }) {
               {creator.successProbability}% התאמה
             </span>
           </div>
-          <p className="text-xs text-muted-foreground font-medium mt-0.5">{creator.niche}</p>
+          <p className="text-xs text-muted-foreground font-medium mt-0.5">{creator.niches.join(" · ")} · {creator.location}</p>
           <div className="flex items-center gap-3 mt-1.5 text-[11px] text-muted-foreground font-semibold">
             <span className="flex items-center gap-1">
               <Instagram className="w-3 h-3" /> {creator.platform}
             </span>
             <span className="flex items-center gap-1">
-              <Users className="w-3 h-3" /> {creator.followers}
+              <Users className="w-3 h-3" /> {creator.followersLabel}
+            </span>
+            <span className="flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" /> {creator.engagementRate}%
             </span>
           </div>
         </div>
