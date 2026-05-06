@@ -125,7 +125,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       </section>
 
       {/* 2. Audience cards */}
-      <section className="px-5 py-10 space-y-4">
+      <section className="px-5 py-10 space-y-10">
         <AudienceCard
           gradient="linear-gradient(135deg, hsl(var(--brand-purple)) 0%, hsl(var(--brand-pink)) 100%)"
           icon={<Heart className="w-6 h-6" />}
