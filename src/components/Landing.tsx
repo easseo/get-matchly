@@ -39,16 +39,18 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
             <span className="text-[11px] font-semibold text-muted-foreground">חכם · מהיר · מדויק</span>
           </div>
 
-          <h1 className="font-black tracking-tight mb-3 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-            <span className="block text-4xl sm:text-5xl text-foreground leading-[1.05]">מחברים בין</span>
-            <span className="block text-4xl sm:text-5xl leading-[1.05] mt-1">
-              <span className="text-foreground">עסקים ל</span>
-              <span className="text-brand">יוצרי תוכן</span>
+          <h1 className="font-black tracking-tight mb-4 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
+            <span className="block text-5xl sm:text-6xl text-brand leading-[1] ltr-num">3</span>
+            <span className="block text-[26px] sm:text-3xl text-foreground leading-[1.15] mt-2">
+              יוצרי תוכן שמתאימים בדיוק
+            </span>
+            <span className="block text-[26px] sm:text-3xl text-foreground leading-[1.15]">
+              לקמפיין שלך
             </span>
           </h1>
 
           <p className="text-sm sm:text-base text-muted-foreground font-medium mb-6 animate-fade-in-up px-2 leading-relaxed" style={{ animationDelay: "0.2s" }}>
-            הדרך החכמה למצוא שיתופי פעולה שמתאימים לקמפיין שלך - תוך דקות.
+            פותחים קמפיין - ומקבלים התאמות חכמות תוך דקות. בלי לחפש ידנית, בלי לנחש.
           </p>
 
           <div className="flex flex-col gap-2.5 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
