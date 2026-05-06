@@ -44,7 +44,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
         <div className="relative z-10 text-primary-foreground">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur border border-white/25 mb-5 animate-fade-in-up">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            <span className="text-[11px] font-semibold text-white/95">פלטפורמת שיתופי פעולה חכמה</span>
+            <span className="text-[11px] font-semibold text-white/95">פלטפורמה לחיבור יוצרי תוכן לבעלי עסקים ב-60 שניות</span>
           </div>
 
           <h1 className="font-black tracking-tight mb-3 animate-fade-in-up text-[34px] sm:text-5xl leading-[1.05]" style={{ animationDelay: "0.1s" }}>
