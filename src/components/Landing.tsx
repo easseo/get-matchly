@@ -376,7 +376,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
           <img src={matchlyIcon} alt="" className="h-5 w-5 object-contain" loading="lazy" />
           <span className="text-sm font-extrabold tracking-tight text-foreground">Matchly</span>
         </div>
-        <p className="text-[10px] text-muted-foreground font-medium">חכם · מהיר · מדויק</p>
+        <p className="text-[10px] text-muted-foreground font-medium tracking-wider" dir="ltr">INFLUENCE TODAY. MATCH NOW.</p>
       </footer>
     </div>
   );
