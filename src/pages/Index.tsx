@@ -29,9 +29,7 @@ const Index = () => {
         business: data.business,
         goal: data.goal,
         budget: data.budget,
-        location: data.location,
         platform: data.platform,
-        contentType: data.contentType,
         contents: data.contents,
         deadline: data.deadline,
       });
