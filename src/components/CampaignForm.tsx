@@ -75,8 +75,13 @@ function getBudgetRange(value: number): [number, number] {
 }
 
 export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
-  const [business, setBusiness] = useState("");
-  const [goal, setGoal] = useState("");
+  const [businessList, setBusinessList] = useState<string[]>([]);
+  const [goalList, setGoalList] = useState<string[]>([]);
+  const business = businessList.join(", ");
+  const goal = goalList.join(", ");
+  const toggleFromList = (setter: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
+    setter((prev) => prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]);
+  };
   const [budget, setBudget] = useState(2000);
   const [location, setLocation] = useState("כל הארץ");
   const [quantities, setQuantities] = useState<Record<string, number>>({});
