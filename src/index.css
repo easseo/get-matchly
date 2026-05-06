@@ -194,3 +194,12 @@
 .animate-pulse-glow { animation: pulse-glow 2s ease-out infinite; }
 .animate-spin-slow { animation: spin-slow 3s linear infinite; }
 .animate-fade-in-up { animation: fade-in-up 0.5s ease-out backwards; }
+
+/* Bidi-safe inline numbers, currency, percentages, and Latin labels */
+.ltr-num {
+  unicode-bidi: isolate;
+  direction: ltr;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
