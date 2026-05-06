@@ -214,8 +214,10 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
       </section>
 
       {/* Match examples */}
-      <section id="examples" className="py-20 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-8">
+      <section id="examples" className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-purple) / 0.10) 0%, hsl(var(--brand-orange) / 0.06) 100%)" }}>
+        <div className="absolute top-1/3 -left-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-orange))" }} />
+        <div className="absolute bottom-1/3 -right-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-purple))" }} />
+        <div className="max-w-7xl mx-auto px-8 relative">
           <div className="text-center mb-12">
             <span className="inline-block text-xs font-bold tracking-wider uppercase text-brand mb-2">דוגמאות התאמה</span>
             <h2 className="text-4xl font-black mb-3 leading-tight">ככה נראית התאמה אמיתית</h2>
