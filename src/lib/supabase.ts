@@ -9,25 +9,25 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 export type DbCreator = {
   id: string;
   name: string;
-  niches: string[];
+  niche: string;
   platform: string;
   followers: number;
   engagement_rate: number;
   location: string;
-  price: number;
-  avatar: string;
-  gradient: string;
+  price_min: number;
+  price_max: number;
+  profile_image: string | null;
+  created_at?: string;
 };
 
 export type DbCampaign = {
   id?: string;
-  business: string;
+  business_type: string;
   goal: string;
-  budget: number;
-  location: string;
+  budget_min: number;
+  budget_max: number;
   platform: string;
-  content_type: string;
-  contents: { type: string; qty: number }[];
+  content_types: string[];
   deadline?: string | null;
   created_at?: string;
 };
@@ -37,8 +37,5 @@ export type DbMatch = {
   campaign_id: string;
   creator_id: string;
   score: number;
-  success_probability: number;
-  reasons: string[];
-  rank: number;
   created_at?: string;
 };

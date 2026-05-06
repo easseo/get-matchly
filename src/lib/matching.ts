@@ -1,6 +1,18 @@
 import { supabase, type DbCampaign, type DbCreator } from "@/lib/supabase";
 import type { CampaignInput, Creator, ScoredCreator } from "@/data/creators";
 
+const gradients = [
+  "from-pink-500 via-rose-500 to-orange-400",
+  "from-fuchsia-500 via-pink-500 to-yellow-400",
+  "from-purple-500 via-pink-500 to-orange-500",
+  "from-orange-400 via-pink-500 to-purple-600",
+  "from-yellow-400 via-orange-500 to-pink-600",
+  "from-violet-500 via-fuchsia-500 to-pink-500",
+];
+
+const initials = (name: string) =>
+  name.split(" ").map((n) => n[0]).join("").slice(0, 2);
+
 const formatFollowers = (n: number) =>
   n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}K` : `${n}`;
 
@@ -48,7 +60,7 @@ function scoreCreator(c: Creator, campaign: CampaignInput) {
   if (c.engagementRate >= 6) reasons.push(`מעורבות גבוהה במיוחד (${c.engagementRate}%) - קהל שמגיב`);
 
   const reachBoost = campaign.goal === "יותר חשיפה" ? 1 : 0.4;
-  score += Math.log10(c.followers) * reachBoost * 4;
+  score += Math.log10(Math.max(c.followers, 10)) * reachBoost * 4;
   if (campaign.goal === "יותר חשיפה" && c.followers >= 150000)
     reasons.push(`חשיפה רחבה לקהל של ${formatFollowers(c.followers)} עוקבים`);
 
@@ -70,11 +82,19 @@ function toSuccessProbability(score: number, rank: number) {
   return Math.max(70, Math.min(98, base - rank + jitter));
 }
 
-function dbToCreator(d: DbCreator): Creator {
+function dbToCreator(d: DbCreator, idx: number): Creator {
+  const price = Math.round(((d.price_min ?? 0) + (d.price_max ?? d.price_min ?? 0)) / 2);
   return {
-    id: d.id, name: d.name, niches: d.niches, platform: d.platform,
-    followers: d.followers, engagementRate: Number(d.engagement_rate),
-    location: d.location, price: d.price, avatar: d.avatar, gradient: d.gradient,
+    id: d.id,
+    name: d.name,
+    niches: d.niche ? [d.niche] : [],
+    platform: d.platform,
+    followers: d.followers,
+    engagementRate: Number(d.engagement_rate),
+    location: d.location,
+    price,
+    avatar: d.profile_image || initials(d.name),
+    gradient: gradients[idx % gradients.length],
   };
 }
 
@@ -85,14 +105,16 @@ export async function fetchCreators(): Promise<Creator[]> {
 }
 
 export async function saveCampaign(input: {
-  business: string; goal: string; budget: number; location: string;
-  platform: string; contentType: string;
+  business: string; goal: string; budget: number; platform: string;
   contents: { type: string; qty: number }[]; deadline?: string;
 }): Promise<string> {
   const row: DbCampaign = {
-    business: input.business, goal: input.goal, budget: input.budget,
-    location: input.location, platform: input.platform,
-    content_type: input.contentType, contents: input.contents,
+    business_type: input.business,
+    goal: input.goal,
+    budget_min: Math.round(input.budget * 0.8),
+    budget_max: Math.round(input.budget * 1.2),
+    platform: input.platform,
+    content_types: input.contents.map((c) => c.type),
     deadline: input.deadline ?? null,
   };
   const { data, error } = await supabase.from("campaigns").insert(row).select("id").single();
@@ -124,13 +146,10 @@ export async function matchAndSave(
     .sort((a, b) => b.successProbability - a.successProbability);
 
   if (result.length > 0) {
-    const matchRows = result.map((r, i) => ({
+    const matchRows = result.map((r) => ({
       campaign_id: campaignId,
       creator_id: r.id,
       score: r.score,
-      success_probability: r.successProbability,
-      reasons: r.reasons,
-      rank: i + 1,
     }));
     const { error } = await supabase.from("matches").insert(matchRows);
     if (error) console.error("Failed to save matches:", error);
