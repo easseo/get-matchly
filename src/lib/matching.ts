@@ -21,8 +21,27 @@ const businessToNiches: Record<string, string[]> = {
   "אופנה": ["אופנה", "לייפסטייל"],
   "כושר": ["כושר", "ספורט", "בריאות"],
   "ביוטי": ["ביוטי", "אופנה"],
-  "אחר": ["לייפסטייל"],
+  "אחר": [],
 };
+
+function splitMulti(s: string): string[] {
+  return (s || "").split(",").map((x) => x.trim()).filter(Boolean);
+}
+
+function targetNichesFor(business: string): string[] {
+  const items = splitMulti(business);
+  const set = new Set<string>();
+  for (const b of items) {
+    const list = businessToNiches[b] ?? [];
+    list.forEach((n) => set.add(n));
+  }
+  return Array.from(set);
+}
+
+function goalsInclude(goal: string, ...candidates: string[]): boolean {
+  const items = splitMulti(goal);
+  return items.some((g) => candidates.includes(g));
+}
 
 const nicheLabels: Record<string, string> = {
   "מסעדה": "מסעדנות", "אוכל": "קולינריה", "אופנה": "אופנה", "ביוטי": "ביוטי",
@@ -34,12 +53,17 @@ const nicheLabels: Record<string, string> = {
 function scoreCreator(c: Creator, campaign: CampaignInput) {
   let score = 0;
   const reasons: string[] = [];
-  const targets = businessToNiches[campaign.business] ?? [];
-  const overlap = c.niches.filter((n) => targets.includes(n)).length;
+  const targets = targetNichesFor(campaign.business);
+  const overlap = targets.length === 0 ? 0 : c.niches.filter((n) => targets.includes(n)).length;
   if (overlap > 0) {
     score += overlap === c.niches.length ? 40 : 30;
-    reasons.push(`מומחה.ית בתחום ה${nicheLabels[c.niches[0]] ?? c.niches[0]} - בדיוק הקהל שלכם`);
-  } else score += 8;
+    const matched = c.niches.find((n) => targets.includes(n)) ?? c.niches[0];
+    reasons.push(`מומחה.ית בתחום ה${nicheLabels[matched] ?? matched} - בדיוק הקהל שלכם`);
+  } else if (targets.length === 0) {
+    score += 12;
+  } else {
+    score += 4;
+  }
 
   if (c.platform === campaign.platform) { score += 15; reasons.push(`פעיל.ה במיוחד ב־${c.platform}`); }
 
@@ -55,13 +79,14 @@ function scoreCreator(c: Creator, campaign: CampaignInput) {
   } else if (budgetRatio <= 1.2) score += 6;
   else score -= 5;
 
-  const goalEngagementBoost = campaign.goal === "יותר מכירות" || campaign.goal === "יותר לקוחות" ? 2.2 : 1.4;
+  const goalEngagementBoost = goalsInclude(campaign.goal, "יותר מכירות", "יותר לקוחות") ? 2.2 : 1.4;
   score += c.engagementRate * goalEngagementBoost;
   if (c.engagementRate >= 6) reasons.push(`מעורבות גבוהה במיוחד (${c.engagementRate}%) - קהל שמגיב`);
 
-  const reachBoost = campaign.goal === "יותר חשיפה" ? 1 : 0.4;
+  const isExposureGoal = goalsInclude(campaign.goal, "יותר חשיפה");
+  const reachBoost = isExposureGoal ? 1 : 0.4;
   score += Math.log10(Math.max(c.followers, 10)) * reachBoost * 4;
-  if (campaign.goal === "יותר חשיפה" && c.followers >= 150000)
+  if (isExposureGoal && c.followers >= 150000)
     reasons.push(`חשיפה רחבה לקהל של ${formatFollowers(c.followers)} עוקבים`);
 
   if (reasons.length < 3) {
@@ -129,10 +154,10 @@ export async function matchAndSave(
   limit = 3
 ): Promise<ScoredCreator[]> {
   const creators = await fetchCreators();
-  const targets = businessToNiches[campaign.business] ?? [];
+  const targets = targetNichesFor(campaign.business);
   const scored = creators
     .filter((c) => !excludeIds.includes(c.id))
-    .filter((c) => c.niches.some((n) => targets.includes(n)))
+    .filter((c) => targets.length === 0 || c.niches.some((n) => targets.includes(n)))
     .map((c) => ({ creator: c, ...scoreCreator(c, campaign) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);

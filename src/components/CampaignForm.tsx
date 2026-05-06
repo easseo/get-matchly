@@ -407,7 +407,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
           disabled={!canSubmit}
           className="w-full py-4 rounded-full font-bold text-base text-primary-foreground bg-brand shadow-cta-lg disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed tap-scale"
         >
-          קבל 3 התאמות חכמות
+          קבלו 3 התאמות חכמות
         </button>
       </div>
 
