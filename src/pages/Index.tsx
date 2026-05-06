@@ -42,16 +42,24 @@ const Index = () => {
     setSeenIds([]);
   };
 
-  if (screen === "landing") return <Landing onStart={() => setScreen("form")} />;
-  if (screen === "form") return <CampaignForm onSubmit={handleSubmit} onBack={() => setScreen("landing")} />;
-  if (screen === "loading")
-    return (
-      <Loading
-        message="אנחנו מנתחים את הקמפיין שלך ובוחרים את היוצרים הכי מתאימים..."
-        onDone={handleLoadingDone}
-      />
-    );
-  return <Results creators={creators} onMore={handleMore} onRestart={handleRestart} loadingMore={loadingMore} />;
+  const renderScreen = () => {
+    if (screen === "landing") return <Landing onStart={() => setScreen("form")} />;
+    if (screen === "form") return <CampaignForm onSubmit={handleSubmit} onBack={() => setScreen("landing")} />;
+    if (screen === "loading")
+      return (
+        <Loading
+          message="אנחנו מנתחים את הקמפיין שלך ובוחרים את היוצרים הכי מתאימים..."
+          onDone={handleLoadingDone}
+        />
+      );
+    return <Results creators={creators} onMore={handleMore} onRestart={handleRestart} loadingMore={loadingMore} />;
+  };
+
+  return (
+    <div className="md:min-h-screen md:flex md:items-start md:justify-center md:py-6 mobile-bg">
+      <div className="mobile-shell">{renderScreen()}</div>
+    </div>
+  );
 };
 
 export default Index;

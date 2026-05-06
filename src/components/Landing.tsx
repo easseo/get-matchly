@@ -6,27 +6,27 @@ interface LandingProps {
 
 export default function Landing({ onStart }: LandingProps) {
   return (
-    <div className="min-h-screen bg-mesh relative overflow-hidden">
+    <div className="min-h-screen bg-mesh relative overflow-hidden flex flex-col">
       {/* Floating decorations */}
-      <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-brand opacity-30 blur-3xl animate-float" />
-      <div className="absolute bottom-32 right-10 w-40 h-40 rounded-full bg-brand opacity-20 blur-3xl animate-float" style={{ animationDelay: "1.5s" }} />
+      <div className="absolute top-16 right-6 w-40 h-40 rounded-full bg-brand opacity-30 blur-3xl animate-float pointer-events-none" />
+      <div className="absolute bottom-24 left-6 w-44 h-44 rounded-full bg-brand opacity-20 blur-3xl animate-float pointer-events-none" style={{ animationDelay: "1.5s" }} />
 
-      <header className="relative z-10 px-6 pt-8 flex items-center justify-between max-w-6xl mx-auto">
+      <header className="relative z-10 px-5 pt-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-2xl bg-brand flex items-center justify-center shadow-glow">
-            <Sparkles className="w-5 h-5 text-primary-foreground" />
+          <div className="w-9 h-9 rounded-2xl bg-brand flex items-center justify-center shadow-glow">
+            <Sparkles className="w-4 h-4 text-primary-foreground" />
           </div>
-          <span className="text-xl font-extrabold text-brand">Matchly</span>
+          <span className="text-lg font-extrabold text-brand">Matchly</span>
         </div>
       </header>
 
-      <main className="relative z-10 max-w-3xl mx-auto px-6 pt-16 pb-20 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card border border-border shadow-soft mb-8 animate-fade-in-up">
-          <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
-          <span className="text-sm font-medium text-muted-foreground">חכם. מהיר. מדויק.</span>
+      <main className="relative z-10 flex-1 flex flex-col px-5 pt-8 pb-8 text-center">
+        <div className="inline-flex self-center items-center gap-2 px-3.5 py-1.5 rounded-full bg-card border border-border shadow-soft mb-6 animate-fade-in-up">
+          <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
+          <span className="text-xs font-semibold text-muted-foreground">חכם. מהיר. מדויק.</span>
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-black leading-tight mb-6 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
+        <h1 className="text-4xl sm:text-5xl font-black leading-[1.1] mb-5 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
           <span className="text-brand">3 יוצרי תוכן</span>
           <br />
           <span className="text-foreground">שמתאימים בול</span>
@@ -34,30 +34,32 @@ export default function Landing({ onStart }: LandingProps) {
           <span className="text-foreground">לעסק שלך</span>
         </h1>
 
-        <p className="text-xl md:text-2xl text-muted-foreground font-medium mb-12 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+        <p className="text-base sm:text-lg text-muted-foreground font-medium mb-10 animate-fade-in-up px-2" style={{ animationDelay: "0.2s" }}>
           ב-60 שניות. בלי חיפוש. בלי ניחוש.
         </p>
 
-        <button
-          onClick={onStart}
-          className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 text-lg font-bold text-primary-foreground bg-brand rounded-full shadow-glow hover:scale-105 transition-bounce animate-pulse-glow animate-fade-in-up"
-          style={{ animationDelay: "0.3s" }}
-        >
-          <Sparkles className="w-5 h-5" />
-          מצא לי יוצרים
-        </button>
-
-        <div className="grid grid-cols-3 gap-4 mt-20 max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+        <div className="grid grid-cols-3 gap-2.5 mb-10 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
           {[
             { num: "60", label: "שניות" },
             { num: "3", label: "יוצרים" },
             { num: "92%", label: "התאמה" },
           ].map((s) => (
-            <div key={s.label} className="bg-card/70 backdrop-blur rounded-2xl p-4 shadow-soft border border-border">
-              <div className="text-2xl font-black text-brand">{s.num}</div>
-              <div className="text-xs text-muted-foreground font-medium mt-1">{s.label}</div>
+            <div key={s.label} className="bg-card/70 backdrop-blur rounded-2xl p-3 shadow-soft border border-border">
+              <div className="text-xl font-black text-brand">{s.num}</div>
+              <div className="text-[11px] text-muted-foreground font-semibold mt-0.5">{s.label}</div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-auto safe-bottom animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+          <button
+            onClick={onStart}
+            className="group relative w-full inline-flex items-center justify-center gap-3 py-5 text-base font-bold text-primary-foreground bg-brand rounded-full shadow-glow tap-scale animate-pulse-glow"
+          >
+            <Sparkles className="w-5 h-5" />
+            מצא לי יוצרים
+          </button>
+          <p className="text-xs text-muted-foreground font-medium mt-3">חינם. בלי הרשמה. בלי כרטיס אשראי.</p>
         </div>
       </main>
     </div>
