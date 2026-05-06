@@ -129,7 +129,7 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
                     </div>
                     <div className="shrink-0 flex items-center gap-2">
                       <div className="w-16 h-2 rounded-full bg-muted overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${c.score}%`, background: "linear-gradient(90deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }} />
+                        <div className="h-full rounded-full transition-all" style={{ width: `${Math.max(8, Math.min(100, ((c.score - 85) / 15) * 100))}%`, background: "linear-gradient(90deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }} />
                       </div>
                       <span className="text-sm font-black ltr-num" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
                         {c.score}%
