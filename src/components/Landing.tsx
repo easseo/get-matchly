@@ -15,8 +15,8 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       <header className="sticky top-0 z-30 backdrop-blur-lg bg-background/80 border-b border-border">
         <div className="px-5 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src={matchlyIcon} alt="" className="h-7 w-7 object-contain" />
-            <span className="text-[17px] font-extrabold tracking-tight text-foreground">Matchly</span>
+            <img src={matchlyIcon} alt="" className="h-10 w-10 object-contain" />
+            <span className="text-xl font-extrabold tracking-tight text-foreground">Matchly</span>
           </div>
           <button
             onClick={goCreator}
