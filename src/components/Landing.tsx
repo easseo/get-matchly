@@ -39,18 +39,16 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
             <span className="text-[11px] font-semibold text-muted-foreground">חכם · מהיר · מדויק</span>
           </div>
 
-          <h1 className="font-black tracking-tight mb-4 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-            <span className="block text-5xl sm:text-6xl text-brand leading-[1] ltr-num">3</span>
-            <span className="block text-[26px] sm:text-3xl text-foreground leading-[1.15] mt-2">
-              יוצרי תוכן שמתאימים בדיוק
-            </span>
-            <span className="block text-[26px] sm:text-3xl text-foreground leading-[1.15]">
-              לקמפיין שלך
+          <h1 className="font-black tracking-tight mb-3 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
+            <span className="block text-4xl sm:text-5xl text-foreground leading-[1.05]">מחברים בין</span>
+            <span className="block text-4xl sm:text-5xl leading-[1.05] mt-1">
+              <span className="text-foreground">עסקים ל</span>
+              <span className="text-brand">יוצרי תוכן</span>
             </span>
           </h1>
 
           <p className="text-sm sm:text-base text-muted-foreground font-medium mb-6 animate-fade-in-up px-2 leading-relaxed" style={{ animationDelay: "0.2s" }}>
-            פותחים קמפיין - ומקבלים התאמות חכמות תוך דקות. בלי לחפש ידנית, בלי לנחש.
+            הדרך החכמה למצוא שיתופי פעולה שמתאימים לקמפיין שלך - תוך דקות.
           </p>
 
           <div className="flex flex-col gap-2.5 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
@@ -132,7 +130,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       {/* 4. Features */}
       <section className="px-5 py-10">
         <div className="text-center mb-7">
-          <span className="inline-block text-[13px] font-extrabold tracking-[0.18em] uppercase text-brand mb-3">למה Matchly</span>
+          <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">למה Matchly</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">היתרונות שעושים את ההבדל</h2>
           <p className="text-sm text-muted-foreground font-medium">טכנולוגיה שמייצרת התאמות מדויקות</p>
         </div>
@@ -198,7 +196,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       {/* 5. Match previews */}
       <section className="px-5 pt-10 pb-6 bg-muted/30">
         <div className="text-center mb-8">
-          <span className="inline-block text-[13px] font-extrabold tracking-[0.18em] uppercase text-brand mb-3">דוגמאות התאמה</span>
+          <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">דוגמאות התאמה</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">ככה נראית התאמה אמיתית</h2>
           <p className="text-sm text-muted-foreground font-medium">תוצאות לדוגמה מקמפיינים שרצו ב-Matchly</p>
         </div>
