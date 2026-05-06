@@ -2,9 +2,10 @@ import { Sparkles } from "lucide-react";
 
 interface LandingProps {
   onStart: () => void;
+  onCreatorJoin?: () => void;
 }
 
-export default function Landing({ onStart }: LandingProps) {
+export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
   return (
     <div className="min-h-screen bg-mesh relative overflow-hidden flex flex-col">
       {/* Floating decorations */}
@@ -60,6 +61,14 @@ export default function Landing({ onStart }: LandingProps) {
             בואו נתחיל
           </button>
           <p className="text-xs text-muted-foreground font-medium mt-3">חינם · בלי הרשמה · בלי כרטיס אשראי</p>
+          {onCreatorJoin && (
+            <button
+              onClick={onCreatorJoin}
+              className="mt-5 text-sm font-bold text-brand tap-scale"
+            >
+              יוצר.ת תוכן? הצטרפו לבטא ←
+            </button>
+          )}
         </div>
       </main>
     </div>

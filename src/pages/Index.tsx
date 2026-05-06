@@ -3,9 +3,10 @@ import Landing from "@/components/Landing";
 import CampaignForm, { type CampaignData } from "@/components/CampaignForm";
 import Loading from "@/components/Loading";
 import Results from "@/components/Results";
+import CreatorOnboarding from "@/components/CreatorOnboarding";
 import { matchCreators, type ScoredCreator } from "@/data/creators";
 
-type Screen = "landing" | "form" | "loading" | "results";
+type Screen = "landing" | "form" | "loading" | "results" | "creator-onboarding";
 
 const Index = () => {
   const [screen, setScreen] = useState<Screen>("landing");
@@ -46,7 +47,15 @@ const Index = () => {
   };
 
   const renderScreen = () => {
-    if (screen === "landing") return <Landing onStart={() => setScreen("form")} />;
+    if (screen === "landing")
+      return (
+        <Landing
+          onStart={() => setScreen("form")}
+          onCreatorJoin={() => setScreen("creator-onboarding")}
+        />
+      );
+    if (screen === "creator-onboarding")
+      return <CreatorOnboarding onBack={() => setScreen("landing")} />;
     if (screen === "form") return <CampaignForm onSubmit={handleSubmit} onBack={() => setScreen("landing")} />;
     if (screen === "loading")
       return (
