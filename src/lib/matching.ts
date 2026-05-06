@@ -154,10 +154,10 @@ export async function matchAndSave(
   limit = 3
 ): Promise<ScoredCreator[]> {
   const creators = await fetchCreators();
-  const targets = businessToNiches[campaign.business] ?? [];
+  const targets = targetNichesFor(campaign.business);
   const scored = creators
     .filter((c) => !excludeIds.includes(c.id))
-    .filter((c) => c.niches.some((n) => targets.includes(n)))
+    .filter((c) => targets.length === 0 || c.niches.some((n) => targets.includes(n)))
     .map((c) => ({ creator: c, ...scoreCreator(c, campaign) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
