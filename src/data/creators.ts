@@ -111,7 +111,7 @@ function scoreCreator(c: Creator, campaign: CampaignInput) {
   if (overlap > 0) {
     score += overlap === c.niches.length ? 40 : 30;
     const label = nicheLabels[c.niches[0]] ?? c.niches[0];
-    reasons.push(`מומחה.ית בתחום ה${label} — בדיוק הקהל שלכם`);
+    reasons.push(`מומחה.ית בתחום ה${label} - בדיוק הקהל שלכם`);
   } else {
     score += 8;
   }
@@ -148,7 +148,7 @@ function scoreCreator(c: Creator, campaign: CampaignInput) {
     campaign.goal === "יותר מכירות" || campaign.goal === "יותר לקוחות" ? 2.2 : 1.4;
   score += c.engagementRate * goalEngagementBoost;
   if (c.engagementRate >= 6) {
-    reasons.push(`מעורבות גבוהה במיוחד (${c.engagementRate}%) — קהל שמגיב`);
+    reasons.push(`מעורבות גבוהה במיוחד (${c.engagementRate}%) - קהל שמגיב`);
   }
 
   // Reach
