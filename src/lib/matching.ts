@@ -225,50 +225,32 @@ export async function matchAndSave(
   const scored = available.map((c) => ({ creator: c, ...scoreCreator(c, campaign) }));
 
   // Debug logs
-  console.groupCollapsed(`[Matching] Campaign: ${campaign.business} | budget ${campaign.budgetMin ?? "?"}-${campaign.budgetMax ?? "?"} | ${campaign.platform} | ${campaign.location}`);
+  console.groupCollapsed(`[Matching] Campaign: ${campaign.business} | budget ${campaign.budgetMin ?? "?"}-${campaign.budgetMax ?? "?"} | ${campaign.location}`);
   scored.forEach((s) => {
     if (s.excluded) {
       console.log(`✗ ${s.creator.name} — excluded: ${s.excluded}`);
     } else {
       console.log(
-        `• ${s.creator.name} | niche:${s.niche} budget:${s.budget}(${s.budgetFit}) platform:${s.platform} location:${s.location} engagement:${s.engagement} → total:${s.total} [${s.matchType}]`
+        `• ${s.creator.name} | niche:${s.niche} budget:${s.budget}(${s.budgetFit}) location:${s.location} engagement:${s.engagement} followers:${s.followers} → total:${s.total} [${s.matchType}]`
       );
     }
   });
   console.groupEnd();
 
-  // Filter excluded (unrelated niche)
-  const eligible = scored.filter((s) => !s.excluded);
+  const eligible = scored.filter((s) => !s.excluded && s.total >= 70);
 
-  // Tier 1: in-budget candidates with score >= 70
-  const inBudget = eligible.filter((s) => s.budgetFit === "in" && s.total >= 70);
   const sortFn = (a: typeof scored[number], b: typeof scored[number]) => {
-    if (b.total !== a.total) return b.total - a.total;
-    // tie-breakers: exact niche, budget fit, engagement, followers
     const exactDiff = (b.matchType === "exact" ? 1 : 0) - (a.matchType === "exact" ? 1 : 0);
     if (exactDiff) return exactDiff;
-    const fitDiff = (b.budgetFit === "in" ? 1 : 0) - (a.budgetFit === "in" ? 1 : 0);
+    if (b.total !== a.total) return b.total - a.total;
+    const fitRank = (f: string) => (f === "in" ? 2 : f === "partial" ? 1 : 0);
+    const fitDiff = fitRank(b.budgetFit) - fitRank(a.budgetFit);
     if (fitDiff) return fitDiff;
     if (b.engagement !== a.engagement) return b.engagement - a.engagement;
     return b.creator.followers - a.creator.followers;
   };
 
-  let chosen = inBudget.sort(sortFn).slice(0, limit);
-
-  // If fewer than limit and fewer than 3 valid in-budget, allow near/out-of-budget creators (capped score)
-  // Per spec: only if there are NOT at least 3 valid creators we can show out-of-budget ones, but capped at 60.
-  if (chosen.length < 3) {
-    const fallback = eligible
-      .filter((s) => !chosen.includes(s) && s.total >= 70 && s.budgetFit !== "in")
-      .sort(sortFn);
-    for (const s of fallback) {
-      if (chosen.length >= limit) break;
-      chosen.push(s);
-    }
-  }
-
-  // Final hard threshold: score >= 70
-  chosen = chosen.filter((s) => s.total >= 70).sort(sortFn);
+  const chosen = eligible.sort(sortFn).slice(0, limit);
 
   const result: ScoredCreator[] = chosen.map((s) => ({
     ...s.creator,
