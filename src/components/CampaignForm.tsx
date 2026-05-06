@@ -179,7 +179,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         <Section title="תחום העסק" subtitle="במה אתם עוסקים?">
           <div className="grid grid-cols-3 gap-2">
             {businesses.map(({ value, icon: Icon }) => (
-              <ChipCard key={value} active={business === value} onClick={() => setBusiness(value)}>
+              <ChipCard key={value} active={businessList.includes(value)} onClick={() => toggleFromList(setBusinessList, value)}>
                 <Icon className="w-5 h-5 mb-1.5" />
                 <span className="text-xs font-bold">{value}</span>
               </ChipCard>
@@ -191,7 +191,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         <Section title="מטרת הקמפיין" subtitle="מה הכי חשוב לכם להשיג?">
           <div className="grid grid-cols-3 gap-2">
             {goals.map(({ value, icon: Icon }) => (
-              <ChipCard key={value} active={goal === value} onClick={() => setGoal(value)}>
+              <ChipCard key={value} active={goalList.includes(value)} onClick={() => toggleFromList(setGoalList, value)}>
                 <Icon className="w-5 h-5 mb-1.5" />
                 <span className="text-[11px] font-bold text-center leading-tight">{value}</span>
               </ChipCard>
