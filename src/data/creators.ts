@@ -7,6 +7,8 @@ export type Creator = {
   engagementRate: number; // percent
   location: string;
   price: number;
+  priceMin: number;
+  priceMax: number;
   avatar: string;
   gradient: string;
 };
