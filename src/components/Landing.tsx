@@ -29,56 +29,99 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       </header>
 
       {/* 1. Hero */}
-      <section className="relative bg-mesh px-5 pt-8 pb-10 text-center overflow-hidden">
-        <div className="absolute top-10 -right-10 w-44 h-44 rounded-full bg-brand opacity-30 blur-3xl animate-float pointer-events-none" />
-        <div className="absolute bottom-0 -left-10 w-44 h-44 rounded-full bg-brand opacity-20 blur-3xl animate-float pointer-events-none" style={{ animationDelay: "1.5s" }} />
+      <section className="relative px-5 pt-7 pb-12 overflow-hidden bg-foreground">
+        {/* Dramatic gradient background */}
+        <div
+          className="absolute inset-0 opacity-95 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle at 15% 0%, hsl(var(--brand-yellow) / 0.55), transparent 45%), radial-gradient(circle at 85% 10%, hsl(var(--brand-pink) / 0.7), transparent 50%), radial-gradient(circle at 50% 100%, hsl(var(--brand-purple) / 0.8), transparent 55%), linear-gradient(180deg, hsl(var(--brand-orange) / 0.35), hsl(var(--brand-purple) / 0.6))",
+          }}
+        />
+        <div className="absolute -top-20 -right-16 w-64 h-64 rounded-full opacity-40 blur-3xl animate-float pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute bottom-0 -left-20 w-64 h-64 rounded-full opacity-40 blur-3xl animate-float pointer-events-none" style={{ background: "hsl(var(--brand-purple))", animationDelay: "1.5s" }} />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(0 0% 0% / 0.35) 100%)" }} />
 
-        <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border shadow-soft mb-5 animate-fade-in-up">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
-            <span className="text-[11px] font-semibold text-muted-foreground">חכם · מהיר · מדויק</span>
+        <div className="relative z-10 text-primary-foreground">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur border border-white/25 mb-5 animate-fade-in-up">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            <span className="text-[11px] font-semibold text-white/95">פלטפורמת שיתופי פעולה חכמה</span>
           </div>
 
-          <h1 className="font-black tracking-tight mb-3 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-            <span className="block text-4xl sm:text-5xl text-foreground leading-[1.05]">מחברים בין</span>
-            <span className="block text-4xl sm:text-5xl leading-[1.05] mt-1">
-              <span className="text-foreground">עסקים ל</span>
-              <span className="text-brand">יוצרי תוכן</span>
-            </span>
+          <h1 className="font-black tracking-tight mb-3 animate-fade-in-up text-[34px] sm:text-5xl leading-[1.05]" style={{ animationDelay: "0.1s" }}>
+            <span className="block">3 יוצרי תוכן</span>
+            <span className="block">שמתאימים <span style={{ background: "linear-gradient(135deg, hsl(var(--brand-yellow)), hsl(var(--brand-pink)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>בדיוק</span></span>
+            <span className="block">לקמפיין שלך</span>
           </h1>
 
-          <p className="text-sm sm:text-base text-muted-foreground font-medium mb-6 animate-fade-in-up px-2 leading-relaxed" style={{ animationDelay: "0.2s" }}>
-            הדרך החכמה למצוא שיתופי פעולה שמתאימים לקמפיין שלך - תוך דקות.
+          <p className="text-[15px] text-white/85 font-medium mb-6 animate-fade-in-up leading-relaxed max-w-md" style={{ animationDelay: "0.2s" }}>
+            פותחים קמפיין - ומקבלים התאמות חכמות תוך פחות מדקה.
           </p>
 
-          <div className="flex flex-col gap-2.5 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+          {/* Product preview card */}
+          <div className="relative mb-7 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+            <div className="absolute -inset-1 rounded-[2rem] opacity-60 blur-xl" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }} />
+            <div className="relative bg-card text-foreground rounded-[1.75rem] p-4 shadow-cta-lg border border-white/40">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-xl bg-brand grid place-items-center">
+                    <Sparkles className="w-3.5 h-3.5 text-primary-foreground" />
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground leading-none">קמפיין פעיל</div>
+                    <div className="text-[12px] font-extrabold leading-tight mt-0.5">השקת סרום פנים</div>
+                  </div>
+                </div>
+                <span className="text-[9px] font-bold px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-600 ltr-num">3/3 התאמות</span>
+              </div>
+
+              <div className="space-y-2">
+                {[
+                  { name: "נועה לוי", meta: "Instagram · 124K", score: 94, gradient: "from-pink-400 to-purple-500", avatar: "נ" },
+                  { name: "איתי כהן", meta: "Instagram · 86K", score: 91, gradient: "from-orange-400 to-pink-500", avatar: "א" },
+                  { name: "שירה ברק", meta: "Instagram · 85K", score: 89, gradient: "from-yellow-400 to-orange-500", avatar: "ש" },
+                ].map((c) => (
+                  <div key={c.name} className="flex items-center gap-2.5 p-2 rounded-2xl bg-muted/50 border border-border/60">
+                    <div className={`shrink-0 w-9 h-9 rounded-full bg-gradient-to-br ${c.gradient} grid place-items-center text-primary-foreground font-black text-xs shadow-soft`}>
+                      {c.avatar}
+                    </div>
+                    <div className="flex-1 min-w-0 text-right">
+                      <div className="text-[12px] font-extrabold leading-tight">{c.name}</div>
+                      <div className="text-[10px] text-muted-foreground font-semibold ltr-num leading-tight mt-0.5">{c.meta}</div>
+                    </div>
+                    <div className="shrink-0 flex items-center gap-1.5">
+                      <div className="w-12 h-1.5 rounded-full bg-muted overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${c.score}%`, background: "linear-gradient(90deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }} />
+                      </div>
+                      <span className="text-[11px] font-black ltr-num" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>{c.score}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-border/60 flex items-center justify-between">
+                <span className="text-[10px] text-muted-foreground font-semibold">הותאם תוך</span>
+                <span className="text-[11px] font-black ltr-num text-brand">47 שניות</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2.5 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
             <button
               onClick={onStart}
-              className="w-full inline-flex items-center justify-center gap-2 py-4 text-base font-extrabold text-primary-foreground bg-brand rounded-full shadow-cta-lg tap-scale"
+              className="w-full inline-flex items-center justify-center gap-2 py-4 text-base font-extrabold text-foreground bg-card rounded-full shadow-cta-lg tap-scale"
             >
               <Megaphone className="w-5 h-5" />
               אני מפרסם
+              <ArrowLeft className="w-4 h-4" />
             </button>
             <button
               onClick={goCreator}
-              className="w-full inline-flex items-center justify-center gap-2 py-4 text-base font-extrabold text-foreground bg-card border-2 border-border rounded-full shadow-soft tap-scale"
+              className="w-full inline-flex items-center justify-center gap-2 py-3 text-sm font-bold text-white/90 tap-scale"
             >
-              <Heart className="w-5 h-5" style={{ color: "hsl(var(--brand-pink))" }} />
-              אני יוצר תוכן
+              <span>אני יוצר תוכן</span>
+              <span className="opacity-70">- הצטרפו לבטא</span>
             </button>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2 mt-7 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-            {[
-              { num: "60״", label: "שניות בלבד" },
-              { num: "3", label: "יוצרים נבחרים" },
-              { num: "92%", label: "דיוק התאמה" },
-            ].map((s) => (
-              <div key={s.label} className="bg-card/80 backdrop-blur rounded-2xl p-2.5 shadow-soft border border-border">
-                <div className="text-lg font-black text-brand ltr-num">{s.num}</div>
-                <div className="text-[10px] text-muted-foreground font-semibold mt-0.5">{s.label}</div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
