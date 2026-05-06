@@ -53,8 +53,12 @@ const Index = () => {
     setLoadingMore(true);
     try {
       const next = await matchAndSave(campaignId, campaign, seenIds);
-      setCreators(next);
-      setSeenIds((prev) => [...prev, ...next.map((c) => c.id)]);
+      if (next.length === 0) {
+        toast({ title: "אין יוצרים נוספים", description: "כבר הצגנו לכם את כל היוצרים הרלוונטיים לקמפיין הזה." });
+      } else {
+        setCreators(next);
+        setSeenIds((prev) => [...prev, ...next.map((c) => c.id)]);
+      }
     } catch (e: any) {
       toast({ title: "שגיאה", description: e?.message ?? "לא הצלחנו לטעון יוצרים נוספים", variant: "destructive" });
     } finally {
