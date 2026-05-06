@@ -30,7 +30,7 @@ export default function Results({ creators, onMore, onRestart, onNewCampaign, lo
             <span className="text-[11px] font-bold text-muted-foreground">ההתאמות מוכנות</span>
           </div>
           <h1 className="text-2xl font-black mb-1.5 leading-tight">
-            מצאנו לכם <span className="text-brand">3 יוצרים</span> שמתאימים בול
+            מצאנו לכם <span className="text-brand">{creators.length} {creators.length === 1 ? "יוצר" : "יוצרים"}</span> שמתאימים בול
           </h1>
           <p className="text-sm text-muted-foreground font-medium px-2">בחרו את מי שהכי מדבר אליכם - והקמפיין יוצא לדרך</p>
         </div>
