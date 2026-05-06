@@ -149,7 +149,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       </section>
 
       {/* 3. How it works */}
-      <section className="px-5 py-10 bg-brand-soft">
+      <section className="px-5 py-12 relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink) / 0.10) 0%, hsl(var(--brand-purple) / 0.12) 100%)" }}>
         <h2 className="text-3xl font-black text-center mb-2">איך זה עובד?</h2>
         <p className="text-center text-sm text-muted-foreground mb-8 font-medium">ארבעה צעדים פשוטים</p>
         <div className="space-y-3">
@@ -173,7 +173,10 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       </section>
 
       {/* 4. Features */}
-      <section className="px-5 py-10">
+      <section className="px-5 py-12 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-yellow) / 0.06) 0%, hsl(var(--brand-pink) / 0.10) 50%, hsl(var(--brand-purple) / 0.08) 100%)" }}>
+        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-30 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-purple))" }} />
+        <div className="relative">
         <div className="text-center mb-7">
           <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">למה Matchly</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">היתרונות שעושים את ההבדל</h2>
@@ -236,11 +239,14 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
             </div>
           ))}
         </div>
+        </div>
       </section>
 
+
       {/* 5. Match previews */}
-      <section className="px-5 pt-10 pb-6 bg-muted/30">
-        <div className="text-center mb-8">
+      <section className="px-5 pt-12 pb-8 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-purple) / 0.08) 0%, hsl(var(--brand-orange) / 0.06) 100%)" }}>
+        <div className="absolute top-1/3 -left-20 w-64 h-64 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-orange))" }} />
+        <div className="text-center mb-8 relative">
           <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">דוגמאות התאמה</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">ככה נראית התאמה אמיתית</h2>
           <p className="text-sm text-muted-foreground font-medium">תוצאות לדוגמה מקמפיינים שרצו ב-Matchly</p>
