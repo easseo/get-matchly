@@ -54,7 +54,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
           </h1>
 
           <p className="text-[15px] text-white/85 font-medium mb-6 animate-fade-in-up leading-relaxed max-w-md" style={{ animationDelay: "0.2s" }}>
-            פותחים קמפיין - ומקבלים התאמות חכמות תוך פחות מדקה.
+            פותחים קמפיין ומקבלים 3 התאמות חכמות תוך פחות מדקה.
           </p>
 
           {/* Product preview card */}
