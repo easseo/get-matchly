@@ -10,7 +10,7 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
   const goCreator = () => onCreatorJoin?.();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: "var(--gradient-page)" }}>
       {/* Header */}
       <header className="sticky top-0 z-30 backdrop-blur-lg bg-background/80 border-b border-border">
         <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
