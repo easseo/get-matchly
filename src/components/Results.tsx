@@ -132,10 +132,11 @@ function CreatorCard({ creator, index }: { creator: Creator; index: number }) {
             description: "ניצור איתך קשר ברגע שהיוצר יאשר את הקמפיין.",
           })
         }
-        className="w-full py-3.5 rounded-full font-bold text-sm bg-brand text-primary-foreground shadow-glow tap-scale flex items-center justify-center gap-2"
+        className="group relative w-full overflow-hidden rounded-full border border-white/20 bg-brand py-4 text-base font-black text-primary-foreground shadow-cta transition-all duration-150 ease-out hover:-translate-y-0.5 hover:shadow-cta-lg active:translate-y-0 active:scale-[0.92] active:shadow-none flex items-center justify-center gap-2"
       >
-        <Send className="w-4 h-4" />
-        שלח הצעה
+        <span className="absolute inset-0 bg-gradient-to-t from-black/10 to-white/10 pointer-events-none" />
+        <Send className="w-[18px] h-[18px] transition-transform duration-200 group-active:translate-x-1 group-active:-translate-y-0.5" />
+        <span className="relative">שלח הצעה</span>
       </button>
     </article>
   );

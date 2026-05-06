@@ -139,6 +139,12 @@
   .border-brand {
     border-image: var(--gradient-brand) 1;
   }
+  .shadow-cta {
+    box-shadow: 0 10px 30px -8px hsl(var(--brand-pink) / 0.55), 0 4px 12px -4px hsl(var(--brand-purple) / 0.35), inset 0 1px 0 0 hsl(0 0% 100% / 0.25);
+  }
+  .shadow-cta-lg {
+    box-shadow: 0 20px 50px -10px hsl(var(--brand-pink) / 0.6), 0 8px 20px -6px hsl(var(--brand-purple) / 0.4), inset 0 1px 0 0 hsl(0 0% 100% / 0.3);
+  }
   .shadow-glow {
     box-shadow: var(--shadow-glow);
   }
