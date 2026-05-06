@@ -129,21 +129,65 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
 
       {/* 4. Features */}
       <section className="px-5 py-10">
-        <h2 className="text-3xl font-black text-center mb-2">למה להשתמש ב־<span className="text-brand">Matchly</span>?</h2>
-        <p className="text-center text-sm text-muted-foreground mb-8 font-medium">היתרונות שעושים את ההבדל</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="text-center mb-7">
+          <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">למה Matchly</span>
+          <h2 className="text-3xl font-black mb-2 leading-tight">היתרונות שעושים את ההבדל</h2>
+          <p className="text-sm text-muted-foreground font-medium">טכנולוגיה שמייצרת התאמות מדויקות</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2.5">
           {[
-            { i: <Zap className="w-5 h-5" />, t: "חוסך זמן", d: "בלי לעבור ידנית על מאות פרופילים." },
-            { i: <Target className="w-5 h-5" />, t: "בחירה חכמה", d: "התאמות לפי תחום, תקציב, מיקום ופלטפורמה." },
-            { i: <Lightbulb className="w-5 h-5" />, t: "פחות ניחושים", d: "כל התאמה מגיעה עם הסבר ברור למה היא מתאימה." },
-            { i: <Users className="w-5 h-5" />, t: "מתאים גם ליוצרים", d: "יוצרים יכולים להצטרף לבטא ולקבל פניות רלוונטיות." },
+            {
+              i: <Zap className="w-[18px] h-[18px]" strokeWidth={2.5} />,
+              t: "חוסך זמן",
+              d: "בלי לעבור ידנית על מאות פרופילים.",
+              badge: "Fast Setup",
+              accent: "linear-gradient(135deg, hsl(var(--brand-orange)), hsl(var(--brand-pink)))",
+            },
+            {
+              i: <Sparkles className="w-[18px] h-[18px]" strokeWidth={2.5} />,
+              t: "בחירה חכמה",
+              d: "התאמות לפי תחום, תקציב, מיקום ופלטפורמה.",
+              badge: "AI Matching",
+              accent: "linear-gradient(135deg, hsl(var(--brand-purple)), hsl(var(--brand-pink)))",
+            },
+            {
+              i: <Target className="w-[18px] h-[18px]" strokeWidth={2.5} />,
+              t: "פחות ניחושים",
+              d: "כל התאמה עם ציון התאמה והסבר.",
+              badge: "Smart Scoring",
+              accent: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))",
+            },
+            {
+              i: <Users className="w-[18px] h-[18px]" strokeWidth={2.5} />,
+              t: "גם ליוצרים",
+              d: "יוצרים מצטרפים לבטא ומקבלים פניות.",
+              badge: "Creator Beta",
+              accent: "linear-gradient(135deg, hsl(var(--brand-yellow)), hsl(var(--brand-orange)))",
+            },
           ].map((f) => (
-            <div key={f.t} className="bg-card rounded-2xl p-4 shadow-soft border border-border">
-              <div className="w-10 h-10 rounded-xl bg-brand-soft flex items-center justify-center mb-3 text-foreground">
-                <span className="text-brand">{f.i}</span>
+            <div
+              key={f.t}
+              className="group relative bg-card rounded-2xl p-3.5 shadow-soft border border-border/70 tap-scale transition-all hover:shadow-card hover:-translate-y-0.5 hover:border-border overflow-hidden"
+            >
+              <div
+                className="absolute -top-8 -left-8 w-20 h-20 rounded-full opacity-10 blur-2xl pointer-events-none"
+                style={{ background: f.accent }}
+              />
+              <div className="relative">
+                <div className="flex items-center justify-between mb-2.5">
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-primary-foreground shadow-soft"
+                    style={{ background: f.accent }}
+                  >
+                    {f.i}
+                  </div>
+                  <span className="text-[9px] font-bold tracking-wider uppercase px-2 py-1 rounded-full bg-muted text-foreground/70 ltr-num">
+                    {f.badge}
+                  </span>
+                </div>
+                <h3 className="font-extrabold text-[15px] mb-1 text-foreground leading-tight">{f.t}</h3>
+                <p className="text-[11.5px] text-muted-foreground font-medium leading-snug">{f.d}</p>
               </div>
-              <h3 className="font-extrabold text-sm mb-1">{f.t}</h3>
-              <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">{f.d}</p>
             </div>
           ))}
         </div>
