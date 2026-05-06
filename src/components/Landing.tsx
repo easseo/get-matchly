@@ -115,8 +115,8 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
             { n: "4", t: "מתחילים שיתוף פעולה", d: "שולחים הצעה ליוצר ומתקדמים לקמפיין." },
           ].map((s) => (
             <div key={s.n} className="flex gap-4 bg-card rounded-3xl p-4 shadow-soft border border-border">
-              <div className="shrink-0 w-12 h-12 rounded-2xl bg-brand text-primary-foreground flex items-center justify-center font-black text-lg shadow-glow ltr-num">
-                {s.n}
+              <div className="shrink-0 w-12 h-12 rounded-2xl bg-brand text-primary-foreground grid place-items-center font-black text-lg shadow-glow">
+                <span className="leading-none tabular-nums" style={{ direction: "ltr" }}>{s.n}</span>
               </div>
               <div className="flex-1">
                 <h3 className="font-extrabold text-base mb-0.5">{s.t}</h3>
