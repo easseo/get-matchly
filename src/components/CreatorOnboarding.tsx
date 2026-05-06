@@ -7,7 +7,7 @@ interface CreatorOnboardingProps {
 }
 
 const niches = ["אופנה", "ביוטי", "כושר", "אוכל", "לייפסטייל", "טכנולוגיה", "נסיעות", "משפחה", "עיצוב", "ספורט"];
-const followerRanges = ["1K–10K", "10K–50K", "50K–100K", "100K–500K", "500K+"];
+const followerRanges = ["500–1,000", "1,000–2,500", "2,500–5,000", "5,000–10,000", "10,000–50,000", "100,000+"];
 const cities = ["תל אביב", "ירושלים", "חיפה", "באר שבע", "ראשון לציון", "פתח תקווה", "אשדוד", "הרצליה", "נתניה", "אחר"];
 
 export default function CreatorOnboarding({ onBack }: CreatorOnboardingProps) {
