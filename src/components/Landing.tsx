@@ -132,7 +132,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       {/* 4. Features */}
       <section className="px-5 py-10">
         <div className="text-center mb-7">
-          <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">למה Matchly</span>
+          <span className="inline-block text-[13px] font-extrabold tracking-[0.18em] uppercase text-brand mb-3">למה Matchly</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">היתרונות שעושים את ההבדל</h2>
           <p className="text-sm text-muted-foreground font-medium">טכנולוגיה שמייצרת התאמות מדויקות</p>
         </div>
@@ -198,7 +198,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       {/* 5. Match previews */}
       <section className="px-5 pt-10 pb-6 bg-muted/30">
         <div className="text-center mb-8">
-          <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">דוגמאות התאמה</span>
+          <span className="inline-block text-[13px] font-extrabold tracking-[0.18em] uppercase text-brand mb-3">דוגמאות התאמה</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">ככה נראית התאמה אמיתית</h2>
           <p className="text-sm text-muted-foreground font-medium">תוצאות לדוגמה מקמפיינים שרצו ב-Matchly</p>
         </div>
