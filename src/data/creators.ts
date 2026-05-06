@@ -196,11 +196,13 @@ export function matchCreators(
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
 
-  return scored.map((s, i) => ({
-    ...s.creator,
-    followersLabel: formatFollowers(s.creator.followers),
-    successProbability: toSuccessProbability(s.score, i),
-    reasons: s.reasons,
-    score: s.score,
-  }));
+  return scored
+    .map((s, i) => ({
+      ...s.creator,
+      followersLabel: formatFollowers(s.creator.followers),
+      successProbability: toSuccessProbability(s.score, i),
+      reasons: s.reasons,
+      score: s.score,
+    }))
+    .sort((a, b) => b.successProbability - a.successProbability);
 }
