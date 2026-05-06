@@ -101,33 +101,16 @@ export default function CreatorOnboarding({ onBack }: CreatorOnboardingProps) {
           />
         </Field>
 
-        <Field label="פרופיל Instagram או TikTok" icon={AtSign}>
-          <div className="flex items-center gap-2 w-full">
-            <div className="flex bg-muted rounded-full p-0.5 text-xs font-bold">
-              <button
-                type="button"
-                onClick={() => setPlatform("Instagram")}
-                className={`px-3 py-1.5 rounded-full transition-smooth ${platform === "Instagram" ? "bg-brand text-primary-foreground shadow-glow" : "text-muted-foreground"}`}
-              >
-                Instagram
-              </button>
-              <button
-                type="button"
-                onClick={() => setPlatform("TikTok")}
-                className={`px-3 py-1.5 rounded-full transition-smooth ${platform === "TikTok" ? "bg-brand text-primary-foreground shadow-glow" : "text-muted-foreground"}`}
-              >
-                TikTok
-              </button>
-            </div>
-            <input
-              value={handle}
-              onChange={(e) => setHandle(e.target.value.replace(/^@/, ""))}
-              maxLength={40}
-              placeholder="username@"
-              dir="ltr"
-              className="flex-1 bg-transparent outline-none font-semibold placeholder:text-muted-foreground/60 text-left ltr-num"
-            />
-          </div>
+        <Field label="פרופיל Instagram" icon={Instagram}>
+          <span className="text-muted-foreground font-semibold ltr-num">@</span>
+          <input
+            value={handle}
+            onChange={(e) => setHandle(e.target.value.replace(/^@/, ""))}
+            maxLength={40}
+            placeholder="username"
+            dir="ltr"
+            className="flex-1 bg-transparent outline-none font-semibold placeholder:text-muted-foreground/60 text-left ltr-num"
+          />
         </Field>
 
         <Section title="תחום התוכן" icon={Tag}>
