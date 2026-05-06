@@ -149,39 +149,109 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
         </div>
       </section>
 
-      {/* 5. Example campaigns */}
-      <section className="px-5 py-10 bg-mesh">
-        <h2 className="text-3xl font-black text-center mb-2">קמפיינים לדוגמה</h2>
-        <p className="text-center text-sm text-muted-foreground mb-8 font-medium">ככה נראים קמפיינים שרצים אצלנו</p>
-        <div className="space-y-3">
+      {/* 5. Match previews */}
+      <section className="px-5 py-12 bg-muted/30">
+        <div className="text-center mb-8">
+          <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">דוגמאות התאמה</span>
+          <h2 className="text-3xl font-black mb-2 leading-tight">ככה נראית התאמה אמיתית</h2>
+          <p className="text-sm text-muted-foreground font-medium">תוצאות לדוגמה מקמפיינים שרצו ב-Matchly</p>
+        </div>
+
+        <div className="space-y-4">
           {[
-            { niche: "ביוטי", title: "השקת מוצר ביוטי", budget: "₪1,500 - ₪3,000", platform: "Instagram", color: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" },
-            { niche: "מסעדנות", title: "קמפיין למסעדה מקומית", budget: "₪800 - ₪1,800", platform: "Instagram", color: "linear-gradient(135deg, hsl(var(--brand-orange)), hsl(var(--brand-pink)))" },
-            { niche: "כושר", title: "קידום אפליקציית כושר", budget: "₪2,000 - ₪4,000", platform: "Instagram", color: "linear-gradient(135deg, hsl(var(--brand-yellow)), hsl(var(--brand-orange)))" },
-          ].map((c) => (
-            <div key={c.title} className="bg-card rounded-3xl overflow-hidden shadow-card border border-border">
-              <div className="h-24 relative" style={{ background: c.color }}>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Sparkles className="w-10 h-10 text-white/70" />
+            {
+              campaign: "השקת סרום פנים חדש",
+              niche: "ביוטי",
+              creator: "נועה לוי",
+              avatar: "נ",
+              gradient: "from-pink-400 to-purple-500",
+              accent: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))",
+              score: 94,
+              platform: "Instagram",
+              budget: "₪1,500 - ₪3,000",
+              reasons: ["קהל נשי 25-34 בישראל", "תוכן ביוטי עם 6.2% engagement", "ניסיון עם 12 מותגי קוסמטיקה"],
+            },
+            {
+              campaign: "פתיחת מסעדה בתל אביב",
+              niche: "מסעדנות",
+              creator: "איתי כהן",
+              avatar: "א",
+              gradient: "from-orange-400 to-pink-500",
+              accent: "linear-gradient(135deg, hsl(var(--brand-orange)), hsl(var(--brand-pink)))",
+              score: 91,
+              platform: "Instagram",
+              budget: "₪800 - ₪1,800",
+              reasons: ["פוד בלוגר מתל אביב", "קהל מקומי רלוונטי", "שיתופי פעולה קודמים עם מסעדות"],
+            },
+            {
+              campaign: "קידום אפליקציית כושר",
+              niche: "כושר",
+              creator: "שירה ברק",
+              avatar: "ש",
+              gradient: "from-yellow-400 to-orange-500",
+              accent: "linear-gradient(135deg, hsl(var(--brand-yellow)), hsl(var(--brand-orange)))",
+              score: 89,
+              platform: "Instagram",
+              budget: "₪2,000 - ₪4,000",
+              reasons: ["מאמנת כושר עם 85K עוקבים", "engagement גבוה בסרטוני אימון", "התאמה לקהל היעד 22-40"],
+            },
+          ].map((m) => (
+            <article key={m.campaign} className="bg-card rounded-3xl border border-border shadow-soft overflow-hidden">
+              {/* Top: campaign */}
+              <div className="px-5 pt-5 pb-4 border-b border-border/60">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground">קמפיין</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-muted text-foreground/70">{m.niche}</span>
                 </div>
-                <span className="absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full bg-card/95 text-foreground">
-                  {c.niche}
-                </span>
+                <h3 className="font-extrabold text-base leading-tight">{m.campaign}</h3>
               </div>
-              <div className="p-4">
-                <h3 className="font-extrabold text-base mb-2">{c.title}</h3>
-                <div className="flex items-center justify-between mb-3 text-[11px] text-muted-foreground font-semibold">
-                  <span className="ltr-num">{c.budget}</span>
-                  <span>{c.platform}</span>
+
+              {/* Middle: creator + score */}
+              <div className="px-5 py-4 flex items-center gap-3">
+                <div
+                  className={`shrink-0 w-14 h-14 rounded-full bg-gradient-to-br ${m.gradient} flex items-center justify-center text-primary-foreground font-black text-lg shadow-soft`}
+                >
+                  {m.avatar}
                 </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground mb-0.5">היוצר המומלץ</div>
+                  <div className="font-extrabold text-base leading-tight">{m.creator}</div>
+                  <div className="text-[11px] text-muted-foreground font-semibold mt-0.5 ltr-num">{m.platform} · {m.budget}</div>
+                </div>
+                <div className="shrink-0 text-center">
+                  <div
+                    className="text-2xl font-black ltr-num leading-none"
+                    style={{ background: m.accent, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+                  >
+                    {m.score}%
+                  </div>
+                  <div className="text-[9px] font-bold text-muted-foreground tracking-wider uppercase mt-0.5">התאמה</div>
+                </div>
+              </div>
+
+              {/* Reasons */}
+              <div className="px-5 pb-4">
+                <ul className="space-y-1.5">
+                  {m.reasons.map((r) => (
+                    <li key={r} className="flex items-start gap-2 text-[12px]">
+                      <Check className="w-3.5 h-3.5 mt-0.5 shrink-0 text-brand" />
+                      <span className="text-foreground/80 font-medium leading-snug">{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* CTA */}
+              <div className="px-5 pb-5">
                 <button
                   onClick={onStart}
-                  className="w-full py-2.5 rounded-full bg-brand-soft text-foreground font-bold text-xs tap-scale border border-border"
+                  className="w-full py-3 rounded-full bg-foreground text-background font-extrabold text-sm tap-scale inline-flex items-center justify-center gap-2"
                 >
-                  צפה בפרטים
+                  פתחו קמפיין דומה
+                  <ArrowLeft className="w-4 h-4" />
                 </button>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </section>
