@@ -1,5 +1,12 @@
 import { useState, useMemo } from "react";
-import { ArrowLeft, Utensils, Shirt, Dumbbell, Sparkles as SparkleIcon, MoreHorizontal, Users, Eye, ShoppingBag, MapPin, Instagram, Film, Image as ImageIcon, Clock, Check } from "lucide-react";
+import { format } from "date-fns";
+import { he } from "date-fns/locale";
+import { ArrowLeft, Utensils, Shirt, Dumbbell, Sparkles as SparkleIcon, MoreHorizontal, Users, Eye, ShoppingBag, MapPin, Instagram, Film, Image as ImageIcon, Clock, Check, Minus, Plus, CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+
+export type ContentSelection = { type: string; qty: number };
 
 export type CampaignData = {
   business: string;
@@ -8,6 +15,8 @@ export type CampaignData = {
   location: string;
   platform: string;
   contentType: string;
+  contents: ContentSelection[];
+  deadline?: string;
 };
 
 interface CampaignFormProps {
@@ -30,22 +39,22 @@ const goals = [
 ];
 
 const contentTypes = [
-  { value: "רילס", icon: Film },
-  { value: "סטורי", icon: Clock },
-  { value: "פוסט", icon: ImageIcon },
+  { value: "רילס", plural: "רילסים", icon: Film },
+  { value: "סטורי", plural: "סטוריז", icon: Clock },
+  { value: "פוסט", plural: "פוסטים", icon: ImageIcon },
 ];
 
 const cities = ["כל הארץ", "תל אביב", "ירושלים", "חיפה", "באר שבע", "ראשון לציון", "פתח תקווה", "אשדוד", "הרצליה", "נתניה"];
 
 const MIN_BUDGET = 100;
 const MAX_BUDGET = 10000;
+const MAX_QTY = 20;
 
 function formatILS(n: number) {
   return `₪${n.toLocaleString("en-US")}`;
 }
 
 function getBudgetRange(value: number): [number, number] {
-  // Realistic creator collab ranges, snapped to common tiers
   const tiers: Array<[number, number, number]> = [
     [100, 100, 200],
     [200, 200, 400],
@@ -70,25 +79,66 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
   const [goal, setGoal] = useState("");
   const [budget, setBudget] = useState(2000);
   const [location, setLocation] = useState("כל הארץ");
-  const [contentType, setContentType] = useState("");
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [deadline, setDeadline] = useState<Date | undefined>(undefined);
 
-  const canSubmit = business && goal && contentType;
+  const selectedContents = useMemo(
+    () => Object.entries(quantities).filter(([, q]) => q > 0),
+    [quantities]
+  );
+  const hasContent = selectedContents.length > 0;
+  const canSubmit = business && goal && hasContent && deadline;
 
-  // Progress: 4 steps (business, goal, budget=always, content). Budget always counts.
   const completedSteps = useMemo(() => {
-    let n = 1; // budget always set
+    let n = 1; // budget
     if (business) n++;
     if (goal) n++;
-    if (contentType) n++;
+    if (hasContent) n++;
+    if (deadline) n++;
     return n;
-  }, [business, goal, contentType]);
+  }, [business, goal, hasContent, deadline]);
 
+  const TOTAL_STEPS = 5;
   const [low, high] = getBudgetRange(budget);
   const sliderPct = ((budget - MIN_BUDGET) / (MAX_BUDGET - MIN_BUDGET)) * 100;
 
+  const toggleContent = (value: string) => {
+    setQuantities((q) => {
+      const next = { ...q };
+      if (next[value] && next[value] > 0) {
+        delete next[value];
+      } else {
+        next[value] = 1;
+      }
+      return next;
+    });
+  };
+
+  const setQty = (value: string, delta: number) => {
+    setQuantities((q) => {
+      const cur = q[value] ?? 0;
+      const nextVal = Math.max(0, Math.min(MAX_QTY, cur + delta));
+      const next = { ...q };
+      if (nextVal === 0) delete next[value];
+      else next[value] = nextVal;
+      return next;
+    });
+  };
+
   const handleSubmit = () => {
     if (!canSubmit) return;
-    onSubmit({ business, goal, budget, location, platform: "Instagram", contentType });
+    const contents: ContentSelection[] = selectedContents.map(([type, qty]) => ({ type, qty }));
+    const contentTypeStr = contents.map((c) => `${c.qty} ${pluralize(c.type)}`).join(" + ");
+    onSubmit({
+      business,
+      goal,
+      budget,
+      location,
+      platform: "Instagram",
+      contentType: contentTypeStr,
+      contents,
+      deadline: deadline ? format(deadline, "yyyy-MM-dd") : undefined,
+    });
   };
 
   return (
@@ -101,20 +151,19 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
           <span className="font-bold text-brand">קמפיין חדש</span>
           <div className="w-9" />
         </div>
-        {/* Progress */}
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] font-bold text-muted-foreground ltr-num" dir="rtl">
-              שלב {completedSteps} מתוך 4
+              שלב {completedSteps} מתוך {TOTAL_STEPS}
             </span>
             <span className="text-[11px] font-semibold text-muted-foreground ltr-num">
-              {Math.round((completedSteps / 4) * 100)}%
+              {Math.round((completedSteps / TOTAL_STEPS) * 100)}%
             </span>
           </div>
           <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
             <div
               className="h-full bg-brand rounded-full transition-all duration-500"
-              style={{ width: `${(completedSteps / 4) * 100}%` }}
+              style={{ width: `${(completedSteps / TOTAL_STEPS) * 100}%` }}
             />
           </div>
         </div>
@@ -162,7 +211,6 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
                 ליוצר · בחירה: {formatILS(budget)}
               </p>
 
-              {/* Custom slider - RTL */}
               <div className="relative h-10 flex items-center" dir="rtl">
                 <div className="absolute inset-x-0 h-2 rounded-full bg-muted overflow-hidden">
                   <div
@@ -215,16 +263,135 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
           </div>
         </Section>
 
-        {/* Content type */}
-        <Section title="פורמט התוכן" subtitle="איזה סוג תוכן שיפיקו לכם?">
-          <div className="grid grid-cols-3 gap-2">
-            {contentTypes.map(({ value, icon: Icon }) => (
-              <ChipCard key={value} active={contentType === value} onClick={() => setContentType(value)}>
-                <Icon className="w-5 h-5 mb-1.5" />
-                <span className="text-xs font-bold">{value}</span>
-              </ChipCard>
-            ))}
+        {/* Content type - multi select with quantity */}
+        <Section title="פורמט התוכן" subtitle="בחרו סוגים וכמויות">
+          <div className="space-y-2">
+            {contentTypes.map(({ value, plural, icon: Icon }) => {
+              const qty = quantities[value] ?? 0;
+              const active = qty > 0;
+              return (
+                <div
+                  key={value}
+                  className={cn(
+                    "relative rounded-2xl transition-bounce overflow-hidden",
+                    active ? "shadow-cta p-0.5" : ""
+                  )}
+                  style={active ? { background: "var(--gradient-brand)" } : undefined}
+                >
+                  <div className={cn(
+                    "rounded-[14px] bg-card border-2 transition-bounce",
+                    active ? "border-transparent" : "border-border"
+                  )}>
+                    <button
+                      onClick={() => toggleContent(value)}
+                      className="w-full flex items-center gap-3 p-3 tap-scale text-right"
+                    >
+                      <div
+                        className={cn(
+                          "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
+                          active ? "text-primary-foreground" : "bg-muted text-foreground"
+                        )}
+                        style={active ? { background: "var(--gradient-brand)" } : undefined}
+                      >
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-bold text-sm">{value}</div>
+                        <div className="text-[11px] text-muted-foreground font-medium">
+                          {active ? `${qty} ${plural}` : "להוספה"}
+                        </div>
+                      </div>
+                      {active ? (
+                        <span className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "var(--gradient-brand)" }}>
+                          <Check className="w-3.5 h-3.5 text-primary-foreground" strokeWidth={4} />
+                        </span>
+                      ) : (
+                        <span className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
+                          <Plus className="w-3.5 h-3.5 text-muted-foreground" strokeWidth={3} />
+                        </span>
+                      )}
+                    </button>
+
+                    {active && (
+                      <div className="px-3 pb-3 -mt-1 animate-fade-in-up">
+                        <div className="flex items-center justify-between bg-muted/60 rounded-xl px-2 py-1.5">
+                          <span className="text-[11px] font-bold text-muted-foreground pr-2">כמות</span>
+                          <div className="flex items-center gap-2" dir="ltr">
+                            <button
+                              onClick={() => setQty(value, -1)}
+                              className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center tap-scale disabled:opacity-40"
+                              disabled={qty <= 1}
+                              aria-label="הפחת"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </button>
+                            <span className="min-w-[2ch] text-center font-black text-base ltr-num">{qty}</span>
+                            <button
+                              onClick={() => setQty(value, +1)}
+                              className="w-8 h-8 rounded-full text-primary-foreground flex items-center justify-center tap-scale disabled:opacity-40"
+                              style={{ background: "var(--gradient-brand)" }}
+                              disabled={qty >= MAX_QTY}
+                              aria-label="הוסף"
+                            >
+                              <Plus className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
+        </Section>
+
+        {/* Deadline */}
+        <Section title="דד ליין לקמפיין" subtitle="מתי תרצו שהתוכן יעלה?">
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className={cn(
+                  "w-full flex items-center gap-3 bg-card border-2 rounded-2xl py-3.5 px-4 font-semibold shadow-soft tap-scale transition-bounce",
+                  deadline ? "border-transparent shadow-cta" : "border-border hover:border-primary/30"
+                )}
+                style={deadline ? { backgroundImage: "var(--gradient-brand-soft)" } : undefined}
+              >
+                <span
+                  className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-primary-foreground"
+                  style={{ background: "var(--gradient-brand)" }}
+                >
+                  <CalendarIcon className="w-5 h-5" />
+                </span>
+                <div className="flex-1 text-right">
+                  {deadline ? (
+                    <>
+                      <div className="text-[11px] font-bold text-muted-foreground">תאריך נבחר</div>
+                      <div className="font-bold text-sm">
+                        {format(deadline, "EEEE, d בMMMM yyyy", { locale: he })}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="font-bold text-sm">בחרו תאריך</div>
+                      <div className="text-[11px] text-muted-foreground font-medium">בחרו את המועד הרצוי לעלייה</div>
+                    </>
+                  )}
+                </div>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 rounded-2xl shadow-card border-border" align="center">
+              <Calendar
+                mode="single"
+                selected={deadline}
+                onSelect={setDeadline}
+                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                locale={he}
+                initialFocus
+                className={cn("p-3 pointer-events-auto")}
+              />
+            </PopoverContent>
+          </Popover>
         </Section>
       </main>
 
@@ -267,6 +434,11 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
       `}</style>
     </div>
   );
+}
+
+function pluralize(type: string) {
+  const t = contentTypes.find((c) => c.value === type);
+  return t?.plural ?? type;
 }
 
 function Section({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
