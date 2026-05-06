@@ -92,9 +92,26 @@ function scoreCreator(c: Creator, campaign: CampaignInput) {
   // Niche match
   const targets = businessToNiches[campaign.business] ?? [];
   const overlap = c.niches.filter((n) => targets.includes(n)).length;
+  const nicheLabels: Record<string, string> = {
+    "מסעדה": "מסעדנות",
+    "אוכל": "קולינריה",
+    "אופנה": "אופנה",
+    "ביוטי": "ביוטי",
+    "כושר": "כושר",
+    "ספורט": "ספורט",
+    "בריאות": "בריאות",
+    "לייפסטייל": "לייפסטייל",
+    "טכנולוגיה": "טכנולוגיה",
+    "משפחה": "משפחה והורות",
+    "הורות": "הורות",
+    "נסיעות": "טיולים ונסיעות",
+    "עיצוב": "עיצוב",
+    "גאדג'טים": "גאדג'טים",
+  };
   if (overlap > 0) {
     score += overlap === c.niches.length ? 40 : 30;
-    reasons.push(`מומחה.ית בתחום ה${c.niches[0]} — בדיוק הקהל שלכם`);
+    const label = nicheLabels[c.niches[0]] ?? c.niches[0];
+    reasons.push(`מומחה.ית בתחום ה${label} — בדיוק הקהל שלכם`);
   } else {
     score += 8;
   }
