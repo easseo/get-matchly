@@ -149,8 +149,10 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
       </section>
 
       {/* How it works */}
-      <section id="how" className="py-20 bg-brand-soft">
-        <div className="max-w-7xl mx-auto px-8">
+      <section id="how" className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink) / 0.10) 0%, hsl(var(--brand-purple) / 0.12) 100%)" }}>
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-purple))" }} />
+        <div className="max-w-7xl mx-auto px-8 relative">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black mb-3">איך זה עובד?</h2>
             <p className="text-base text-muted-foreground font-medium">ארבעה צעדים פשוטים מקמפיין להתאמה</p>
