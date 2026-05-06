@@ -29,8 +29,6 @@ const Index = () => {
         business: data.business,
         goal: data.goal,
         budget: data.budget,
-        budgetMin: data.budgetMin,
-        budgetMax: data.budgetMax,
         platform: data.platform,
         contents: data.contents,
         deadline: data.deadline,

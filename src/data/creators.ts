@@ -7,8 +7,6 @@ export type Creator = {
   engagementRate: number; // percent
   location: string;
   price: number;
-  priceMin?: number;
-  priceMax?: number;
   avatar: string;
   gradient: string;
 };
@@ -74,8 +72,6 @@ export type CampaignInput = {
   business: string;
   goal: string;
   budget: number;
-  budgetMin?: number;
-  budgetMax?: number;
   location: string;
   platform: string;
   contentType: string;
