@@ -10,7 +10,7 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
   const goCreator = () => onCreatorJoin?.();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: "var(--gradient-page)" }}>
       {/* Header */}
       <header className="sticky top-0 z-30 backdrop-blur-lg bg-background/80 border-b border-border">
         <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
@@ -149,8 +149,10 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
       </section>
 
       {/* How it works */}
-      <section id="how" className="py-20 bg-brand-soft">
-        <div className="max-w-7xl mx-auto px-8">
+      <section id="how" className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink) / 0.10) 0%, hsl(var(--brand-purple) / 0.12) 100%)" }}>
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-purple))" }} />
+        <div className="max-w-7xl mx-auto px-8 relative">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black mb-3">איך זה עובד?</h2>
             <p className="text-base text-muted-foreground font-medium">ארבעה צעדים פשוטים מקמפיין להתאמה</p>
@@ -175,8 +177,10 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
       </section>
 
       {/* Features */}
-      <section id="features" className="py-20">
-        <div className="max-w-7xl mx-auto px-8">
+      <section id="features" className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-yellow) / 0.06) 0%, hsl(var(--brand-pink) / 0.10) 50%, hsl(var(--brand-purple) / 0.08) 100%)" }}>
+        <div className="absolute top-1/4 -right-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-orange))" }} />
+        <div className="absolute bottom-1/4 -left-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="max-w-7xl mx-auto px-8 relative">
           <div className="text-center mb-12">
             <span className="inline-block text-xs font-bold tracking-wider uppercase text-brand mb-2">למה Matchly</span>
             <h2 className="text-4xl font-black mb-3 leading-tight">היתרונות שעושים את ההבדל</h2>
@@ -210,8 +214,10 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
       </section>
 
       {/* Match examples */}
-      <section id="examples" className="py-20 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-8">
+      <section id="examples" className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-purple) / 0.10) 0%, hsl(var(--brand-orange) / 0.06) 100%)" }}>
+        <div className="absolute top-1/3 -left-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-orange))" }} />
+        <div className="absolute bottom-1/3 -right-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-purple))" }} />
+        <div className="max-w-7xl mx-auto px-8 relative">
           <div className="text-center mb-12">
             <span className="inline-block text-xs font-bold tracking-wider uppercase text-brand mb-2">דוגמאות התאמה</span>
             <h2 className="text-4xl font-black mb-3 leading-tight">ככה נראית התאמה אמיתית</h2>
