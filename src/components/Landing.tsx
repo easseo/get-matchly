@@ -66,12 +66,15 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
         </div>
 
         {onCreatorJoin && (
-          <div className="mt-auto pt-6 safe-bottom animate-fade-in-up">
+          <div className="mt-auto pt-8 safe-bottom animate-fade-in-up">
             <button
               onClick={onCreatorJoin}
-              className="text-sm font-bold text-brand tap-scale"
+              className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-card border-2 border-border hover:border-transparent text-base font-extrabold text-foreground shadow-soft tap-scale transition-smooth"
             >
-              יוצר.ת תוכן? הצטרפו לבטא ←
+              <Sparkles className="w-4 h-4" style={{ color: "hsl(var(--brand-pink))" }} />
+              <span>יוצר.ת תוכן?</span>
+              <span className="text-brand">הצטרפו לבטא</span>
+              <span className="text-brand">←</span>
             </button>
           </div>
         )}
