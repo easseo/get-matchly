@@ -21,8 +21,27 @@ const businessToNiches: Record<string, string[]> = {
   "אופנה": ["אופנה", "לייפסטייל"],
   "כושר": ["כושר", "ספורט", "בריאות"],
   "ביוטי": ["ביוטי", "אופנה"],
-  "אחר": ["לייפסטייל"],
+  "אחר": [],
 };
+
+function splitMulti(s: string): string[] {
+  return (s || "").split(",").map((x) => x.trim()).filter(Boolean);
+}
+
+function targetNichesFor(business: string): string[] {
+  const items = splitMulti(business);
+  const set = new Set<string>();
+  for (const b of items) {
+    const list = businessToNiches[b] ?? [];
+    list.forEach((n) => set.add(n));
+  }
+  return Array.from(set);
+}
+
+function goalsInclude(goal: string, ...candidates: string[]): boolean {
+  const items = splitMulti(goal);
+  return items.some((g) => candidates.includes(g));
+}
 
 const nicheLabels: Record<string, string> = {
   "מסעדה": "מסעדנות", "אוכל": "קולינריה", "אופנה": "אופנה", "ביוטי": "ביוטי",
