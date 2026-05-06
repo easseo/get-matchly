@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 30 30% 99%;
+    --background: 30 40% 97.5%;
     --foreground: 280 25% 12%;
 
     --card: 0 0% 100%;
@@ -51,8 +51,11 @@
 
     /* Shadows */
     --shadow-glow: 0 20px 60px -15px hsl(var(--brand-pink) / 0.45);
-    --shadow-card: 0 10px 40px -12px hsl(var(--brand-purple) / 0.18);
-    --shadow-soft: 0 4px 20px -6px hsl(280 30% 30% / 0.08);
+    --shadow-card: 0 12px 40px -12px hsl(var(--brand-purple) / 0.22), 0 2px 8px -2px hsl(var(--brand-pink) / 0.08);
+    --shadow-soft: 0 6px 24px -8px hsl(var(--brand-purple) / 0.12), 0 2px 6px -2px hsl(280 30% 30% / 0.05);
+
+    /* Warm ambient page background */
+    --gradient-page: linear-gradient(180deg, hsl(35 50% 97%) 0%, hsl(330 40% 97%) 45%, hsl(280 35% 96%) 100%);
 
     /* Transitions */
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -95,10 +98,41 @@
 
 @layer components {
   .mobile-shell {
-    @apply mx-auto bg-background min-h-screen w-full relative;
+    @apply mx-auto min-h-screen w-full relative;
     max-width: 480px;
+    background: var(--gradient-page);
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
+  }
+  .mobile-bg {
+    background: var(--gradient-page);
+  }
+  /* Warm ambient blobs behind content for depth */
+  .mobile-shell::before,
+  .mobile-shell::after {
+    content: "";
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border-radius: 9999px;
+    filter: blur(80px);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .mobile-shell::before {
+    top: 20%;
+    right: -120px;
+    background: hsl(var(--brand-pink) / 0.45);
+  }
+  .mobile-shell::after {
+    bottom: 10%;
+    left: -120px;
+    background: hsl(var(--brand-purple) / 0.4);
+  }
+  .mobile-shell > * {
+    position: relative;
+    z-index: 1;
   }
   @media (min-width: 768px) {
     .mobile-shell {
