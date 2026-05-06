@@ -27,12 +27,14 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
           <span className="text-xs font-semibold text-muted-foreground">חכם · מהיר · מדויק</span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl font-black leading-[1.1] mb-5 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-          <span className="text-brand">3 יוצרי תוכן</span>
-          <br />
-          <span className="text-foreground">שמתאימים בול</span>
-          <br />
-          <span className="text-foreground">לעסק שלך</span>
+        <h1 className="font-black tracking-tight mb-5 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
+          <span className="block text-5xl sm:text-6xl leading-[0.95]">
+            <span className="text-brand ltr-num">3</span>{" "}
+            <span className="text-foreground">יוצרי תוכן</span>
+          </span>
+          <span className="block text-2xl sm:text-3xl text-foreground/80 font-extrabold leading-tight mt-2">
+            שמתאימים בול לעסק שלך
+          </span>
         </h1>
 
         <p className="text-base sm:text-lg text-muted-foreground font-medium mb-10 animate-fade-in-up px-2" style={{ animationDelay: "0.2s" }}>
