@@ -4,6 +4,7 @@ import { he } from "date-fns/locale";
 import { ArrowLeft, Utensils, Shirt, Dumbbell, Sparkles as SparkleIcon, MoreHorizontal, Users, Eye, ShoppingBag, MapPin, Instagram, Film, Image as ImageIcon, Clock, Check, Minus, Plus, CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 export type ContentSelection = { type: string; qty: number };
@@ -245,16 +246,15 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
 
         {/* Location */}
         <Section title="קהל יעד" subtitle="איפה נמצאים הלקוחות שלכם?">
-          <div className="relative">
-            <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
-            <select
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="w-full bg-card border border-border rounded-2xl py-3.5 pr-12 pl-4 font-semibold shadow-soft appearance-none cursor-pointer focus:ring-2 focus:ring-primary outline-none"
-            >
-              {cities.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </div>
+          <Select value={location} onValueChange={setLocation}>
+            <SelectTrigger className="w-full bg-card border border-border rounded-2xl py-3.5 pr-12 pl-4 font-semibold shadow-soft h-auto relative">
+              <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="z-50 bg-card">
+              {cities.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+            </SelectContent>
+          </Select>
         </Section>
 
         {/* Platform */}
