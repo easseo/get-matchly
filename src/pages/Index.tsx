@@ -81,7 +81,7 @@ const Index = () => {
   }
 
   return (
-    <div className="md:min-h-screen md:flex md:items-start md:justify-center md:py-6 mobile-bg">
+    <div className={isMobile ? "mobile-bg md:min-h-screen md:flex md:items-start md:justify-center md:py-6" : "mobile-bg min-h-screen"}>
       <div className={isMobile ? "mobile-shell" : "desktop-shell"}>{renderScreen()}</div>
     </div>
   );
