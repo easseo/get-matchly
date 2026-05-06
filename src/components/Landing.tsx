@@ -93,7 +93,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
                     </div>
                     <div className="shrink-0 flex items-center gap-1.5">
                       <div className="w-12 h-1.5 rounded-full bg-muted overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${c.score}%`, background: "linear-gradient(90deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }} />
+                        <div className="h-full rounded-full transition-all" style={{ width: `${Math.max(8, Math.min(100, ((c.score - 85) / 15) * 100))}%`, background: "linear-gradient(90deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }} />
                       </div>
                       <span className="text-[11px] font-black ltr-num" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>{c.score}%</span>
                     </div>
