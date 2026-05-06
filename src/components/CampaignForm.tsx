@@ -141,6 +141,8 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
       business,
       goal,
       budget,
+      budgetMin: low,
+      budgetMax: high,
       location,
       platform: "Instagram",
       contentType: contentTypeStr,
