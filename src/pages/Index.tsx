@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Landing from "@/components/Landing";
+import DesktopLanding from "@/components/DesktopLanding";
+import { useIsMobile } from "@/hooks/use-mobile";
 import CampaignForm, { type CampaignData } from "@/components/CampaignForm";
 import Loading from "@/components/Loading";
 import Results from "@/components/Results";
