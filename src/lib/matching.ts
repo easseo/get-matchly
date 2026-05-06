@@ -129,8 +129,10 @@ export async function matchAndSave(
   limit = 3
 ): Promise<ScoredCreator[]> {
   const creators = await fetchCreators();
+  const targets = businessToNiches[campaign.business] ?? [];
   const scored = creators
     .filter((c) => !excludeIds.includes(c.id))
+    .filter((c) => c.niches.some((n) => targets.includes(n)))
     .map((c) => ({ creator: c, ...scoreCreator(c, campaign) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
@@ -143,6 +145,7 @@ export async function matchAndSave(
       reasons: s.reasons,
       score: s.score,
     }))
+    .filter((c) => c.successProbability >= 70)
     .sort((a, b) => b.successProbability - a.successProbability);
 
   if (result.length > 0) {
