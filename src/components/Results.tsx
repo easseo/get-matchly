@@ -1,5 +1,6 @@
 import { Instagram, Users, TrendingUp, Check, Send, RefreshCw } from "lucide-react";
 import type { Creator } from "@/data/creators";
+import { toast } from "@/hooks/use-toast";
 
 interface ResultsProps {
   creators: Creator[];
@@ -127,7 +128,15 @@ function CreatorCard({ creator, index }: { creator: Creator; index: number }) {
         </ul>
       </div>
 
-      <button className="w-full py-3.5 rounded-full font-bold bg-brand text-primary-foreground shadow-glow hover:scale-[1.02] transition-bounce flex items-center justify-center gap-2">
+      <button
+        onClick={() =>
+          toast({
+            title: `ההצעה נשלחה ל-${creator.name} 🎉`,
+            description: "ניצור איתך קשר ברגע שהיוצר יאשר את הקמפיין.",
+          })
+        }
+        className="w-full py-3.5 rounded-full font-bold bg-brand text-primary-foreground shadow-glow hover:scale-[1.02] transition-bounce flex items-center justify-center gap-2"
+      >
         <Send className="w-4 h-4" />
         שלח הצעה
       </button>
