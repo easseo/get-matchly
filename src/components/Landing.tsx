@@ -1,5 +1,5 @@
 import { Sparkles, Megaphone, Users, Zap, Target, Lightbulb, Heart, ArrowLeft, Check } from "lucide-react";
-import matchlyLogo from "@/assets/matchly-logo.png";
+import matchlyIcon from "@/assets/matchly-icon.png";
 
 interface LandingProps {
   onStart: () => void;
@@ -13,9 +13,10 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
     <div className="min-h-screen bg-background relative overflow-hidden flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-30 backdrop-blur-lg bg-background/80 border-b border-border">
-        <div className="px-5 py-3.5 flex items-center justify-between">
-          <div className="flex items-center">
-            <img src={matchlyLogo} alt="Matchly" className="h-9 w-auto object-contain" />
+        <div className="px-5 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img src={matchlyIcon} alt="" className="h-7 w-7 object-contain" />
+            <span className="text-[17px] font-extrabold tracking-tight text-foreground">Matchly</span>
           </div>
           <button
             onClick={goCreator}
@@ -371,8 +372,9 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
 
       {/* Footer */}
       <footer className="px-5 py-6 text-center border-t border-border">
-        <div className="flex items-center justify-center mb-1">
-          <img src={matchlyLogo} alt="Matchly" className="h-7 w-auto object-contain" />
+        <div className="flex items-center justify-center gap-1.5 mb-1">
+          <img src={matchlyIcon} alt="" className="h-5 w-5 object-contain" loading="lazy" />
+          <span className="text-sm font-extrabold tracking-tight text-foreground">Matchly</span>
         </div>
         <p className="text-[10px] text-muted-foreground font-medium">חכם · מהיר · מדויק</p>
       </footer>
