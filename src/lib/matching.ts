@@ -57,13 +57,13 @@ function goalsInclude(goal: string, ...candidates: string[]): boolean {
 type ScoreBreakdown = {
   niche: number;
   budget: number;
-  platform: number;
   location: number;
   engagement: number;
+  followers: number;
   total: number;
   reasons: string[];
   matchType: "exact" | "related" | "none";
-  budgetFit: "in" | "near" | "out";
+  budgetFit: "in" | "partial" | "out";
   excluded?: string;
 };
 
@@ -72,63 +72,56 @@ function scoreCreator(c: Creator, campaign: CampaignInput): ScoreBreakdown {
   const { exact, related } = relationsFor(campaign.business);
   const businesses = splitMulti(campaign.business);
 
+  const empty = (excluded: string): ScoreBreakdown => ({
+    niche: 0, budget: 0, location: 0, engagement: 0, followers: 0,
+    total: 0, reasons: [], matchType: "none", budgetFit: "out", excluded,
+  });
+
   // --- Niche (40) ---
   let niche = 0;
   let matchType: "exact" | "related" | "none" = "none";
   const hasExact = c.niches.some((n) => exact.includes(n));
   const hasRelated = c.niches.some((n) => related.includes(n));
+  const hasNicheRules = exact.length > 0 || related.length > 0;
+
   if (hasExact) {
     niche = 40;
     matchType = "exact";
     const primary = businesses[0] || c.niches.find((n) => exact.includes(n)) || "";
     const label = nicheLabel[primary] || primary;
-    if (label) reasons.push(`מתאים לתחום ${label}`);
+    reasons.push(label ? `מתאים לתחום ${label}` : "מתאים לתחום הקמפיין");
   } else if (hasRelated) {
-    niche = 18;
+    niche = 22;
     matchType = "related";
-    reasons.push(`תחום קרוב לקמפיין שלכם`);
-  } else if (exact.length === 0 && related.length === 0) {
-    // "אחר" or unknown business: neutral
-    niche = 20;
+    reasons.push("תחום קרוב לקמפיין שלכם");
+  } else if (!hasNicheRules) {
+    // Unknown business (e.g. "אחר") — neutral
+    niche = 22;
     matchType = "related";
   } else {
-    return {
-      niche: 0, budget: 0, platform: 0, location: 0, engagement: 0,
-      total: 0, reasons: [], matchType: "none", budgetFit: "out",
-      excluded: "niche-unrelated",
-    };
+    return empty("niche-unrelated");
   }
 
-  // --- Budget (25) ---
+  // --- Budget (25) — exclude if fully outside ---
   const cMin = c.priceMin ?? c.price;
   const cMax = c.priceMax ?? c.price;
   const bMin = campaign.budgetMin ?? Math.round(campaign.budget * 0.8);
   const bMax = campaign.budgetMax ?? Math.round(campaign.budget * 1.2);
+
   let budget = 0;
-  let budgetFit: "in" | "near" | "out" = "out";
+  let budgetFit: "in" | "partial" | "out" = "out";
+  const fullyInside = cMin >= bMin && cMax <= bMax;
   const overlaps = cMax >= bMin && cMin <= bMax;
-  if (overlaps) {
+  if (fullyInside) {
     budget = 25;
     budgetFit = "in";
-    reasons.push("בתוך טווח התקציב שבחרתם");
+    reasons.push("נמצא בטווח התקציב שלך");
+  } else if (overlaps) {
+    budget = 15;
+    budgetFit = "partial";
+    reasons.push("נמצא בטווח התקציב שלך");
   } else {
-    // distance from range
-    const dist = cMin > bMax ? cMin - bMax : bMin - cMax;
-    const tolerance = Math.max(200, bMax * 0.15);
-    if (dist <= tolerance) {
-      budget = 10;
-      budgetFit = "near";
-    } else {
-      budget = 0;
-      budgetFit = "out";
-    }
-  }
-
-  // --- Platform (15) ---
-  let platform = 0;
-  if (c.platform === campaign.platform) {
-    platform = 15;
-    reasons.push(`פעיל.ה ב־${c.platform}`);
+    return empty("budget-out-of-range");
   }
 
   // --- Location (10) ---
@@ -142,29 +135,36 @@ function scoreCreator(c: Creator, campaign: CampaignInput): ScoreBreakdown {
     location = 0;
   }
 
-  // --- Engagement (10) ---
-  // 6%+ → 10, scaled linearly from 0..6
-  const engagement = Math.max(0, Math.min(10, Math.round((c.engagementRate / 6) * 10)));
-  if (c.engagementRate >= 5) {
-    reasons.push(`מעורבות גבוהה (${c.engagementRate}%) ביחס לגודל הקהל`);
-  }
+  // --- Engagement (15) ---
+  let engagement = 2;
+  const er = c.engagementRate;
+  if (er > 6) engagement = 15;
+  else if (er >= 4) engagement = 12;
+  else if (er >= 2) engagement = 7;
+  else engagement = 3;
+  if (er >= 4) reasons.push("מעורבות גבוהה ביחס לגודל הקהל");
 
-  let total = niche + budget + platform + location + engagement;
+  // --- Followers (10) ---
+  let followers = 2;
+  const f = c.followers;
+  if (f >= 100000) followers = 10;
+  else if (f >= 50000) followers = 9;
+  else if (f >= 20000) followers = 7;
+  else if (f >= 5000) followers = 5;
+  else followers = 2;
+  if (f >= 50000) reasons.push("קהל עוקבים גדול");
 
-  // Cap at 60 if shown despite being out of budget
-  if (budgetFit === "out") {
-    total = Math.min(total, 60);
-  }
-  // Cap at 75 if only related niche
-  if (matchType === "related") {
-    total = Math.min(total, 75);
-  }
+  let total = niche + budget + location + engagement + followers;
+
+  // Followers caps
+  if (f < 2000) total = Math.min(total, 80);
+  else if (f < 5000) total = Math.min(total, 90);
 
   total = Math.max(0, Math.min(100, Math.round(total)));
 
   return {
-    niche, budget, platform, location, engagement,
-    total, reasons: reasons.slice(0, 3), matchType, budgetFit,
+    niche, budget, location, engagement, followers,
+    total, reasons: reasons.slice(0, 4), matchType, budgetFit,
   };
 }
 
