@@ -149,7 +149,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       </section>
 
       {/* 3. How it works */}
-      <section className="px-5 py-10 bg-brand-soft">
+      <section className="px-5 py-12 relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink) / 0.10) 0%, hsl(var(--brand-purple) / 0.12) 100%)" }}>
         <h2 className="text-3xl font-black text-center mb-2">איך זה עובד?</h2>
         <p className="text-center text-sm text-muted-foreground mb-8 font-medium">ארבעה צעדים פשוטים</p>
         <div className="space-y-3">
