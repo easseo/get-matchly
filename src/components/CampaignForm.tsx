@@ -13,6 +13,8 @@ export type CampaignData = {
   business: string;
   goal: string;
   budget: number;
+  budgetMin: number;
+  budgetMax: number;
   location: string;
   platform: string;
   contentType: string;
