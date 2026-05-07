@@ -17,9 +17,9 @@ const formatFollowers = (n: number) =>
   n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}K` : `${n}`;
 
 const businessToNiches: Record<string, string[]> = {
-  "מסעדה": ["מסעדה", "אוכל"],
+  "מסעדה": ["אוכל"],
   "אופנה": ["אופנה", "לייפסטייל"],
-  "כושר": ["כושר", "ספורט", "בריאות"],
+  "כושר": ["כושר"],
   "ביוטי": ["ביוטי", "אופנה"],
   "אחר": [],
 };
@@ -43,12 +43,34 @@ function goalsInclude(goal: string, ...candidates: string[]): boolean {
   return items.some((g) => candidates.includes(g));
 }
 
+const ALLOWED_NICHES = ["אופנה","ביוטי","אוכל","כושר","לייפסטייל","טכנולוגיה","גיימינג","תיירות","רכב","עסקים"];
+
 const nicheLabels: Record<string, string> = {
-  "מסעדה": "מסעדנות", "אוכל": "קולינריה", "אופנה": "אופנה", "ביוטי": "ביוטי",
-  "כושר": "כושר", "ספורט": "ספורט", "בריאות": "בריאות", "לייפסטייל": "לייפסטייל",
-  "טכנולוגיה": "טכנולוגיה", "משפחה": "משפחה והורות", "הורות": "הורות",
-  "נסיעות": "טיולים ונסיעות", "עיצוב": "עיצוב", "גאדג'טים": "גאדג'טים",
+  "אופנה": "אופנה", "ביוטי": "ביוטי", "אוכל": "קולינריה", "כושר": "כושר",
+  "לייפסטייל": "לייפסטייל", "טכנולוגיה": "טכנולוגיה", "גיימינג": "גיימינג",
+  "תיירות": "תיירות", "רכב": "רכב", "עסקים": "עסקים",
 };
+
+type Tier = { minF: number; maxF: number; minP: number; maxP: number; minE: number; maxE: number };
+const TIERS: Tier[] = [
+  { minF: 0,      maxF: 5000,    minP: 300,  maxP: 800,   minE: 5.0, maxE: 9.0 },
+  { minF: 5000,   maxF: 20000,   minP: 800,  maxP: 2500,  minE: 4.0, maxE: 7.0 },
+  { minF: 20000,  maxF: 50000,   minP: 2000, maxP: 5000,  minE: 3.0, maxE: 6.0 },
+  { minF: 50000,  maxF: 100000,  minP: 4000, maxP: 10000, minE: 2.5, maxE: 5.0 },
+  { minF: 100000, maxF: Infinity, minP: 8000, maxP: Infinity, minE: 1.5, maxE: 4.0 },
+];
+function tierFor(f: number): Tier { return TIERS.find(t => f >= t.minF && f < t.maxF) ?? TIERS[TIERS.length-1]; }
+function qualityScore(c: Creator): number {
+  const t = tierFor(c.followers);
+  let q = 60;
+  if (c.price >= t.minP && c.price <= t.maxP) q += 20;
+  else { const off = c.price < t.minP ? (t.minP - c.price)/t.minP : (c.price - t.maxP)/Math.max(t.maxP,1); q -= Math.min(25, off*30); }
+  if (c.engagementRate >= t.minE && c.engagementRate <= t.maxE) q += 15;
+  else { const off = c.engagementRate < t.minE ? t.minE - c.engagementRate : c.engagementRate - t.maxE; q -= Math.min(15, off*4); }
+  const allValid = c.niches.every(n => ALLOWED_NICHES.includes(n));
+  if (allValid && c.niches.length > 0) q += 5; else q -= 10;
+  return Math.max(0, Math.min(100, Math.round(q)));
+}
 
 function scoreCreator(c: Creator, campaign: CampaignInput) {
   let score = 0;
@@ -56,38 +78,40 @@ function scoreCreator(c: Creator, campaign: CampaignInput) {
   const targets = targetNichesFor(campaign.business);
   const overlap = targets.length === 0 ? 0 : c.niches.filter((n) => targets.includes(n)).length;
   if (overlap > 0) {
-    score += overlap === c.niches.length ? 40 : 30;
+    score += overlap === c.niches.length ? 45 : 32;
     const matched = c.niches.find((n) => targets.includes(n)) ?? c.niches[0];
     reasons.push(`מומחה.ית בתחום ה${nicheLabels[matched] ?? matched} - בדיוק הקהל שלכם`);
   } else if (targets.length === 0) {
-    score += 12;
+    score += 10;
   } else {
-    score += 4;
+    score -= 15;
   }
 
-  if (c.platform === campaign.platform) { score += 15; reasons.push(`פעיל.ה במיוחד ב־${c.platform}`); }
+  if (c.platform === campaign.platform) { score += 12; reasons.push(`פעיל.ה במיוחד ב־${c.platform}`); }
 
   if (campaign.location === "כל הארץ" || c.location === campaign.location) {
-    score += 12;
+    score += 10;
     if (campaign.location !== "כל הארץ") reasons.push(`קהל מקומי ומחובר באזור ${c.location}`);
-  } else score += 4;
+  } else score += 3;
 
-  const budgetRatio = c.price / campaign.budget;
-  if (budgetRatio <= 1) {
-    score += 18 - Math.abs(1 - budgetRatio) * 8;
-    if (budgetRatio <= 0.85) reasons.push(`מתאים בול לתקציב שלכם`);
-  } else if (budgetRatio <= 1.2) score += 6;
-  else score -= 5;
+  const ratio = c.price / Math.max(campaign.budget, 1);
+  if (ratio >= 0.7 && ratio <= 1.1) { score += 22; reasons.push(`מתאים בול לתקציב שלכם`); }
+  else if (ratio >= 0.4 && ratio < 0.7) score += 10;
+  else if (ratio > 1.1 && ratio <= 1.3) score += 4;
+  else score -= 18;
 
-  const goalEngagementBoost = goalsInclude(campaign.goal, "יותר מכירות", "יותר לקוחות") ? 2.2 : 1.4;
-  score += c.engagementRate * goalEngagementBoost;
-  if (c.engagementRate >= 6) reasons.push(`מעורבות גבוהה במיוחד (${c.engagementRate}%) - קהל שמגיב`);
+  const engBoost = goalsInclude(campaign.goal, "יותר מכירות", "יותר לקוחות") ? 2.0 : 1.2;
+  score += c.engagementRate * engBoost;
+  if (c.engagementRate >= 5) reasons.push(`מעורבות גבוהה (${c.engagementRate}%) - קהל שמגיב`);
 
   const isExposureGoal = goalsInclude(campaign.goal, "יותר חשיפה");
-  const reachBoost = isExposureGoal ? 1 : 0.4;
+  const reachBoost = isExposureGoal ? 1.0 : 0.35;
   score += Math.log10(Math.max(c.followers, 10)) * reachBoost * 4;
-  if (isExposureGoal && c.followers >= 150000)
+  if (isExposureGoal && c.followers >= 100000)
     reasons.push(`חשיפה רחבה לקהל של ${formatFollowers(c.followers)} עוקבים`);
+
+  const q = qualityScore(c);
+  score += (q - 60) * 0.15;
 
   if (reasons.length < 3) {
     const fillers = [
@@ -98,13 +122,15 @@ function scoreCreator(c: Creator, campaign: CampaignInput) {
     ];
     for (const f of fillers) { if (reasons.length >= 3) break; if (!reasons.includes(f)) reasons.push(f); }
   }
-  return { score, reasons: reasons.slice(0, 3) };
+  return { score, reasons: reasons.slice(0, 3), quality: q };
 }
 
-function toSuccessProbability(score: number, rank: number) {
-  const base = Math.min(98, Math.max(72, Math.round(60 + score * 0.45)));
-  const jitter = ((rank * 7) % 4) - 1;
-  return Math.max(70, Math.min(98, base - rank + jitter));
+function toSuccessProbability(score: number, quality: number, rank: number) {
+  const base = Math.round(45 + score * 0.55);
+  const qualityCap = Math.round(70 + (quality - 60) * 0.5);
+  const capped = Math.min(base, qualityCap, 96);
+  const jitter = ((rank * 7) % 3) - 1;
+  return Math.max(60, Math.min(96, capped - rank + jitter));
 }
 
 function dbToCreator(d: DbCreator, idx: number): Creator {
