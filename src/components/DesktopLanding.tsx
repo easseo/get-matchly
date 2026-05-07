@@ -70,7 +70,7 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
                   בדיוק
                 </span>
               </span>
-              <span className="block">לעסק שלך</span>
+              <span className="block">לקמפיין שלך</span>
             </h1>
 
             <p className="text-lg text-white/85 font-medium mb-8 animate-fade-in-up leading-relaxed max-w-lg" style={{ animationDelay: "0.2s" }}>

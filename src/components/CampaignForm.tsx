@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
-import { ArrowLeft, Utensils, Shirt, Dumbbell, Sparkles as SparkleIcon, MoreHorizontal, LayoutGrid, Users, Eye, ShoppingBag, MapPin, Instagram, Film, Image as ImageIcon, Clock, Check, Minus, Plus, CalendarIcon } from "lucide-react";
+import { ArrowLeft, Utensils, Shirt, Dumbbell, Sparkles as SparkleIcon, MoreHorizontal, Users, Eye, ShoppingBag, MapPin, Instagram, Film, Image as ImageIcon, Clock, Check, Minus, Plus, CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -31,7 +31,6 @@ const businesses = [
   { value: "כושר", icon: Dumbbell },
   { value: "ביוטי", icon: SparkleIcon },
   { value: "אחר", icon: MoreHorizontal },
-  { value: "הכל", icon: LayoutGrid },
 ];
 
 const goals = [
