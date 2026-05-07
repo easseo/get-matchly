@@ -132,13 +132,13 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
   };
 
   const handleSubmit = () => {
-    if (!canSubmit) return;
+    if (!canSubmit || budget < MIN_BUDGET) return;
     const contents: ContentSelection[] = selectedContents.map(([type, qty]) => ({ type, qty }));
     const contentTypeStr = contents.map((c) => `${c.qty} ${pluralize(c.type)}`).join(" + ");
     onSubmit({
       business,
       goal,
-      budget,
+      budget: Math.max(MIN_BUDGET, budget),
       location,
       platform: "Instagram",
       contentType: contentTypeStr,
