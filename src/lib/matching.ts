@@ -192,11 +192,11 @@ export async function matchAndSave(
     .map((s, i) => ({
       ...s.creator,
       followersLabel: formatFollowers(s.creator.followers),
-      successProbability: toSuccessProbability(s.score, i),
+      successProbability: toSuccessProbability(s.score, s.quality, i),
       reasons: s.reasons,
       score: s.score,
     }))
-    .filter((c) => c.successProbability >= 70)
+    .filter((c) => c.successProbability >= 60)
     .sort((a, b) => b.successProbability - a.successProbability);
 
   if (result.length > 0) {
