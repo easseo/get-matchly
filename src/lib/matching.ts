@@ -22,6 +22,7 @@ const businessToNiches: Record<string, string[]> = {
   "כושר": ["כושר"],
   "ביוטי": ["ביוטי", "אופנה"],
   "אחר": [],
+  "הכל": [],
 };
 
 function splitMulti(s: string): string[] {
