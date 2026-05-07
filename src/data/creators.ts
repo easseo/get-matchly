@@ -117,6 +117,7 @@ export const businessToNiches: Record<string, string[]> = {
   "כושר": ["כושר"],
   "ביוטי": ["ביוטי", "אופנה"],
   "אחר": [],
+  "הכל": [],
 };
 
 const nicheLabels: Record<string, string> = {
