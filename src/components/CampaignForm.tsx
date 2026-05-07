@@ -72,7 +72,7 @@ function getBudgetRange(value: number): [number, number] {
   for (const t of tiers) {
     if (value >= t[0]) chosen = t;
   }
-  return [chosen[1], chosen[2]];
+  return [Math.max(MIN_BUDGET, chosen[1]), chosen[2]];
 }
 
 export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
@@ -132,13 +132,13 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
   };
 
   const handleSubmit = () => {
-    if (!canSubmit) return;
+    if (!canSubmit || budget < MIN_BUDGET) return;
     const contents: ContentSelection[] = selectedContents.map(([type, qty]) => ({ type, qty }));
     const contentTypeStr = contents.map((c) => `${c.qty} ${pluralize(c.type)}`).join(" + ");
     onSubmit({
       business,
       goal,
-      budget,
+      budget: Math.max(MIN_BUDGET, budget),
       location,
       platform: "Instagram",
       contentType: contentTypeStr,
@@ -230,7 +230,10 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
                   max={MAX_BUDGET}
                   step={100}
                   value={budget}
-                  onChange={(e) => setBudget(Number(e.target.value))}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    setBudget(Math.max(MIN_BUDGET, Math.min(MAX_BUDGET, val)));
+                  }}
                   className="custom-range absolute inset-0 w-full h-10 appearance-none bg-transparent cursor-pointer"
                   style={{ direction: "rtl" }}
                 />
