@@ -66,13 +66,13 @@ function getBudgetRange(value: number): [number, number] {
     [4000, 3000, 6000],
     [6000, 5000, 8000],
     [8000, 6000, 10000],
-    [10000, 8000, 12000],
+    [10000, 8000, 10000],
   ];
   let chosen = tiers[0];
   for (const t of tiers) {
     if (value >= t[0]) chosen = t;
   }
-  return [Math.max(MIN_BUDGET, chosen[1]), chosen[2]];
+  return [Math.max(MIN_BUDGET, chosen[1]), Math.min(MAX_BUDGET, chosen[2])];
 }
 
 export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
