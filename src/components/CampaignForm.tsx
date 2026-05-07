@@ -230,7 +230,10 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
                   max={MAX_BUDGET}
                   step={100}
                   value={budget}
-                  onChange={(e) => setBudget(Number(e.target.value))}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    setBudget(Math.max(MIN_BUDGET, Math.min(MAX_BUDGET, val)));
+                  }}
                   className="custom-range absolute inset-0 w-full h-10 appearance-none bg-transparent cursor-pointer"
                   style={{ direction: "rtl" }}
                 />
