@@ -72,7 +72,7 @@ function getBudgetRange(value: number): [number, number] {
   for (const t of tiers) {
     if (value >= t[0]) chosen = t;
   }
-  return [chosen[1], chosen[2]];
+  return [Math.max(MIN_BUDGET, chosen[1]), chosen[2]];
 }
 
 export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
