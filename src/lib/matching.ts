@@ -123,7 +123,7 @@ function dbToCreator(d: DbCreator, idx: number): Creator {
     engagementRate: Number(d.engagement_rate),
     location: d.location,
     price,
-    avatar: d.profile_image || initials(d.name),
+    avatar: avatarOverrides[d.name] || d.profile_image || initials(d.name),
     gradient: gradients[idx % gradients.length],
   };
 }
