@@ -13,7 +13,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-30 backdrop-blur-xl bg-background/70 border-b border-border/60">
+      <header className="sticky top-0 z-30 glass-nav">
         <div className="px-5 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src={matchlyIcon} alt="" className="h-[46px] w-[46px] object-contain" />
@@ -35,14 +35,14 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       <section className="relative px-5 pt-7 pb-12 overflow-hidden bg-foreground">
         {/* Dramatic gradient background */}
         <div
-          className="absolute inset-0 opacity-95 pointer-events-none"
+          className="absolute inset-0 opacity-95 pointer-events-none animate-gradient-pan"
           style={{
             background:
               "radial-gradient(circle at 15% 0%, hsl(var(--brand-yellow) / 0.55), transparent 45%), radial-gradient(circle at 85% 10%, hsl(var(--brand-pink) / 0.7), transparent 50%), radial-gradient(circle at 50% 100%, hsl(var(--brand-purple) / 0.8), transparent 55%), linear-gradient(180deg, hsl(var(--brand-orange) / 0.35), hsl(var(--brand-purple) / 0.6))",
           }}
         />
-        <div className="absolute -top-20 -right-16 w-64 h-64 rounded-full opacity-40 blur-3xl animate-float pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
-        <div className="absolute bottom-0 -left-20 w-64 h-64 rounded-full opacity-40 blur-3xl animate-float pointer-events-none" style={{ background: "hsl(var(--brand-purple))", animationDelay: "1.5s" }} />
+        <div className="absolute -top-20 -right-16 w-64 h-64 rounded-full opacity-40 blur-3xl animate-aurora pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute bottom-0 -left-20 w-64 h-64 rounded-full opacity-40 blur-3xl animate-aurora pointer-events-none" style={{ background: "hsl(var(--brand-purple))", animationDelay: "3s" }} />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(0 0% 0% / 0.35) 100%)" }} />
 
         <div className="relative z-10 text-primary-foreground">
@@ -112,7 +112,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
           <div className="flex flex-col gap-2.5 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
             <button
               onClick={onStart}
-              className="w-full inline-flex items-center justify-center gap-2 py-4 text-base font-extrabold text-foreground bg-card rounded-full shadow-cta-lg tap-scale"
+              className="btn-glow shine-on-hover w-full inline-flex items-center justify-center gap-2 py-4 text-base font-extrabold text-foreground bg-card rounded-full shadow-cta-lg"
             >
               <Megaphone className="w-5 h-5" />
               אני מפרסם
