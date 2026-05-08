@@ -1,5 +1,10 @@
 import { supabase, type DbCampaign, type DbCreator } from "@/lib/supabase";
 import type { CampaignInput, Creator, ScoredCreator } from "@/data/creators";
+import dalitGolanAvatar from "@/assets/creators/dalit-golan.png";
+
+const avatarOverrides: Record<string, string> = {
+  "דלית גולן": dalitGolanAvatar,
+};
 
 const gradients = [
   "from-pink-500 via-rose-500 to-orange-400",
@@ -118,7 +123,7 @@ function dbToCreator(d: DbCreator, idx: number): Creator {
     engagementRate: Number(d.engagement_rate),
     location: d.location,
     price,
-    avatar: d.profile_image || initials(d.name),
+    avatar: avatarOverrides[d.name] || d.profile_image || initials(d.name),
     gradient: gradients[idx % gradients.length],
   };
 }

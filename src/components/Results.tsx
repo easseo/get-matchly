@@ -93,9 +93,17 @@ function CreatorCard({ creator, index }: { creator: ScoredCreator; index: number
     >
       <div className="flex items-start gap-3 mb-4">
         <div className="ring-brand shrink-0">
-          <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${creator.gradient} flex items-center justify-center text-primary-foreground font-black text-lg`}>
-            {creator.avatar}
-          </div>
+          {/^(https?:|data:|\/)/.test(creator.avatar) ? (
+            <img
+              src={creator.avatar}
+              alt={creator.name}
+              className="w-14 h-14 rounded-full object-cover"
+            />
+          ) : (
+            <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${creator.gradient} flex items-center justify-center text-primary-foreground font-black text-lg`}>
+              {creator.avatar}
+            </div>
+          )}
         </div>
 
         <div className="flex-1 min-w-0">
