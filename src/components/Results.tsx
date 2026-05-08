@@ -55,12 +55,12 @@ export default function Results({ creators, onMore, onRestart, onNewCampaign, lo
           <div className="space-y-4">
             {creators.length > 0 && creators.length < 3 && (
               <div className="bg-brand-soft border border-border rounded-2xl p-4 text-center text-sm font-bold text-foreground animate-fade-in-up">
-                מצאנו פחות יוצרים — אבל רק כאלה שבאמת מתאימים לקמפיין שלך
+                מצאנו פחות יוצרים — אבל רק כאלה שבאמת מתאימים לעסק שלך
               </div>
             )}
             {creators.length === 0 && (
               <div className="bg-card border border-border rounded-2xl p-6 text-center text-sm font-bold text-foreground animate-fade-in-up">
-                לא מצאנו יוצרים שמתאימים מספיק לקמפיין שלך — נסו לעדכן את ההגדרות
+                לא מצאנו יוצרים שמתאימים מספיק לעסק שלך — נסו לעדכן את ההגדרות
               </div>
             )}
             {creators.map((c, i) => (
