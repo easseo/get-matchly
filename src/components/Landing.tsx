@@ -355,37 +355,39 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
                   <ArrowLeft className="w-4 h-4" />
                 </button>
               </div>
-            </article>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </section>
 
       {/* 6. Final CTA */}
       <section className="px-5 pt-4 pb-10 text-center">
-        <div className="bg-brand rounded-[2rem] p-7 shadow-cta-lg text-primary-foreground">
-          <h2 className="text-2xl sm:text-3xl font-black mb-3 leading-tight">
-            מוכנים למצוא את שיתוף הפעולה הבא שלכם?
-          </h2>
-          <p className="text-sm font-medium mb-6 opacity-95 leading-relaxed">
-            בין אם אתם עסק שמחפש יוצרים או יוצרים שמחפשים קמפיינים - Matchly מחברת אתכם נכון.
-          </p>
-          <div className="flex flex-col gap-2.5">
-            <button
-              onClick={onStart}
-              className="w-full py-3.5 rounded-full bg-card text-foreground font-extrabold text-sm tap-scale shadow-soft inline-flex items-center justify-center gap-2"
-            >
-              <Megaphone className="w-4 h-4" />
-              אני מפרסם
-            </button>
-            <button
-              onClick={goCreator}
-              className="w-full py-3.5 rounded-full bg-transparent border-2 border-white/70 text-primary-foreground font-extrabold text-sm tap-scale inline-flex items-center justify-center gap-2"
-            >
-              <Heart className="w-4 h-4" />
-              אני יוצר תוכן
-            </button>
+        <Reveal>
+          <div className="bg-brand animate-gradient-pan rounded-[2rem] p-7 shadow-cta-lg text-primary-foreground">
+            <h2 className="text-2xl sm:text-3xl font-black mb-3 leading-tight">
+              מוכנים למצוא את שיתוף הפעולה הבא שלכם?
+            </h2>
+            <p className="text-sm font-medium mb-6 opacity-95 leading-relaxed">
+              בין אם אתם עסק שמחפש יוצרים או יוצרים שמחפשים קמפיינים - Matchly מחברת אתכם נכון.
+            </p>
+            <div className="flex flex-col gap-2.5">
+              <button
+                onClick={onStart}
+                className="btn-glow shine-on-hover w-full py-3.5 rounded-full bg-card text-foreground font-extrabold text-sm shadow-soft inline-flex items-center justify-center gap-2"
+              >
+                <Megaphone className="w-4 h-4" />
+                אני מפרסם
+              </button>
+              <button
+                onClick={goCreator}
+                className="btn-glow w-full py-3.5 rounded-full bg-transparent border-2 border-white/70 text-primary-foreground font-extrabold text-sm inline-flex items-center justify-center gap-2"
+              >
+                <Heart className="w-4 h-4" />
+                אני יוצר תוכן
+              </button>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* Footer */}
