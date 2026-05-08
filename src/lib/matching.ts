@@ -1,5 +1,10 @@
 import { supabase, type DbCampaign, type DbCreator } from "@/lib/supabase";
 import type { CampaignInput, Creator, ScoredCreator } from "@/data/creators";
+import dalitGolanAvatar from "@/assets/creators/dalit-golan.png";
+
+const avatarOverrides: Record<string, string> = {
+  "דלית גולן": dalitGolanAvatar,
+};
 
 const gradients = [
   "from-pink-500 via-rose-500 to-orange-400",
