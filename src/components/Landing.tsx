@@ -1,5 +1,6 @@
 import { Sparkles, Megaphone, Users, Zap, Target, Lightbulb, Heart, ArrowLeft, Check } from "lucide-react";
 import matchlyIcon from "@/assets/matchly-icon.png";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 
 interface LandingProps {
   onStart: () => void;
@@ -12,7 +13,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-30 backdrop-blur-xl bg-background/70 border-b border-border/60">
+      <header className="sticky top-0 z-30 glass-nav">
         <div className="px-5 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src={matchlyIcon} alt="" className="h-[46px] w-[46px] object-contain" />
@@ -34,14 +35,14 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       <section className="relative px-5 pt-7 pb-12 overflow-hidden bg-foreground">
         {/* Dramatic gradient background */}
         <div
-          className="absolute inset-0 opacity-95 pointer-events-none"
+          className="absolute inset-0 opacity-95 pointer-events-none animate-gradient-pan"
           style={{
             background:
               "radial-gradient(circle at 15% 0%, hsl(var(--brand-yellow) / 0.55), transparent 45%), radial-gradient(circle at 85% 10%, hsl(var(--brand-pink) / 0.7), transparent 50%), radial-gradient(circle at 50% 100%, hsl(var(--brand-purple) / 0.8), transparent 55%), linear-gradient(180deg, hsl(var(--brand-orange) / 0.35), hsl(var(--brand-purple) / 0.6))",
           }}
         />
-        <div className="absolute -top-20 -right-16 w-64 h-64 rounded-full opacity-40 blur-3xl animate-float pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
-        <div className="absolute bottom-0 -left-20 w-64 h-64 rounded-full opacity-40 blur-3xl animate-float pointer-events-none" style={{ background: "hsl(var(--brand-purple))", animationDelay: "1.5s" }} />
+        <div className="absolute -top-20 -right-16 w-64 h-64 rounded-full opacity-40 blur-3xl animate-aurora pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute bottom-0 -left-20 w-64 h-64 rounded-full opacity-40 blur-3xl animate-aurora pointer-events-none" style={{ background: "hsl(var(--brand-purple))", animationDelay: "3s" }} />
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(0 0% 0% / 0.35) 100%)" }} />
 
         <div className="relative z-10 text-primary-foreground">
@@ -111,7 +112,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
           <div className="flex flex-col gap-2.5 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
             <button
               onClick={onStart}
-              className="w-full inline-flex items-center justify-center gap-2 py-4 text-base font-extrabold text-foreground bg-card rounded-full shadow-cta-lg tap-scale"
+              className="btn-glow shine-on-hover w-full inline-flex items-center justify-center gap-2 py-4 text-base font-extrabold text-foreground bg-card rounded-full shadow-cta-lg"
             >
               <Megaphone className="w-5 h-5" />
               אני מפרסם
@@ -129,37 +130,45 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       </section>
 
       {/* 2. Audience cards */}
-      <section className="px-5 py-10 space-y-10">
-        <AudienceCard
-          gradient="linear-gradient(135deg, hsl(var(--brand-purple)) 0%, hsl(var(--brand-pink)) 100%)"
-          icon={<Heart className="w-6 h-6" />}
-          title="ליוצרי תוכן"
-          text="קבלו הזדמנויות לשיתופי פעולה עם עסקים שמתאימים לקהל שלכם."
-          cta="הצטרפו כיוצרים"
-          onClick={goCreator}
-        />
-        <AudienceCard
-          gradient="linear-gradient(135deg, hsl(var(--brand-orange)) 0%, hsl(var(--brand-pink)) 100%)"
-          icon={<Megaphone className="w-6 h-6" />}
-          title="למפרסמים"
-          text="פתחו קמפיין וקבלו 3 יוצרים שמתאימים בדיוק למטרה, לתקציב ולקהל שלכם."
-          cta="התחילו קמפיין"
-          onClick={onStart}
-        />
+      <section className="px-5 py-10">
+        <Stagger className="space-y-10">
+          <StaggerItem>
+            <AudienceCard
+              gradient="linear-gradient(135deg, hsl(var(--brand-purple)) 0%, hsl(var(--brand-pink)) 100%)"
+              icon={<Heart className="w-6 h-6" />}
+              title="ליוצרי תוכן"
+              text="קבלו הזדמנויות לשיתופי פעולה עם עסקים שמתאימים לקהל שלכם."
+              cta="הצטרפו כיוצרים"
+              onClick={goCreator}
+            />
+          </StaggerItem>
+          <StaggerItem>
+            <AudienceCard
+              gradient="linear-gradient(135deg, hsl(var(--brand-orange)) 0%, hsl(var(--brand-pink)) 100%)"
+              icon={<Megaphone className="w-6 h-6" />}
+              title="למפרסמים"
+              text="פתחו קמפיין וקבלו 3 יוצרים שמתאימים בדיוק למטרה, לתקציב ולקהל שלכם."
+              cta="התחילו קמפיין"
+              onClick={onStart}
+            />
+          </StaggerItem>
+        </Stagger>
       </section>
 
       {/* 3. How it works */}
       <section className="px-5 py-12 relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink) / 0.10) 0%, hsl(var(--brand-purple) / 0.12) 100%)" }}>
-        <h2 className="text-3xl font-black text-center mb-2">איך זה עובד?</h2>
-        <p className="text-center text-sm text-muted-foreground mb-8 font-medium">ארבעה צעדים פשוטים</p>
-        <div className="space-y-3">
+        <Reveal>
+          <h2 className="text-3xl font-black text-center mb-2">איך זה עובד?</h2>
+          <p className="text-center text-sm text-muted-foreground mb-8 font-medium">ארבעה צעדים פשוטים</p>
+        </Reveal>
+        <Stagger className="space-y-3">
           {[
             { n: "1", t: "פותחים קמפיין", d: "מגדירים מטרה, תקציב, פלטפורמה וקהל יעד." },
             { n: "2", t: "אנחנו מנתחים", d: "המערכת מדרגת יוצרים לפי התאמה אמיתית לקמפיין." },
             { n: "3", t: "מקבלים 3 התאמות", d: "במקום לחפש שעות - מקבלים 3 יוצרים מדויקים." },
             { n: "4", t: "מתחילים שיתוף פעולה", d: "שולחים הצעה ליוצר ומתקדמים לקמפיין." },
           ].map((s) => (
-            <div key={s.n} className="flex gap-4 bg-card rounded-3xl p-4 shadow-soft border border-border">
+            <StaggerItem key={s.n} className="hover-lift flex gap-4 bg-card rounded-3xl p-4 shadow-soft border border-border">
               <div className="shrink-0 w-12 h-12 rounded-2xl bg-brand text-primary-foreground grid place-items-center font-black text-lg shadow-glow">
                 <span className="leading-none tabular-nums" style={{ direction: "ltr" }}>{s.n}</span>
               </div>
@@ -167,9 +176,9 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
                 <h3 className="font-extrabold text-base mb-0.5">{s.t}</h3>
                 <p className="text-xs text-muted-foreground font-medium leading-relaxed">{s.d}</p>
               </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </section>
 
       {/* 4. Features */}
@@ -177,12 +186,12 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
         <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-30 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
         <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-purple))" }} />
         <div className="relative">
-        <div className="text-center mb-7">
+        <Reveal className="text-center mb-7">
           <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">למה Matchly</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">היתרונות שעושים את ההבדל</h2>
           <p className="text-sm text-muted-foreground font-medium">טכנולוגיה שמייצרת התאמות מדויקות</p>
-        </div>
-        <div className="grid grid-cols-2 gap-2.5">
+        </Reveal>
+        <Stagger className="grid grid-cols-2 gap-2.5">
           {[
             {
               i: <Zap className="w-[18px] h-[18px]" strokeWidth={2.5} />,
@@ -213,12 +222,12 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
               accent: "linear-gradient(135deg, hsl(var(--brand-yellow)), hsl(var(--brand-orange)))",
             },
           ].map((f) => (
-            <div
+            <StaggerItem
               key={f.t}
-              className="group relative bg-card rounded-2xl p-3.5 shadow-soft border border-border/70 tap-scale transition-all hover:shadow-card hover:-translate-y-0.5 hover:border-border overflow-hidden"
+              className="hover-lift group relative bg-card rounded-2xl p-3.5 shadow-soft border border-border/70 overflow-hidden"
             >
               <div
-                className="absolute -top-8 -left-8 w-20 h-20 rounded-full opacity-10 blur-2xl pointer-events-none"
+                className="absolute -top-8 -left-8 w-20 h-20 rounded-full opacity-10 blur-2xl pointer-events-none group-hover:opacity-30 transition-opacity duration-500"
                 style={{ background: f.accent }}
               />
               <div className="relative">
@@ -236,9 +245,9 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
                 <h3 className="font-extrabold text-[15px] mb-1 text-foreground leading-tight">{f.t}</h3>
                 <p className="text-[11.5px] text-muted-foreground font-medium leading-snug">{f.d}</p>
               </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
         </div>
       </section>
 
@@ -246,13 +255,13 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       {/* 5. Match previews */}
       <section className="px-5 pt-12 pb-8 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-purple) / 0.08) 0%, hsl(var(--brand-orange) / 0.06) 100%)" }}>
         <div className="absolute top-1/3 -left-20 w-64 h-64 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-orange))" }} />
-        <div className="text-center mb-8 relative">
+        <Reveal className="text-center mb-8 relative">
           <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">דוגמאות התאמה</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">ככה נראית התאמה אמיתית</h2>
           <p className="text-sm text-muted-foreground font-medium">תוצאות לדוגמה מקמפיינים שרצו ב-Matchly</p>
-        </div>
+        </Reveal>
 
-        <div className="space-y-4">
+        <Stagger className="space-y-4">
           {[
             {
               campaign: "השקת סרום פנים חדש",
@@ -291,7 +300,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
               reasons: ["מאמנת כושר עם 85K עוקבים", "engagement גבוה בסרטוני אימון", "התאמה לקהל היעד 22-40"],
             },
           ].map((m) => (
-            <article key={m.campaign} className="bg-card rounded-3xl border border-border shadow-soft overflow-hidden">
+            <StaggerItem as="article" key={m.campaign} className="hover-lift bg-card rounded-3xl border border-border shadow-soft overflow-hidden">
               {/* Top: campaign */}
               <div className="px-5 pt-5 pb-4 border-b border-border/60">
                 <div className="flex items-center justify-between mb-2">
@@ -346,37 +355,39 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
                   <ArrowLeft className="w-4 h-4" />
                 </button>
               </div>
-            </article>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </section>
 
       {/* 6. Final CTA */}
       <section className="px-5 pt-4 pb-10 text-center">
-        <div className="bg-brand rounded-[2rem] p-7 shadow-cta-lg text-primary-foreground">
-          <h2 className="text-2xl sm:text-3xl font-black mb-3 leading-tight">
-            מוכנים למצוא את שיתוף הפעולה הבא שלכם?
-          </h2>
-          <p className="text-sm font-medium mb-6 opacity-95 leading-relaxed">
-            בין אם אתם עסק שמחפש יוצרים או יוצרים שמחפשים קמפיינים - Matchly מחברת אתכם נכון.
-          </p>
-          <div className="flex flex-col gap-2.5">
-            <button
-              onClick={onStart}
-              className="w-full py-3.5 rounded-full bg-card text-foreground font-extrabold text-sm tap-scale shadow-soft inline-flex items-center justify-center gap-2"
-            >
-              <Megaphone className="w-4 h-4" />
-              אני מפרסם
-            </button>
-            <button
-              onClick={goCreator}
-              className="w-full py-3.5 rounded-full bg-transparent border-2 border-white/70 text-primary-foreground font-extrabold text-sm tap-scale inline-flex items-center justify-center gap-2"
-            >
-              <Heart className="w-4 h-4" />
-              אני יוצר תוכן
-            </button>
+        <Reveal>
+          <div className="bg-brand animate-gradient-pan rounded-[2rem] p-7 shadow-cta-lg text-primary-foreground">
+            <h2 className="text-2xl sm:text-3xl font-black mb-3 leading-tight">
+              מוכנים למצוא את שיתוף הפעולה הבא שלכם?
+            </h2>
+            <p className="text-sm font-medium mb-6 opacity-95 leading-relaxed">
+              בין אם אתם עסק שמחפש יוצרים או יוצרים שמחפשים קמפיינים - Matchly מחברת אתכם נכון.
+            </p>
+            <div className="flex flex-col gap-2.5">
+              <button
+                onClick={onStart}
+                className="btn-glow shine-on-hover w-full py-3.5 rounded-full bg-card text-foreground font-extrabold text-sm shadow-soft inline-flex items-center justify-center gap-2"
+              >
+                <Megaphone className="w-4 h-4" />
+                אני מפרסם
+              </button>
+              <button
+                onClick={goCreator}
+                className="btn-glow w-full py-3.5 rounded-full bg-transparent border-2 border-white/70 text-primary-foreground font-extrabold text-sm inline-flex items-center justify-center gap-2"
+              >
+                <Heart className="w-4 h-4" />
+                אני יוצר תוכן
+              </button>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* Footer */}
