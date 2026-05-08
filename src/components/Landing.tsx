@@ -1,5 +1,6 @@
 import { Sparkles, Megaphone, Users, Zap, Target, Lightbulb, Heart, ArrowLeft, Check } from "lucide-react";
 import matchlyIcon from "@/assets/matchly-icon.png";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 
 interface LandingProps {
   onStart: () => void;
