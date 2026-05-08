@@ -130,23 +130,29 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       </section>
 
       {/* 2. Audience cards */}
-      <section className="px-5 py-10 space-y-10">
-        <AudienceCard
-          gradient="linear-gradient(135deg, hsl(var(--brand-purple)) 0%, hsl(var(--brand-pink)) 100%)"
-          icon={<Heart className="w-6 h-6" />}
-          title="ליוצרי תוכן"
-          text="קבלו הזדמנויות לשיתופי פעולה עם עסקים שמתאימים לקהל שלכם."
-          cta="הצטרפו כיוצרים"
-          onClick={goCreator}
-        />
-        <AudienceCard
-          gradient="linear-gradient(135deg, hsl(var(--brand-orange)) 0%, hsl(var(--brand-pink)) 100%)"
-          icon={<Megaphone className="w-6 h-6" />}
-          title="למפרסמים"
-          text="פתחו קמפיין וקבלו 3 יוצרים שמתאימים בדיוק למטרה, לתקציב ולקהל שלכם."
-          cta="התחילו קמפיין"
-          onClick={onStart}
-        />
+      <section className="px-5 py-10">
+        <Stagger className="space-y-10">
+          <StaggerItem>
+            <AudienceCard
+              gradient="linear-gradient(135deg, hsl(var(--brand-purple)) 0%, hsl(var(--brand-pink)) 100%)"
+              icon={<Heart className="w-6 h-6" />}
+              title="ליוצרי תוכן"
+              text="קבלו הזדמנויות לשיתופי פעולה עם עסקים שמתאימים לקהל שלכם."
+              cta="הצטרפו כיוצרים"
+              onClick={goCreator}
+            />
+          </StaggerItem>
+          <StaggerItem>
+            <AudienceCard
+              gradient="linear-gradient(135deg, hsl(var(--brand-orange)) 0%, hsl(var(--brand-pink)) 100%)"
+              icon={<Megaphone className="w-6 h-6" />}
+              title="למפרסמים"
+              text="פתחו קמפיין וקבלו 3 יוצרים שמתאימים בדיוק למטרה, לתקציב ולקהל שלכם."
+              cta="התחילו קמפיין"
+              onClick={onStart}
+            />
+          </StaggerItem>
+        </Stagger>
       </section>
 
       {/* 3. How it works */}
