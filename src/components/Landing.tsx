@@ -255,13 +255,13 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
       {/* 5. Match previews */}
       <section className="px-5 pt-12 pb-8 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-purple) / 0.08) 0%, hsl(var(--brand-orange) / 0.06) 100%)" }}>
         <div className="absolute top-1/3 -left-20 w-64 h-64 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-orange))" }} />
-        <div className="text-center mb-8 relative">
+        <Reveal className="text-center mb-8 relative">
           <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">דוגמאות התאמה</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">ככה נראית התאמה אמיתית</h2>
           <p className="text-sm text-muted-foreground font-medium">תוצאות לדוגמה מקמפיינים שרצו ב-Matchly</p>
-        </div>
+        </Reveal>
 
-        <div className="space-y-4">
+        <Stagger className="space-y-4">
           {[
             {
               campaign: "השקת סרום פנים חדש",
@@ -300,7 +300,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
               reasons: ["מאמנת כושר עם 85K עוקבים", "engagement גבוה בסרטוני אימון", "התאמה לקהל היעד 22-40"],
             },
           ].map((m) => (
-            <article key={m.campaign} className="bg-card rounded-3xl border border-border shadow-soft overflow-hidden">
+            <StaggerItem as="article" key={m.campaign} className="hover-lift bg-card rounded-3xl border border-border shadow-soft overflow-hidden">
               {/* Top: campaign */}
               <div className="px-5 pt-5 pb-4 border-b border-border/60">
                 <div className="flex items-center justify-between mb-2">
