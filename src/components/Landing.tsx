@@ -157,16 +157,18 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
 
       {/* 3. How it works */}
       <section className="px-5 py-12 relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink) / 0.10) 0%, hsl(var(--brand-purple) / 0.12) 100%)" }}>
-        <h2 className="text-3xl font-black text-center mb-2">איך זה עובד?</h2>
-        <p className="text-center text-sm text-muted-foreground mb-8 font-medium">ארבעה צעדים פשוטים</p>
-        <div className="space-y-3">
+        <Reveal>
+          <h2 className="text-3xl font-black text-center mb-2">איך זה עובד?</h2>
+          <p className="text-center text-sm text-muted-foreground mb-8 font-medium">ארבעה צעדים פשוטים</p>
+        </Reveal>
+        <Stagger className="space-y-3">
           {[
             { n: "1", t: "פותחים קמפיין", d: "מגדירים מטרה, תקציב, פלטפורמה וקהל יעד." },
             { n: "2", t: "אנחנו מנתחים", d: "המערכת מדרגת יוצרים לפי התאמה אמיתית לקמפיין." },
             { n: "3", t: "מקבלים 3 התאמות", d: "במקום לחפש שעות - מקבלים 3 יוצרים מדויקים." },
             { n: "4", t: "מתחילים שיתוף פעולה", d: "שולחים הצעה ליוצר ומתקדמים לקמפיין." },
           ].map((s) => (
-            <div key={s.n} className="flex gap-4 bg-card rounded-3xl p-4 shadow-soft border border-border">
+            <StaggerItem key={s.n} className="hover-lift flex gap-4 bg-card rounded-3xl p-4 shadow-soft border border-border">
               <div className="shrink-0 w-12 h-12 rounded-2xl bg-brand text-primary-foreground grid place-items-center font-black text-lg shadow-glow">
                 <span className="leading-none tabular-nums" style={{ direction: "ltr" }}>{s.n}</span>
               </div>
@@ -174,9 +176,9 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
                 <h3 className="font-extrabold text-base mb-0.5">{s.t}</h3>
                 <p className="text-xs text-muted-foreground font-medium leading-relaxed">{s.d}</p>
               </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </section>
 
       {/* 4. Features */}
