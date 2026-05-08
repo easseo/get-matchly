@@ -186,12 +186,12 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
         <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-30 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
         <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full opacity-25 blur-3xl pointer-events-none" style={{ background: "hsl(var(--brand-purple))" }} />
         <div className="relative">
-        <div className="text-center mb-7">
+        <Reveal className="text-center mb-7">
           <span className="inline-block text-[11px] font-bold tracking-wider uppercase text-brand mb-2">למה Matchly</span>
           <h2 className="text-3xl font-black mb-2 leading-tight">היתרונות שעושים את ההבדל</h2>
           <p className="text-sm text-muted-foreground font-medium">טכנולוגיה שמייצרת התאמות מדויקות</p>
-        </div>
-        <div className="grid grid-cols-2 gap-2.5">
+        </Reveal>
+        <Stagger className="grid grid-cols-2 gap-2.5">
           {[
             {
               i: <Zap className="w-[18px] h-[18px]" strokeWidth={2.5} />,
@@ -222,12 +222,12 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
               accent: "linear-gradient(135deg, hsl(var(--brand-yellow)), hsl(var(--brand-orange)))",
             },
           ].map((f) => (
-            <div
+            <StaggerItem
               key={f.t}
-              className="group relative bg-card rounded-2xl p-3.5 shadow-soft border border-border/70 tap-scale transition-all hover:shadow-card hover:-translate-y-0.5 hover:border-border overflow-hidden"
+              className="hover-lift group relative bg-card rounded-2xl p-3.5 shadow-soft border border-border/70 overflow-hidden"
             >
               <div
-                className="absolute -top-8 -left-8 w-20 h-20 rounded-full opacity-10 blur-2xl pointer-events-none"
+                className="absolute -top-8 -left-8 w-20 h-20 rounded-full opacity-10 blur-2xl pointer-events-none group-hover:opacity-30 transition-opacity duration-500"
                 style={{ background: f.accent }}
               />
               <div className="relative">
@@ -245,9 +245,9 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
                 <h3 className="font-extrabold text-[15px] mb-1 text-foreground leading-tight">{f.t}</h3>
                 <p className="text-[11.5px] text-muted-foreground font-medium leading-snug">{f.d}</p>
               </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
         </div>
       </section>
 
