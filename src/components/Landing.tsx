@@ -53,7 +53,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
           <h1 className="font-black tracking-tight mb-3 animate-fade-in-up text-[34px] sm:text-5xl leading-[1.05]" style={{ animationDelay: "0.1s" }}>
             <span className="block">3 יוצרי תוכן</span>
             <span className="block">שמתאימים <span style={{ background: "linear-gradient(135deg, hsl(var(--brand-yellow)), hsl(var(--brand-pink)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>בדיוק</span></span>
-            <span className="block">לקמפיין שלך</span>
+            <span className="block">לעסק שלך</span>
           </h1>
 
           <p className="text-[15px] text-white/85 font-medium mb-6 animate-fade-in-up leading-relaxed max-w-md" style={{ animationDelay: "0.2s" }}>
