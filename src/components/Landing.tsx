@@ -61,69 +61,21 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
             פותחים קמפיין ומקבלים 3 התאמות חכמות תוך פחות מדקה.
           </p>
 
-          {/* Product preview card */}
-          <div className="relative mb-7 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-            <div className="absolute -inset-1 rounded-[2rem] opacity-60 blur-xl" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }} />
-            <div className="relative bg-card text-foreground rounded-[1.75rem] p-4 shadow-cta-lg border border-white/40">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-xl bg-brand grid place-items-center">
-                    <Sparkles className="w-3.5 h-3.5 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground leading-none">קמפיין פעיל</div>
-                    <div className="text-[12px] font-extrabold leading-tight mt-0.5">השקת סרום פנים</div>
-                  </div>
-                </div>
-                <span className="text-[9px] font-bold px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-600 ltr-num">3/3 התאמות</span>
-              </div>
-
-              <div className="space-y-2">
-                {[
-                  { name: "נועה לוי", meta: "Instagram · 124K", score: 94, gradient: "from-pink-400 to-purple-500", avatar: "נ" },
-                  { name: "איתי כהן", meta: "Instagram · 86K", score: 91, gradient: "from-orange-400 to-pink-500", avatar: "א" },
-                  { name: "שירה ברק", meta: "Instagram · 85K", score: 89, gradient: "from-yellow-400 to-orange-500", avatar: "ש" },
-                ].map((c) => (
-                  <div key={c.name} className="flex items-center gap-2.5 p-2 rounded-2xl bg-muted/50 border border-border/60">
-                    <div className={`shrink-0 w-9 h-9 rounded-full bg-gradient-to-br ${c.gradient} grid place-items-center text-primary-foreground font-black text-xs shadow-soft`}>
-                      {c.avatar}
-                    </div>
-                    <div className="flex-1 min-w-0 text-right">
-                      <div className="text-[12px] font-extrabold leading-tight">{c.name}</div>
-                      <div className="text-[10px] text-muted-foreground font-semibold ltr-num leading-tight mt-0.5">{c.meta}</div>
-                    </div>
-                    <div className="shrink-0 flex items-center gap-1.5">
-                      <div className="w-12 h-1.5 rounded-full bg-muted overflow-hidden">
-                        <div className="h-full rounded-full transition-all" style={{ width: `${Math.max(8, Math.min(100, ((c.score - 85) / 15) * 100))}%`, background: "linear-gradient(90deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }} />
-                      </div>
-                      <span className="text-[11px] font-black ltr-num" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>{c.score}%</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-3 pt-3 border-t border-border/60 flex items-center justify-between">
-                <span className="text-[10px] text-muted-foreground font-semibold">הותאם תוך</span>
-                <span className="text-[11px] font-black ltr-num text-brand">47 שניות</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2.5 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+          <div className="flex flex-row-reverse gap-2.5 animate-fade-in-up mt-2" style={{ animationDelay: "0.4s" }}>
             <button
               onClick={onStart}
-              className="btn-glow shine-on-hover w-full inline-flex items-center justify-center gap-2 py-4 text-base font-extrabold text-foreground bg-card rounded-full shadow-cta-lg"
+              className="btn-glow shine-on-hover flex-1 inline-flex items-center justify-center gap-2 py-3.5 text-sm font-extrabold text-foreground bg-card rounded-full shadow-cta-lg"
             >
-              <Megaphone className="w-5 h-5" />
+              <Megaphone className="w-4 h-4" />
               אני מפרסם
               <ArrowLeft className="w-4 h-4" />
             </button>
             <button
               onClick={goCreator}
-              className="w-full inline-flex items-center justify-center gap-2 py-3 text-sm font-bold text-white/90 tap-scale"
+              className="flex-1 inline-flex items-center justify-center gap-2 py-3.5 text-sm font-bold text-white rounded-full bg-white/15 backdrop-blur border border-white/25 tap-scale"
             >
-              <span>אני יוצר תוכן</span>
-              <span className="opacity-70">- הצטרפו לבטא</span>
+              <Heart className="w-4 h-4" />
+              אני יוצר תוכן
             </button>
           </div>
         </div>
