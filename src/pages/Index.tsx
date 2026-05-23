@@ -100,17 +100,35 @@ const Index = () => {
     return <Results creators={creators} onMore={handleMore} onRestart={handleRestart} onNewCampaign={() => setScreen("form")} loadingMore={loadingMore} />;
   };
 
+  const dashboardHref = user
+    ? user.role === "advertiser" ? "/app/dashboard" : "/app/creator/dashboard"
+    : "/auth";
+
+  const FloatingAuthBtn = (
+    <Link
+      to={dashboardHref}
+      className="fixed top-3 left-3 z-50 inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-card/90 backdrop-blur border border-border text-xs font-bold shadow-soft hover:bg-card transition-colors"
+    >
+      <LogIn className="w-3.5 h-3.5" />
+      {user ? "אזור אישי" : "התחברות"}
+    </Link>
+  );
+
   if (!isMobile && screen === "landing") {
     return (
-      <DesktopLanding
-        onStart={() => setScreen("form")}
-        onCreatorJoin={() => setScreen("creator-onboarding")}
-      />
+      <>
+        {FloatingAuthBtn}
+        <DesktopLanding
+          onStart={() => setScreen("form")}
+          onCreatorJoin={() => navigate("/auth?role=creator")}
+        />
+      </>
     );
   }
 
   return (
     <div className={isMobile ? "mobile-bg md:min-h-screen md:flex md:items-start md:justify-center md:py-6" : "mobile-bg min-h-screen"}>
+      {screen === "landing" && FloatingAuthBtn}
       <div className={isMobile ? "mobile-shell" : "desktop-shell"}>{renderScreen()}</div>
     </div>
   );
