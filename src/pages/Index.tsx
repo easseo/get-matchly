@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import Landing from "@/components/Landing";
 import DesktopLanding from "@/components/DesktopLanding";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -9,6 +10,8 @@ import CreatorOnboarding from "@/components/CreatorOnboarding";
 import { type ScoredCreator } from "@/data/creators";
 import { saveCampaign, matchAndSave } from "@/lib/matching";
 import { toast } from "@/hooks/use-toast";
+import { LogIn } from "lucide-react";
+import { useDemoAuth } from "@/hooks/useDemoAuth";
 
 type Screen = "landing" | "form" | "loading" | "results" | "creator-onboarding";
 
