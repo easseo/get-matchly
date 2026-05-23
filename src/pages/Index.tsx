@@ -17,6 +17,8 @@ type Screen = "landing" | "form" | "loading" | "results" | "creator-onboarding";
 
 const Index = () => {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
+  const { user } = useDemoAuth();
   const [screen, setScreen] = useState<Screen>("landing");
   const [campaign, setCampaign] = useState<CampaignData | null>(null);
   const [campaignId, setCampaignId] = useState<string | null>(null);
