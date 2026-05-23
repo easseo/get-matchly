@@ -84,7 +84,7 @@ const Index = () => {
       return (
         <Landing
           onStart={() => setScreen("form")}
-          onCreatorJoin={() => setScreen("creator-onboarding")}
+          onCreatorJoin={() => navigate("/auth?role=creator")}
         />
       );
     if (screen === "creator-onboarding")
