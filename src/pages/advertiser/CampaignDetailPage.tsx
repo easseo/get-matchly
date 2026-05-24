@@ -48,9 +48,19 @@ export default function AdvertiserCampaignDetailPage() {
 
   useEffect(() => { fetchData(); }, [id]);
 
-  const updateProposalStatus = async (proposalId: string, status: "accepted" | "rejected") => {
-    setUpdating(proposalId);
-    await supabase.from("proposals").update({ status }).eq("id", proposalId);
+  const updateProposalStatus = async (proposal: ProposalWithCreator, status: "accepted" | "rejected") => {
+    setUpdating(proposal.id);
+    await supabase.from("proposals").update({ status }).eq("id", proposal.id);
+
+    // When accepting — create a conversation if not exists
+    if (status === "accepted") {
+      await supabase.from("conversations").upsert({
+        campaign_id: proposal.campaign_id,
+        advertiser_id: campaign!.advertiser_id,
+        creator_id: proposal.creator_id,
+      }, { onConflict: "campaign_id,creator_id" });
+    }
+
     await fetchData();
     setUpdating(null);
   };
@@ -183,7 +193,7 @@ export default function AdvertiserCampaignDetailPage() {
                           {p.status === "pending" && (
                             <div className="flex gap-2">
                               <button
-                                onClick={() => updateProposalStatus(p.id, "accepted")}
+                                onClick={() => updateProposalStatus(p, "accepted")}
                                 disabled={updating === p.id}
                                 className="flex-1 py-2 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-1.5 disabled:opacity-60"
                                 style={{ background: "var(--gradient-brand)" }}
@@ -192,7 +202,7 @@ export default function AdvertiserCampaignDetailPage() {
                                 אשר
                               </button>
                               <button
-                                onClick={() => updateProposalStatus(p.id, "rejected")}
+                                onClick={() => updateProposalStatus(p, "rejected")}
                                 disabled={updating === p.id}
                                 className="px-5 py-2 rounded-xl text-sm font-bold text-red-500 border border-red-200 hover:bg-red-50 transition-colors disabled:opacity-60 flex items-center gap-1.5"
                               >
