@@ -1,7 +1,8 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Compass, FileText, DollarSign, Star, Settings, LogOut, Bell, ChevronRight, Search, MessageSquare } from "lucide-react";
+import { LayoutDashboard, Compass, FileText, DollarSign, Star, Settings, LogOut, ChevronRight, Search, MessageSquare } from "lucide-react";
 import matchlyIcon from "@/assets/matchly-icon.png";
 import { useUser } from "@/context/UserContext";
+import NotificationBell from "@/components/NotificationBell";
 
 const mobileNavItems = [
   { icon: LayoutDashboard, label: "בקרה", path: "/creator", end: true },
@@ -105,10 +106,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-3" dir="rtl">
-            <button className="relative p-1.5 rounded-xl hover:bg-gray-100 transition-colors">
-              <Bell size={18} className="text-gray-500" />
-              <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary" />
-            </button>
+            <NotificationBell />
             <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate("/creator/settings")}>
               <div className="hidden md:block text-right">
                 <div className="text-sm font-bold text-gray-800">{name}</div>

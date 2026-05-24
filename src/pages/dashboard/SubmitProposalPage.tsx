@@ -41,6 +41,16 @@ export default function SubmitProposalPage() {
         status: "pending",
       });
       if (error) throw error;
+
+      // Notify advertiser about new proposal
+      if (campaign) {
+        await supabase.from("notifications").insert({
+          user_id: campaign.advertiser_id,
+          type: "new_proposal",
+          data: { message: `הצעה חדשה על "${campaign.title}"`, campaign_id: id },
+        });
+      }
+
       navigate(`/creator/campaigns/${id}`);
     } catch (err: any) {
       setError(err.message);
