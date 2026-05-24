@@ -8,7 +8,7 @@ import Loading from "@/components/Loading";
 import Results from "@/components/Results";
 import CreatorOnboarding from "@/components/CreatorOnboarding";
 import { type ScoredCreator } from "@/data/creators";
-import { saveCampaign, matchAndSave } from "@/lib/matching";
+import { runMatchingEngine } from "@/lib/matching";
 import { toast } from "@/hooks/use-toast";
 import { LogIn } from "lucide-react";
 import { useDemoAuth } from "@/hooks/useDemoAuth";
