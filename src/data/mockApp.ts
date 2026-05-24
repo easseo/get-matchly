@@ -15,7 +15,8 @@ export type AppCampaign = {
   status: CampaignStatus;
   proposals: number;
   views: number;
-  cover: string; // gradient class
+  cover: string; // gradient class (fallback)
+  coverImage: string; // real photo URL
   description: string;
 };
 
@@ -32,6 +33,7 @@ export type Proposal = {
   submittedAt: string;
   message: string;
   gradient: string;
+  avatar: string;
 };
 
 export type Payment = {
@@ -50,6 +52,7 @@ export type ReviewItem = {
   date: string;
   text: string;
   gradient: string;
+  avatar: string;
 };
 
 const gradients = [
@@ -82,6 +85,7 @@ export const mockCampaigns: AppCampaign[] = [
     proposals: 12,
     views: 1840,
     cover: covers[0],
+    coverImage: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&q=80",
     description: "אנחנו מחפשים יוצרי תוכן בתחום האופנה והלייפסטייל להציג את הקולקציה החדשה שלנו.",
   },
   {
@@ -96,6 +100,7 @@ export const mockCampaigns: AppCampaign[] = [
     proposals: 7,
     views: 920,
     cover: covers[1],
+    coverImage: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&q=80",
     description: "סדרת ביקורות אותנטיות על מוצרי הטיפוח הטבעיים שלנו עם דגש על מרכיבים פעילים.",
   },
   {
@@ -110,6 +115,7 @@ export const mockCampaigns: AppCampaign[] = [
     proposals: 4,
     views: 540,
     cover: covers[2],
+    coverImage: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80",
     description: "מותג מזון אורגני חדש מחפש יוצרים בעלי קהל מחויב לאורח חיים בריא.",
   },
   {
@@ -124,6 +130,7 @@ export const mockCampaigns: AppCampaign[] = [
     proposals: 9,
     views: 1320,
     cover: covers[3],
+    coverImage: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80",
     description: "אפליקציית כושר חדשה מחפשת יוצרי תוכן בתחום הספורט והבריאות לקמפיין השקה.",
   },
   {
@@ -138,6 +145,7 @@ export const mockCampaigns: AppCampaign[] = [
     proposals: 15,
     views: 2410,
     cover: covers[4],
+    coverImage: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80",
     description: "בית קפה חדש שמחפש יוצרי תוכן קולינריים להפקת פוסטים וסטוריז של פתיחה.",
   },
 ];
@@ -156,6 +164,7 @@ export const mockProposals: Proposal[] = [
     submittedAt: "לפני יומיים",
     message: "היי! התוכן שלכם מתאים בול לקהל שלי. אשמח להציג את הקולקציה ברילס וסטוריז.",
     gradient: gradients[0],
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80",
   },
   {
     id: "p2",
@@ -170,6 +179,7 @@ export const mockProposals: Proposal[] = [
     submittedAt: "לפני 3 ימים",
     message: "מומחית באופנה בת קיימא, אשמח לשתף פעולה עם דגש על אקולוגיה.",
     gradient: gradients[1],
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80",
   },
   {
     id: "p3",
@@ -184,6 +194,7 @@ export const mockProposals: Proposal[] = [
     submittedAt: "לפני יום",
     message: "אני מאמנת כושר עם קהל מחויב. נשמח להציע סדרת רילסים של אימונים עם האפליקציה.",
     gradient: gradients[2],
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80",
   },
   {
     id: "p4",
@@ -198,6 +209,7 @@ export const mockProposals: Proposal[] = [
     submittedAt: "לפני 5 שעות",
     message: "מתמחה בביקורות סקין-קר אותנטיות. תוכלו לסמוך על חוות דעת כנה ומקצועית.",
     gradient: gradients[3],
+    avatar: "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=100&q=80",
   },
   {
     id: "p5",
@@ -212,6 +224,7 @@ export const mockProposals: Proposal[] = [
     submittedAt: "לפני שבוע",
     message: "כותב קולינרי, אעלה רילס + 3 סטוריז על חוויית הבית קפה.",
     gradient: gradients[4],
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80",
   },
 ];
 
@@ -231,6 +244,7 @@ export const mockReviews: ReviewItem[] = [
     date: "10 בנובמבר 2025",
     text: "עבודה יוצאת מן הכלל! התוכן באינסטגרם היה יצירתי, איכותי והגיע לפני הזמן. אחוז המעורבות עלה על הציפיות שלנו. ממליצים בחום!",
     gradient: gradients[0],
+    avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&q=80",
   },
   {
     id: "r2",
@@ -240,6 +254,7 @@ export const mockReviews: ReviewItem[] = [
     date: "2 בנובמבר 2025",
     text: "שיתוף פעולה מקצועי ומדוייק. הקריאייטיב היה מרענן ושירת בדיוק את המסר של המותג.",
     gradient: gradients[1],
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
   },
   {
     id: "r3",
@@ -249,5 +264,6 @@ export const mockReviews: ReviewItem[] = [
     date: "25 באוקטובר 2025",
     text: "תוכן נחמד, התקבל היטב על ידי הקהל. נשמח לעבוד שוב בעתיד.",
     gradient: gradients[2],
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80",
   },
 ];
