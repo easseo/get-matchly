@@ -13,6 +13,7 @@ import AdvertiserDashboard from "./pages/app/Dashboard.tsx";
 import MyCampaigns from "./pages/app/MyCampaigns.tsx";
 import CreateCampaignPage from "./pages/app/CreateCampaign.tsx";
 import AllProposals from "./pages/app/AllProposals.tsx";
+import AdvertiserCampaignDetailPage from "./pages/advertiser/CampaignDetailPage.tsx";
 import Messages from "./pages/app/Messages.tsx";
 import Reviews from "./pages/app/Reviews.tsx";
 import Payments from "./pages/app/Payments.tsx";
@@ -42,6 +43,7 @@ const App = () => (
               <Route path="dashboard" element={<AdvertiserDashboard />} />
               <Route path="create" element={<CreateCampaignPage />} />
               <Route path="campaigns" element={<MyCampaigns />} />
+              <Route path="campaigns/:id" element={<AdvertiserCampaignDetailPage />} />
               <Route path="proposals" element={<AllProposals />} />
               <Route path="messages" element={<Messages />} />
               <Route path="reviews" element={<Reviews />} />

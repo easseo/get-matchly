@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { Megaphone, Users, Sparkles, ArrowLeft } from "lucide-react";
+import { Megaphone, Users, Sparkles, ArrowLeft, Loader2 } from "lucide-react";
 import { useDemoAuth, type AppRole } from "@/hooks/useDemoAuth";
+import { supabase } from "@/lib/supabase";
 import matchlyIcon from "@/assets/matchly-icon.png";
 import { cn } from "@/lib/utils";
 
@@ -13,13 +14,39 @@ export default function Auth() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [role, setRole] = useState<AppRole>(initialRole);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const name = fullName.trim() || email.split("@")[0] || (role === "advertiser" ? "מפרסם" : "יוצר");
-    signIn(email.trim() || "demo@matchly.app", name, role);
-    navigate(role === "advertiser" ? "/app/dashboard" : "/app/creator/dashboard");
+    setError("");
+    setLoading(true);
+
+    if (mode === "signin") {
+      const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+      if (err) { setError("אימייל או סיסמה שגויים"); setLoading(false); return; }
+    } else {
+      const name = fullName.trim() || email.split("@")[0];
+      const { error: err } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name, role } } });
+      if (err) { setError(err.message); setLoading(false); return; }
+      // Save role to profiles table
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.from("profiles").upsert({ id: session.user.id, email, full_name: name, role });
+      }
+    }
+
+    // Also set demo auth so AppLayout knows the role
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      const { data: profile } = await supabase.from("profiles").select("full_name, role").eq("id", session.user.id).maybeSingle();
+      const userRole: AppRole = (profile?.role as AppRole) ?? role;
+      signIn(email, profile?.full_name ?? email.split("@")[0], userRole);
+      navigate(userRole === "advertiser" ? "/app/dashboard" : "/app/creator/dashboard");
+    }
+    setLoading(false);
   };
 
   return (
@@ -93,23 +120,26 @@ export default function Auth() {
             <Field label="סיסמה">
               <input
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/40"
               />
             </Field>
 
+            {error && (
+              <p className="text-xs text-red-500 font-semibold text-center">{error}</p>
+            )}
+
             <button
               type="submit"
-              className="w-full py-3.5 rounded-2xl text-primary-foreground font-bold shadow-cta btn-glow tap-scale flex items-center justify-center gap-2"
+              disabled={loading}
+              className="w-full py-3.5 rounded-2xl text-primary-foreground font-bold shadow-cta btn-glow tap-scale flex items-center justify-center gap-2 disabled:opacity-60"
               style={{ background: "var(--gradient-brand)" }}
             >
-              <Sparkles className="w-4 h-4" />
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
               {mode === "signin" ? "כניסה לדשבורד" : "יצירת חשבון"}
             </button>
-
-            <p className="text-[11px] text-center text-muted-foreground font-medium pt-1">
-              מצב הדגמה — כל שדה יוביל אתכם לדשבורד החי
-            </p>
           </form>
         </div>
       </div>

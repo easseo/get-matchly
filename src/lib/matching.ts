@@ -1,116 +1,130 @@
 import { supabase } from "./supabase";
 import type { Campaign } from "./supabase";
 
-type CreatorWithProfile = {
-  id: string;
-  full_name: string;
-  email: string;
-  creator_profiles: {
-    instagram_username: string | null;
-    niche: string | null;
-    location: string | null;
-    followers: number | null;
-    engagement_rate: number | null;
-    price_min: number | null;
-    price_max: number | null;
-    content_types: string[] | null;
-    bio: string | null;
-    availability: boolean | null;
-  } | null;
+type CreatorProfile = {
+  user_id: string;
+  instagram_username: string | null;
+  niche: string | null;
+  location: string | null;
+  followers: number | null;
+  engagement_rate: number | null;
+  price_min: number | null;
+  price_max: number | null;
+  content_types: string[] | null;
+  bio: string | null;
+  availability: boolean | null;
+  // joined from profiles (may be null if RLS blocks)
+  full_name?: string | null;
 };
 
 export type MatchResult = {
   creator_id: string;
   score: number;
   reasons: string[];
-  creator: CreatorWithProfile;
+  budget_fit: boolean;
+  creator: {
+    id: string;
+    full_name: string;
+    email: string;
+    creator_profiles: CreatorProfile | null;
+  };
 };
 
-const nicheMap: Record<string, string[]> = {
-  "ביוטי":         ["ביוטי"],
-  "אופנה":         ["אופנה"],
-  "אוכל ומסעדות":  ["אוכל ומסעדות"],
-  "כושר ובריאות":  ["כושר ובריאות"],
-  "טכנולוגיה":     ["טכנולוגיה"],
-  "טיולים":        ["טיולים"],
-  "גיימינג":       ["גיימינג"],
-  "בית ועיצוב":    ["בית ועיצוב"],
-  "חינוך":         ["חינוך"],
-};
-
-function scoreCreator(campaign: Campaign, creator: CreatorWithProfile): { score: number; reasons: string[] } {
-  const cp = creator.creator_profiles;
-  if (!cp) return { score: 0, reasons: [] };
-
+function scoreCreator(
+  campaign: Campaign,
+  cp: CreatorProfile
+): { score: number; reasons: string[]; budget_fit: boolean } {
   let score = 0;
   const reasons: string[] = [];
 
-  // Niche match (30 pts)
-  const matchingNiches = nicheMap[campaign.business_type] ?? [];
-  if (matchingNiches.includes(cp.niche ?? "")) {
-    score += 30;
-    reasons.push(`מומחה בתחום ${cp.niche}`);
-  } else {
-    score += 5;
+  // ── Niche match: 40 pts ─────────────────────────────────────────────────
+  const creatorNiche = cp.niche ?? "";
+  if (creatorNiche && creatorNiche === campaign.business_type) {
+    score += 40;
+    reasons.push(`מומחה בתחום ${creatorNiche}`);
+  } else if (creatorNiche) {
+    score -= 15; // strong mismatch penalty
   }
 
-  // Location match (20 pts)
-  if (
-    campaign.target_location === "כל הארץ" ||
-    cp.location === "כל הארץ" ||
-    cp.location === campaign.target_location
-  ) {
-    score += 20;
-    reasons.push(`מיקום מתאים: ${cp.location}`);
-  }
-
-  // Budget overlap (25 pts)
+  // ── Budget fit: 25 pts ──────────────────────────────────────────────────
   const priceMin = cp.price_min ?? 0;
   const priceMax = cp.price_max ?? 999999;
-  if (priceMin <= campaign.budget_max && priceMax >= campaign.budget_min) {
+  const budgetFit = priceMin <= campaign.budget_max && priceMax >= campaign.budget_min;
+  if (budgetFit) {
     score += 25;
-    reasons.push("מחיר בטווח התקציב");
-  } else if (priceMin <= campaign.budget_max * 1.5) {
+    reasons.push("מחיר בתוך התקציב");
+  }
+
+  // ── Location match: 15 pts ──────────────────────────────────────────────
+  const loc = cp.location ?? "";
+  if (!campaign.target_location || campaign.target_location === "כל הארץ" || loc === "כל הארץ" || loc === campaign.target_location) {
+    score += 15;
+    reasons.push(`מיקום מתאים: ${loc || "ארצי"}`);
+  }
+
+  // ── Engagement rate: 10 pts ─────────────────────────────────────────────
+  const eng = cp.engagement_rate ?? 0;
+  if (eng >= 5) {
     score += 10;
-    reasons.push("מחיר קרוב לתקציב");
+    reasons.push(`מעורבות גבוהה ${eng}%`);
+  } else if (eng >= 3) {
+    score += 6;
+    reasons.push(`מעורבות טובה ${eng}%`);
+  } else if (eng > 0) {
+    score += 3;
   }
 
-  // Content format match (20 pts)
-  const creatorTypes = cp.content_types ?? [];
-  const matched = creatorTypes.filter((t) => campaign.content_format.includes(t));
-  if (matched.length > 0) {
-    score += 20;
-    reasons.push(`פורמט תוכן: ${matched.join(", ")}`);
+  // ── Followers: 10 pts ───────────────────────────────────────────────────
+  const followers = cp.followers ?? 0;
+  if (followers >= 100000) {
+    score += 10;
+    reasons.push(`${Math.round(followers / 1000)}K עוקבים`);
+  } else if (followers >= 30000) {
+    score += 7;
+    reasons.push(`${Math.round(followers / 1000)}K עוקבים`);
+  } else if (followers >= 10000) {
+    score += 4;
+    reasons.push(`${Math.round(followers / 1000)}K עוקבים`);
+  } else if (followers > 0) {
+    score += 2;
   }
 
-  // Engagement bonus (5 pts)
-  if ((cp.engagement_rate ?? 0) >= 3) {
-    score += 5;
-    reasons.push(`מעורבות ${cp.engagement_rate}%`);
-  }
-
-  return { score: Math.min(score, 100), reasons };
+  return { score: Math.max(0, Math.min(score, 100)), reasons, budget_fit: budgetFit };
 }
 
 export async function runMatchingEngine(campaign: Campaign): Promise<MatchResult[]> {
-  const { data } = await supabase
-    .from("profiles")
-    .select("id, full_name, email, creator_profiles(*)")
-    .eq("role", "creator");
+  const { data, error } = await supabase
+    .from("creator_profiles")
+    .select("*");
 
-  if (!data || data.length === 0) return [];
+  if (error) throw new Error(`creator_profiles query failed: ${error.message}`);
+  if (!data || data.length === 0) throw new Error(`creator_profiles returned empty (count=0)`);
 
-  const results: MatchResult[] = (data as CreatorWithProfile[])
-    .filter((c) => c.creator_profiles?.availability !== false)
-    .map((creator) => {
-      const { score, reasons } = scoreCreator(campaign, creator);
-      return { creator_id: creator.id, score, reasons, creator };
+  const results: MatchResult[] = (data as CreatorProfile[])
+    .map((cp) => {
+      const { score, reasons, budget_fit } = scoreCreator(campaign, cp);
+      const displayName = cp.full_name ?? cp.instagram_username ?? "יוצר תוכן";
+      return {
+        creator_id: cp.user_id,
+        score,
+        reasons,
+        budget_fit,
+        creator: {
+          id: cp.user_id,
+          full_name: displayName,
+          email: "",
+          creator_profiles: cp,
+        },
+      };
     })
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 15); // return top 15
+    .sort((a, b) => {
+      if (a.budget_fit !== b.budget_fit) return a.budget_fit ? -1 : 1;
+      return b.score - a.score;
+    });
 
+  // Try to save matches (silently ignore RLS errors)
   if (results.length > 0) {
-    await supabase.from("matches").upsert(
+    supabase.from("matches").upsert(
       results.map((r) => ({
         campaign_id: campaign.id,
         creator_id: r.creator_id,
@@ -118,7 +132,7 @@ export async function runMatchingEngine(campaign: Campaign): Promise<MatchResult
         reasons: r.reasons,
       })),
       { onConflict: "campaign_id,creator_id" }
-    );
+    ).then(({ error }) => { if (error) console.warn("matches upsert:", error.message); });
   }
 
   return results;
@@ -127,16 +141,28 @@ export async function runMatchingEngine(campaign: Campaign): Promise<MatchResult
 export async function getExistingMatches(campaignId: string): Promise<MatchResult[]> {
   const { data } = await supabase
     .from("matches")
-    .select("*, profiles!matches_creator_id_fkey(id, full_name, email, creator_profiles(*))")
+    .select("*, creator_profiles!matches_creator_id_fkey(*)")
     .eq("campaign_id", campaignId)
     .order("score", { ascending: false });
 
   if (!data) return [];
 
-  return data.map((m: any) => ({
-    creator_id: m.creator_id,
-    score: m.score,
-    reasons: m.reasons ?? [],
-    creator: m.profiles as CreatorWithProfile,
-  }));
+  return data
+    .filter((m: any) => m.creator_profiles)
+    .map((m: any) => {
+      const cp = m.creator_profiles as CreatorProfile;
+      const displayName = cp.instagram_username ?? "יוצר תוכן";
+      return {
+        creator_id: m.creator_id,
+        score: m.score,
+        reasons: m.reasons ?? [],
+        budget_fit: true,
+        creator: {
+          id: m.creator_id,
+          full_name: displayName,
+          email: "",
+          creator_profiles: cp,
+        },
+      };
+    });
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   ChevronRight, Users, Calendar, DollarSign, CheckCircle, XCircle,
@@ -47,6 +47,16 @@ function getAvatar(creatorId: string) {
   return creatorAvatars[hash % creatorAvatars.length];
 }
 
+function StatChip({ icon, label, highlight = false }: { icon: React.ReactNode; label: string; highlight?: boolean }) {
+  return (
+    <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-semibold ${
+      highlight ? "bg-green-50 text-green-700 border border-green-100" : "bg-gray-50 text-gray-500 border border-gray-100"
+    }`}>
+      {icon}{label}
+    </span>
+  );
+}
+
 export default function AdvertiserCampaignDetailPage() {
   const { id } = useParams();
   const [campaign, setCampaign] = useState<Campaign | null>(null);
@@ -57,6 +67,7 @@ export default function AdvertiserCampaignDetailPage() {
   const [allMatches, setAllMatches] = useState<MatchResult[]>([]);
   const [visibleCount, setVisibleCount] = useState(3);
   const [matching, setMatching] = useState(false);
+  const [matchError, setMatchError] = useState<string | null>(null);
   const matches = allMatches.slice(0, visibleCount);
 
   const fetchData = async () => {
@@ -79,26 +90,36 @@ export default function AdvertiserCampaignDetailPage() {
   // Auto-run matching after campaign loads
   useEffect(() => {
     if (!campaign || !id) return;
-    getExistingMatches(id).then(async (existing) => {
-      if (existing.length > 0) {
-        setAllMatches(existing);
-      } else {
-        // Auto-run matching for new campaigns
-        setMatching(true);
-        const results = await runMatchingEngine(campaign);
-        setAllMatches(results);
-        setVisibleCount(3);
+    (async () => {
+      try {
+        const existing = await getExistingMatches(id);
+        if (existing.length > 0) {
+          setAllMatches(existing);
+        } else {
+          setMatching(true);
+          const results = await runMatchingEngine(campaign);
+          setAllMatches(results);
+          setVisibleCount(3);
+          setMatching(false);
+        }
+      } catch (err: any) {
+        setMatchError(err?.message ?? String(err));
         setMatching(false);
       }
-    });
+    })();
   }, [campaign?.id]);
 
   const handleRefreshMatching = async () => {
     if (!campaign) return;
     setMatching(true);
+    setMatchError(null);
     setVisibleCount(3);
-    const results = await runMatchingEngine(campaign);
-    setAllMatches(results);
+    try {
+      const results = await runMatchingEngine(campaign);
+      setAllMatches(results);
+    } catch (err: any) {
+      setMatchError(err?.message ?? String(err));
+    }
     setMatching(false);
   };
 
@@ -192,7 +213,7 @@ export default function AdvertiserCampaignDetailPage() {
             <div>
               <h2 className="font-extrabold text-gray-900">יוצרים מומלצים עבורך</h2>
               <p className="text-xs text-gray-400 mt-0.5">
-                {matching ? "מחפש יוצרים מתאימים..." : allMatches.length > 0 ? `נמצאו ${allMatches.length} יוצרים מתאימים` : ""}
+                {matching ? "מחפש יוצרי תוכן מתאימים..." : matchError ? `שגיאה: ${matchError}` : allMatches.length > 0 ? `נמצאו ${allMatches.length} יוצרי תוכן מתאימים` : "לחץ על חפש שוב"}
               </p>
             </div>
           </div>
@@ -209,16 +230,25 @@ export default function AdvertiserCampaignDetailPage() {
         {matching ? (
           <div className="py-16 text-center">
             <div className="w-12 h-12 rounded-full border-2 border-primary border-t-transparent animate-spin mx-auto mb-4" />
-            <p className="font-bold text-gray-700 mb-1">מחפש את היוצרים המושלמים לקמפיין שלך</p>
-            <p className="text-sm text-gray-400">מנתח התאמה לפי תחום, מיקום ותקציב...</p>
+            <p className="font-bold text-gray-700 mb-1">מחפש את יוצרי התוכן המושלמים לקמפיין שלך</p>
+            <p className="text-sm text-gray-400">מנתח התאמה לפי תחום, תקציב, מיקום ומעורבות...</p>
           </div>
         ) : matches.length === 0 ? (
-          <div className="py-16 text-center px-6">
-            <div className="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center mx-auto mb-4">
-              <Sparkles size={24} className="text-purple-400" />
-            </div>
-            <p className="font-extrabold text-gray-700 mb-2">לא נמצאו יוצרים מתאימים</p>
-            <p className="text-sm text-gray-400 mb-5">נסה לשנות את הגדרות הקמפיין כדי להרחיב את החיפוש</p>
+          <div className="py-10 text-center px-6">
+            {matchError ? (
+              <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-4 text-right">
+                <p className="font-bold text-red-700 text-sm mb-1">שגיאה בחיפוש:</p>
+                <p className="text-xs text-red-600 font-mono break-all">{matchError}</p>
+              </div>
+            ) : (
+              <>
+                <div className="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center mx-auto mb-4">
+                  <Sparkles size={24} className="text-purple-400" />
+                </div>
+                <p className="font-extrabold text-gray-700 mb-2">לא נמצאו יוצרי תוכן מתאימים</p>
+                <p className="text-sm text-gray-400 mb-5">נסה לשנות את הגדרות הקמפיין כדי להרחיב את החיפוש</p>
+              </>
+            )}
             <button
               onClick={handleRefreshMatching}
               className="px-6 py-2.5 rounded-xl text-sm font-bold text-white"
@@ -229,102 +259,133 @@ export default function AdvertiserCampaignDetailPage() {
           </div>
         ) : (
           <>
-            <div className="divide-y divide-gray-50">
+            <div className="grid gap-3 p-4">
               {matches.map((m, i) => {
                 const cp = m.creator.creator_profiles;
                 const avatar = getAvatar(m.creator_id);
-                const scoreColor =
-                  m.score >= 80 ? "text-green-600 bg-green-50" :
-                  m.score >= 60 ? "text-blue-600 bg-blue-50" :
-                  "text-orange-600 bg-orange-50";
+                const score = m.score;
+                const isTopMatch = score >= 75;
+                const isGoodMatch = score >= 50;
+                const scoreRing = isTopMatch
+                  ? "ring-2 ring-green-400"
+                  : isGoodMatch
+                  ? "ring-2 ring-blue-300"
+                  : "ring-2 ring-gray-200";
+                const scoreBg = isTopMatch
+                  ? "bg-green-500 text-white"
+                  : isGoodMatch
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-gray-600";
+                const scoreLabel = isTopMatch ? "התאמה מצוינת" : isGoodMatch ? "התאמה טובה" : "התאמה חלקית";
 
                 return (
-                  <div key={m.creator_id} className="flex items-center gap-4 p-5 hover:bg-gray-50/50 transition-colors">
-                    {/* Rank */}
-                    <div className="w-6 text-center shrink-0">
-                      <span className="text-sm font-extrabold text-gray-300">#{i + 1}</span>
-                    </div>
+                  <div
+                    key={m.creator_id}
+                    className={`bg-white rounded-2xl border ${isTopMatch ? "border-green-100 shadow-md shadow-green-50" : "border-gray-100 shadow-sm"} p-4 transition-all`}
+                  >
+                    {/* Top row: rank + avatar + name + score badge */}
+                    <div className="flex items-start gap-3 mb-3">
+                      <span className="text-xs font-black text-gray-300 pt-1 w-5 shrink-0">#{i + 1}</span>
 
-                    {/* Avatar */}
-                    <div className="relative shrink-0">
-                      <img
-                        src={avatar}
-                        alt={m.creator.full_name}
-                        className="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-md"
-                      />
-                      <div className="absolute -bottom-1 -left-1 w-5 h-5 rounded-full bg-pink-500 flex items-center justify-center">
-                        <Instagram size={10} className="text-white" />
+                      <div className="relative shrink-0">
+                        <img
+                          src={avatar}
+                          alt={m.creator.full_name}
+                          className={`w-14 h-14 rounded-full object-cover shadow-md ${scoreRing}`}
+                        />
+                        <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-sm">
+                          <Instagram size={10} className="text-white" />
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className="font-extrabold text-gray-900 text-sm">{m.creator.full_name}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                          <span className="font-extrabold text-gray-900">{m.creator.full_name}</span>
+                          {!m.budget_fit && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-50 text-orange-600 border border-orange-100 font-bold">
+                              מחוץ לתקציב
+                            </span>
+                          )}
+                        </div>
                         {cp?.instagram_username && (
-                          <span className="text-xs text-gray-400">@{cp.instagram_username}</span>
+                          <p className="text-xs text-gray-400 mb-1">@{cp.instagram_username}</p>
                         )}
                         {cp?.niche && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 font-bold">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-bold">
                             {cp.niche}
                           </span>
                         )}
                       </div>
 
-                      <div className="flex items-center gap-3 text-xs text-gray-400 mb-2">
-                        {cp?.followers && (
-                          <span className="flex items-center gap-1">
-                            <Users size={10} /> {cp.followers.toLocaleString()}
-                          </span>
-                        )}
-                        {cp?.engagement_rate && (
-                          <span className="flex items-center gap-1">
-                            <TrendingUp size={10} /> {cp.engagement_rate}%
-                          </span>
-                        )}
-                        {cp?.location && (
-                          <span className="flex items-center gap-1">
-                            <MapPin size={10} /> {cp.location}
-                          </span>
-                        )}
-                        {cp?.price_min && cp?.price_max && (
-                          <span className="font-semibold text-gray-600">
-                            ₪{cp.price_min.toLocaleString()}–₪{cp.price_max.toLocaleString()}
-                          </span>
-                        )}
+                      {/* Score pill */}
+                      <div className={`shrink-0 flex flex-col items-center justify-center rounded-2xl px-3 py-2 ${scoreBg}`}>
+                        <span className="text-xl font-black leading-none">{score}%</span>
+                        <span className="text-[9px] font-bold mt-0.5 opacity-90">{scoreLabel}</span>
                       </div>
+                    </div>
 
-                      <div className="flex flex-wrap gap-1">
-                        {m.reasons.map((r) => (
-                          <span key={r} className="text-[10px] px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-100 font-medium">
-                            ✓ {r}
+                    {/* Stats row */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {cp?.followers != null && (
+                        <StatChip icon={<Users size={10} />} label={`${cp.followers >= 1000 ? `${(cp.followers/1000).toFixed(0)}K` : cp.followers} עוקבים`} />
+                      )}
+                      {cp?.engagement_rate != null && (
+                        <StatChip icon={<TrendingUp size={10} />} label={`${cp.engagement_rate}% מעורבות`} highlight={cp.engagement_rate >= 3} />
+                      )}
+                      {cp?.location && (
+                        <StatChip icon={<MapPin size={10} />} label={cp.location} />
+                      )}
+                      {cp?.price_min != null && cp?.price_max != null && (
+                        <StatChip
+                          icon={<DollarSign size={10} />}
+                          label={`₪${cp.price_min.toLocaleString()}–₪${cp.price_max.toLocaleString()}`}
+                          highlight={m.budget_fit}
+                        />
+                      )}
+                    </div>
+
+                    {/* Content formats */}
+                    {cp?.content_types && cp.content_types.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {cp.content_types.map((t) => (
+                          <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">
+                            {t}
                           </span>
                         ))}
                       </div>
-                    </div>
+                    )}
 
-                    {/* Score */}
-                    <div className={`shrink-0 text-center px-3 py-2 rounded-2xl ${scoreColor}`}>
-                      <div className="text-xl font-black">{m.score}</div>
-                      <div className="text-[10px] font-bold">התאמה</div>
-                    </div>
+                    {/* Why matched */}
+                    {m.reasons.length > 0 && (
+                      <div className="bg-green-50 rounded-xl p-3 border border-green-100">
+                        <p className="text-[10px] font-extrabold text-green-700 mb-1.5">למה זה יוצר התוכן המתאים לך</p>
+                        <div className="flex flex-wrap gap-1">
+                          {m.reasons.map((r) => (
+                            <span key={r} className="text-[10px] px-2 py-0.5 rounded-full bg-white text-green-700 border border-green-200 font-medium">
+                              ✓ {r}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
 
-            {/* Load more / no more */}
-            <div className="px-6 py-4 border-t border-gray-50">
+            {/* Load more / exhausted */}
+            <div className="px-4 pb-4">
               {visibleCount < allMatches.length ? (
                 <button
                   onClick={() => setVisibleCount(prev => prev + 3)}
-                  className="w-full py-3 rounded-2xl text-sm font-bold border-2 border-dashed border-primary/30 text-primary hover:bg-primary/5 transition-colors"
+                  className="w-full py-3 rounded-2xl text-sm font-bold border-2 border-dashed border-primary/30 text-primary hover:bg-primary/5 transition-colors flex items-center justify-center gap-2"
                 >
-                  מצא לי עוד 3 יוצרים ({allMatches.length - visibleCount} נוספים)
+                  <Sparkles size={14} />
+                  מצא לי עוד 3 יוצרי תוכן ({allMatches.length - visibleCount} נוספים)
                 </button>
               ) : (
-                <div className="text-center">
-                  <p className="text-xs text-gray-400 mb-2">הצגת את כל {allMatches.length} היוצרים המתאימים</p>
+                <div className="text-center py-2">
+                  <p className="text-xs text-gray-400 mb-2">הצגת את כל {allMatches.length} יוצרי התוכן המתאימים</p>
                   <button
                     onClick={handleRefreshMatching}
                     className="text-xs font-bold text-primary hover:underline flex items-center gap-1 mx-auto"
