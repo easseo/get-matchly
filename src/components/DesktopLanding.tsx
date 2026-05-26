@@ -1,371 +1,294 @@
-import { Sparkles, Megaphone, Users, Zap, Target, Heart, ArrowLeft, Check } from "lucide-react";
-import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useState } from "react";
+import { Instagram, Megaphone, Users, Zap, Target, TrendingUp, ChevronRight, ChevronLeft } from "lucide-react";
 import matchlyIcon from "@/assets/matchly-icon.png";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 
 interface DesktopLandingProps {
   onStart: () => void;
   onCreatorJoin?: () => void;
 }
 
-export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandingProps) {
-  const goCreator = () => onCreatorJoin?.();
-  const prefersReduced = useReducedMotion();
-  const [scrolled, setScrolled] = useState(false);
+const SCREENS = ["intro", "benefits", "cta"] as const;
+type Screen = (typeof SCREENS)[number];
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandingProps) {
+  const [screen, setScreen] = useState<Screen>("intro");
+  const [dir, setDir] = useState<"forward" | "back">("forward");
+
+  const go = (next: Screen, direction: "forward" | "back" = "forward") => {
+    setDir(direction);
+    setScreen(next);
+  };
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--gradient-page)" }}>
-      {/* Header — glass on scroll */}
-      <header className={`sticky top-0 z-30 glass-nav ${scrolled ? "is-scrolled" : ""}`}>
-        <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={matchlyIcon} alt="" className="h-12 w-12 object-contain" />
-            <div className="flex flex-col leading-tight">
-              <span className="text-2xl font-extrabold tracking-tight text-foreground">Matchly</span>
-              <span className="text-[10px] text-muted-foreground font-medium tracking-wider" dir="ltr">
-                INFLUENCE TODAY. MATCH NOW.
-              </span>
-            </div>
-          </div>
-          <nav className="flex items-center gap-2">
-            <a href="#how" className="px-4 py-2 text-sm font-bold text-foreground/70 hover:text-foreground transition-smooth">איך זה עובד</a>
-            <a href="#features" className="px-4 py-2 text-sm font-bold text-foreground/70 hover:text-foreground transition-smooth">למה Matchly</a>
-            <a href="#examples" className="px-4 py-2 text-sm font-bold text-foreground/70 hover:text-foreground transition-smooth">דוגמאות</a>
-            <button
-              onClick={goCreator}
-              className="text-sm font-bold text-foreground/80 px-4 py-2 rounded-full border border-border tap-scale hover:bg-muted transition-smooth"
-            >
-              כניסת יוצרים
-            </button>
-            <button
-              onClick={onStart}
-              className="btn-glow text-sm font-bold text-primary-foreground px-5 py-2.5 rounded-full bg-brand shadow-cta"
-            >
-              התחילו קמפיין
-            </button>
-          </nav>
-        </div>
-      </header>
+    <div className="relative min-h-screen overflow-hidden bg-background" dir="rtl">
+      {/* Progress dots */}
+      <div className="absolute top-6 left-0 right-0 flex justify-center gap-2 z-20">
+        {SCREENS.map((s) => (
+          <div
+            key={s}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              s === screen ? "w-10 bg-brand" : "w-2 bg-gray-200"
+            }`}
+          />
+        ))}
+      </div>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-foreground">
-        <div
-          className="absolute inset-0 opacity-95 pointer-events-none animate-gradient-pan"
-          style={{
-            background:
-              "radial-gradient(circle at 15% 0%, hsl(var(--brand-yellow) / 0.55), transparent 45%), radial-gradient(circle at 85% 10%, hsl(var(--brand-pink) / 0.7), transparent 50%), radial-gradient(circle at 50% 100%, hsl(var(--brand-purple) / 0.8), transparent 55%), linear-gradient(180deg, hsl(var(--brand-orange) / 0.35), hsl(var(--brand-purple) / 0.6))",
-          }}
-        />
-        <div className="absolute -top-32 -right-24 w-96 h-96 rounded-full opacity-40 blur-3xl animate-aurora pointer-events-none" style={{ background: "hsl(var(--brand-pink))" }} />
-        <div className="absolute bottom-0 -left-32 w-96 h-96 rounded-full opacity-40 blur-3xl animate-aurora pointer-events-none" style={{ background: "hsl(var(--brand-purple))", animationDelay: "3s" }} />
+      <div
+        key={screen}
+        className="min-h-screen w-full flex"
+        style={{
+          animation: `${dir === "forward" ? "slideInRight" : "slideInLeft"} 0.35s cubic-bezier(0.4,0,0.2,1)`,
+        }}
+      >
+        {screen === "intro" && <IntroScreen onContinue={() => go("benefits")} onCreatorJoin={onCreatorJoin} />}
+        {screen === "benefits" && <BenefitsScreen onBack={() => go("intro", "back")} onContinue={() => go("cta")} />}
+        {screen === "cta" && <CtaScreen onBack={() => go("benefits", "back")} onStart={onStart} onCreatorJoin={onCreatorJoin} />}
+      </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-8 py-24 grid grid-cols-2 gap-12 items-center text-primary-foreground">
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur border border-white/25 mb-6"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-              <span className="text-xs font-semibold text-white/95">פלטפורמה לחיבור יוצרי תוכן לבעלי עסקים ב-60 שניות</span>
-            </motion.div>
+      <style>{`
+        @keyframes slideInRight {
+          from { transform: translateX(60px); opacity: 0; }
+          to   { transform: translateX(0);    opacity: 1; }
+        }
+        @keyframes slideInLeft {
+          from { transform: translateX(-60px); opacity: 0; }
+          to   { transform: translateX(0);     opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
+}
 
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="font-black tracking-tight mb-5 text-6xl leading-[1.05]"
-            >
-              <span className="block">3 יוצרי תוכן</span>
-              <span className="block">
-                שמתאימים{" "}
-                <span style={{ background: "linear-gradient(135deg, hsl(var(--brand-yellow)), hsl(var(--brand-pink)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-                  בדיוק
-                </span>
-              </span>
-              <span className="block">לעסק שלך</span>
-            </motion.h1>
+/* ─── Screen 1: Intro ─────────────────────────────────────────────── */
+function IntroScreen({ onContinue, onCreatorJoin }: { onContinue: () => void; onCreatorJoin?: () => void }) {
+  return (
+    <div className="flex w-full min-h-screen">
+      {/* Left: dark gradient hero */}
+      <div
+        className="flex-1 flex flex-col items-center justify-center px-16 text-center relative overflow-hidden"
+        style={{ background: "linear-gradient(160deg, #1a0533 0%, #2d0a4e 40%, #1f0a3d 100%)" }}
+      >
+        <div className="absolute top-10 left-10 w-96 h-96 rounded-full blur-3xl opacity-25" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full blur-3xl opacity-20" style={{ background: "hsl(var(--brand-purple))" }} />
 
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.25, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="text-lg text-white/85 font-medium mb-8 leading-relaxed max-w-lg"
-            >
-              פותחים קמפיין ומקבלים 3 התאמות חכמות תוך פחות מדקה. בלי לחפש שעות, בלי לנחש - רק התאמות מדויקות.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.4, ease: [0.21, 0.47, 0.32, 0.98] }}
-              className="flex gap-3"
-            >
-              <button
-                onClick={onStart}
-                className="btn-glow shine-on-hover inline-flex items-center justify-center gap-2 px-7 py-4 text-base font-extrabold text-foreground bg-card rounded-full shadow-cta-lg"
-              >
-                <Megaphone className="w-5 h-5" />
-                אני מפרסם
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={goCreator}
-                className="btn-glow inline-flex items-center justify-center gap-2 px-7 py-4 text-base font-extrabold text-primary-foreground bg-white/15 backdrop-blur border border-white/30 rounded-full"
-              >
-                <Heart className="w-5 h-5" />
-                אני יוצר תוכן
-              </button>
-            </motion.div>
+        <div className="relative z-10 flex flex-col items-center max-w-xl">
+          <div className="flex items-center gap-4 mb-12">
+            <img src={matchlyIcon} alt="Matchly" className="w-20 h-20 object-contain" />
+            <span className="text-5xl font-black text-white tracking-tight">Matchly</span>
           </div>
 
-          {/* Product preview card */}
-          <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.9, delay: 0.45, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="relative"
-          >
-            <motion.div
-              animate={prefersReduced ? undefined : { y: [0, -10, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <div className="absolute -inset-2 rounded-[2.5rem] opacity-60 blur-2xl" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }} />
-              <div className="relative bg-card text-foreground rounded-[2rem] p-6 shadow-cta-lg border border-white/40">
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-brand grid place-items-center">
-                      <Sparkles className="w-5 h-5 text-primary-foreground" />
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground leading-none">קמפיין פעיל</div>
-                      <div className="text-base font-extrabold leading-tight mt-1">השקת סרום פנים</div>
-                    </div>
-                  </div>
-                  <span className="text-[11px] font-bold px-3 py-1.5 rounded-full bg-emerald-500/15 text-emerald-600 ltr-num">3/3 התאמות</span>
-                </div>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 border border-white/20 mb-8">
+            <Instagram size={16} className="text-pink-300" />
+            <span className="text-sm font-bold text-white/80">Instagram only</span>
+          </div>
 
-                <Stagger className="space-y-3" stagger={0.1} delay={0.6}>
-                  {[
-                    { name: "נועה לוי", meta: "Instagram · 124K", score: 94, gradient: "from-pink-400 to-purple-500", avatar: "נ" },
-                    { name: "איתי כהן", meta: "Instagram · 86K", score: 91, gradient: "from-orange-400 to-pink-500", avatar: "א" },
-                    { name: "שירה ברק", meta: "Instagram · 85K", score: 89, gradient: "from-yellow-400 to-orange-500", avatar: "ש" },
-                  ].map((c) => (
-                    <StaggerItem key={c.name} className="flex items-center gap-3 p-3 rounded-2xl bg-muted/50 border border-border/60">
-                      <div className={`shrink-0 w-12 h-12 rounded-full bg-gradient-to-br ${c.gradient} grid place-items-center text-primary-foreground font-black shadow-soft`}>
-                        {c.avatar}
-                      </div>
-                      <div className="flex-1 min-w-0 text-right">
-                        <div className="text-sm font-extrabold leading-tight">{c.name}</div>
-                        <div className="text-xs text-muted-foreground font-semibold ltr-num leading-tight mt-0.5">{c.meta}</div>
-                      </div>
-                      <div className="shrink-0 flex items-center gap-2">
-                        <div className="w-16 h-2 rounded-full bg-muted overflow-hidden">
-                          <div className="h-full rounded-full transition-all" style={{ width: `${Math.max(8, Math.min(100, ((c.score - 85) / 15) * 100))}%`, background: "linear-gradient(90deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }} />
-                        </div>
-                        <span className="text-sm font-black ltr-num" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-                          {c.score}%
-                        </span>
-                      </div>
-                    </StaggerItem>
-                  ))}
-                </Stagger>
+          <h1 className="text-6xl font-black text-white leading-tight mb-8">
+            חיבור מפרסמים<br />
+            עם יוצרי תוכן<br />
+            <span style={{ background: "linear-gradient(135deg, #f9a8d4, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              באינסטגרם
+            </span>
+          </h1>
 
-                <div className="mt-4 pt-4 border-t border-border/60 flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground font-semibold">הותאם תוך</span>
-                  <span className="text-sm font-black ltr-num text-brand">47 שניות</span>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
+          <p className="text-white/70 text-lg leading-relaxed max-w-md">
+            Matchly מחברת בין מפרסמים לבין יוצרי תוכן מתאימים לשיתופי פעולה בתשלום באינסטגרם.
+          </p>
 
-      {/* How it works */}
-      <section id="how" className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink) / 0.10) 0%, hsl(var(--brand-purple) / 0.12) 100%)" }}>
-        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl pointer-events-none animate-aurora" style={{ background: "hsl(var(--brand-pink))" }} />
-        <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl pointer-events-none animate-aurora" style={{ background: "hsl(var(--brand-purple))", animationDelay: "4s" }} />
-        <div className="max-w-7xl mx-auto px-8 relative">
-          <Reveal className="text-center mb-12">
-            <h2 className="text-4xl font-black mb-3">איך זה עובד?</h2>
-            <p className="text-base text-muted-foreground font-medium">ארבעה צעדים פשוטים מקמפיין להתאמה</p>
-          </Reveal>
-          <Stagger className="grid grid-cols-4 gap-5">
+          <div className="flex items-center justify-center gap-12 mt-14">
             {[
-              { n: "1", t: "פותחים קמפיין", d: "מגדירים מטרה, תקציב, פלטפורמה וקהל יעד." },
-              { n: "2", t: "אנחנו מנתחים", d: "המערכת מדרגת יוצרים לפי התאמה אמיתית לקמפיין." },
-              { n: "3", t: "מקבלים 3 התאמות", d: "במקום לחפש שעות - מקבלים 3 יוצרים מדויקים." },
-              { n: "4", t: "מתחילים שיתוף פעולה", d: "שולחים הצעה ליוצר ומתקדמים לקמפיין." },
+              { val: "15+", label: "יוצרי תוכן" },
+              { val: "< 60s", label: "זמן התאמה" },
+              { val: "Instagram", label: "פלטפורמה" },
             ].map((s) => (
-              <StaggerItem key={s.n} className="hover-lift bg-card rounded-3xl p-6 shadow-soft border border-border">
-                <div className="w-14 h-14 rounded-2xl bg-brand text-primary-foreground grid place-items-center font-black text-xl shadow-glow mb-4">
-                  <span className="leading-none tabular-nums" style={{ direction: "ltr" }}>{s.n}</span>
-                </div>
-                <h3 className="font-extrabold text-lg mb-2">{s.t}</h3>
-                <p className="text-sm text-muted-foreground font-medium leading-relaxed">{s.d}</p>
-              </StaggerItem>
+              <div key={s.label} className="text-center">
+                <div className="text-3xl font-black text-white">{s.val}</div>
+                <div className="text-xs text-white/50 font-medium mt-1">{s.label}</div>
+              </div>
             ))}
-          </Stagger>
+          </div>
         </div>
-      </section>
+      </div>
 
-      {/* Features */}
-      <section id="features" className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-yellow) / 0.06) 0%, hsl(var(--brand-pink) / 0.10) 50%, hsl(var(--brand-purple) / 0.08) 100%)" }}>
-        <div className="absolute top-1/4 -right-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none animate-aurora" style={{ background: "hsl(var(--brand-orange))" }} />
-        <div className="absolute bottom-1/4 -left-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none animate-aurora" style={{ background: "hsl(var(--brand-pink))", animationDelay: "5s" }} />
-        <div className="max-w-7xl mx-auto px-8 relative">
-          <Reveal className="text-center mb-12">
-            <span className="inline-block text-xs font-bold tracking-wider uppercase text-brand mb-2">למה Matchly</span>
-            <h2 className="text-4xl font-black mb-3 leading-tight">היתרונות שעושים את ההבדל</h2>
-            <p className="text-base text-muted-foreground font-medium">טכנולוגיה שמייצרת התאמות מדויקות</p>
-          </Reveal>
-          <Stagger className="grid grid-cols-4 gap-4">
-            {[
-              { i: <Zap className="w-6 h-6" strokeWidth={2.5} />, t: "חוסך זמן", d: "בלי לעבור ידנית על מאות פרופילים.", badge: "Fast Setup", accent: "linear-gradient(135deg, hsl(var(--brand-orange)), hsl(var(--brand-pink)))" },
-              { i: <Sparkles className="w-6 h-6" strokeWidth={2.5} />, t: "בחירה חכמה", d: "התאמות לפי תחום, תקציב, מיקום ופלטפורמה.", badge: "AI Matching", accent: "linear-gradient(135deg, hsl(var(--brand-purple)), hsl(var(--brand-pink)))" },
-              { i: <Target className="w-6 h-6" strokeWidth={2.5} />, t: "פחות ניחושים", d: "כל התאמה עם ציון התאמה והסבר.", badge: "Smart Scoring", accent: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" },
-              { i: <Users className="w-6 h-6" strokeWidth={2.5} />, t: "גם ליוצרים", d: "יוצרים מצטרפים לבטא ומקבלים פניות.", badge: "Creator Beta", accent: "linear-gradient(135deg, hsl(var(--brand-yellow)), hsl(var(--brand-orange)))" },
-            ].map((f) => (
-              <StaggerItem key={f.t} className="hover-lift group relative bg-card rounded-3xl p-6 shadow-soft border border-border/70 overflow-hidden">
-                <div className="absolute -top-10 -left-10 w-28 h-28 rounded-full opacity-10 blur-2xl pointer-events-none group-hover:opacity-30 transition-opacity duration-500" style={{ background: f.accent }} />
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-primary-foreground shadow-soft" style={{ background: f.accent }}>
-                      {f.i}
-                    </div>
-                    <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-1 rounded-full bg-muted text-foreground/70 ltr-num">
-                      {f.badge}
-                    </span>
-                  </div>
-                  <h3 className="font-extrabold text-lg mb-1.5 text-foreground leading-tight">{f.t}</h3>
-                  <p className="text-sm text-muted-foreground font-medium leading-snug">{f.d}</p>
-                </div>
-              </StaggerItem>
-            ))}
-          </Stagger>
+      {/* Right: actions panel */}
+      <div className="w-[420px] flex flex-col justify-center px-14 py-16 bg-white shadow-2xl gap-4">
+        <div className="mb-8">
+          <h2 className="text-3xl font-black text-gray-900 mb-3">מוכן להתחיל?</h2>
+          <p className="text-gray-400 text-base leading-relaxed">גלה את היתרונות וצור את הקמפיין הראשון שלך תוך פחות מדקה</p>
         </div>
-      </section>
+        <button
+          onClick={onContinue}
+          className="w-full py-5 rounded-2xl text-white font-extrabold text-lg flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-opacity"
+          style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}
+        >
+          המשך
+          <ChevronLeft size={22} />
+        </button>
+        <button
+          onClick={onCreatorJoin}
+          className="w-full py-4 rounded-2xl text-gray-500 font-semibold text-base border border-gray-200 hover:bg-gray-50 transition-colors"
+        >
+          אני יוצר תוכן — כניסה
+        </button>
+      </div>
+    </div>
+  );
+}
 
-      {/* Match examples */}
-      <section id="examples" className="py-20 relative overflow-hidden" style={{ background: "linear-gradient(180deg, hsl(var(--brand-purple) / 0.10) 0%, hsl(var(--brand-orange) / 0.06) 100%)" }}>
-        <div className="absolute top-1/3 -left-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none animate-aurora" style={{ background: "hsl(var(--brand-orange))" }} />
-        <div className="absolute bottom-1/3 -right-40 w-96 h-96 rounded-full opacity-25 blur-3xl pointer-events-none animate-aurora" style={{ background: "hsl(var(--brand-purple))", animationDelay: "3s" }} />
-        <div className="max-w-7xl mx-auto px-8 relative">
-          <Reveal className="text-center mb-12">
-            <span className="inline-block text-xs font-bold tracking-wider uppercase text-brand mb-2">דוגמאות התאמה</span>
-            <h2 className="text-4xl font-black mb-3 leading-tight">ככה נראית התאמה אמיתית</h2>
-            <p className="text-base text-muted-foreground font-medium">תוצאות לדוגמה מקמפיינים שרצו ב-Matchly</p>
-          </Reveal>
+/* ─── Screen 2: Benefits ──────────────────────────────────────────── */
+function BenefitsScreen({ onBack, onContinue }: { onBack: () => void; onContinue: () => void }) {
+  const benefits = [
+    {
+      icon: <Zap size={24} className="text-white" />,
+      bg: "linear-gradient(135deg, #f97316, #ec4899)",
+      title: "מצא יוצרי תוכן מהר יותר",
+      desc: "במקום חיפוש ידני של שעות — קבל התאמות תוך שניות",
+    },
+    {
+      icon: <Target size={24} className="text-white" />,
+      bg: "linear-gradient(135deg, #8b5cf6, #ec4899)",
+      title: "חסוך זמן על חיפוש ידני",
+      desc: "המערכת מנתחת תחום, תקציב ומיקום ומוצאת את המתאימים ביותר",
+    },
+    {
+      icon: <TrendingUp size={24} className="text-white" />,
+      bg: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
+      title: "התאמות טובות יותר לקמפיין",
+      desc: "ניקוד התאמה חכם שמסביר למה כל יוצר מתאים לך",
+    },
+    {
+      icon: <Users size={24} className="text-white" />,
+      bg: "linear-gradient(135deg, #10b981, #06b6d4)",
+      title: "ROI מדיד ותוצאות ברורות",
+      desc: "התמקדו בתוצאות עסקיות, לא בחיפוש ופילטור",
+    },
+  ];
 
-          <Stagger className="grid grid-cols-3 gap-5">
-            {[
-              { campaign: "השקת סרום פנים חדש", niche: "ביוטי", creator: "נועה לוי", avatar: "נ", gradient: "from-pink-400 to-purple-500", accent: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))", score: 94, platform: "Instagram", budget: "₪1,500 - ₪3,000", reasons: ["קהל נשי 25-34 בישראל", "תוכן ביוטי עם 6.2% engagement", "ניסיון עם 12 מותגי קוסמטיקה"] },
-              { campaign: "פתיחת מסעדה בתל אביב", niche: "מסעדנות", creator: "איתי כהן", avatar: "א", gradient: "from-orange-400 to-pink-500", accent: "linear-gradient(135deg, hsl(var(--brand-orange)), hsl(var(--brand-pink)))", score: 91, platform: "Instagram", budget: "₪800 - ₪1,800", reasons: ["פוד בלוגר מתל אביב", "קהל מקומי רלוונטי", "שיתופי פעולה קודמים עם מסעדות"] },
-              { campaign: "קידום אפליקציית כושר", niche: "כושר", creator: "שירה ברק", avatar: "ש", gradient: "from-yellow-400 to-orange-500", accent: "linear-gradient(135deg, hsl(var(--brand-yellow)), hsl(var(--brand-orange)))", score: 89, platform: "Instagram", budget: "₪2,000 - ₪4,000", reasons: ["מאמנת כושר עם 85K עוקבים", "engagement גבוה בסרטוני אימון", "התאמה לקהל היעד 22-40"] },
-            ].map((m) => (
-              <StaggerItem key={m.campaign} as="article" className="hover-lift bg-card rounded-3xl border border-border shadow-soft overflow-hidden flex flex-col">
-                <div className="px-6 pt-6 pb-4 border-b border-border/60">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground">קמפיין</span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-muted text-foreground/70">{m.niche}</span>
-                  </div>
-                  <h3 className="font-extrabold text-lg leading-tight">{m.campaign}</h3>
-                </div>
-
-                <div className="px-6 py-5 flex items-center gap-3">
-                  <div className={`shrink-0 w-16 h-16 rounded-full bg-gradient-to-br ${m.gradient} flex items-center justify-center text-primary-foreground font-black text-xl shadow-soft`}>
-                    {m.avatar}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground mb-0.5">היוצר המומלץ</div>
-                    <div className="font-extrabold text-base leading-tight">{m.creator}</div>
-                    <div className="text-xs text-muted-foreground font-semibold mt-0.5 ltr-num">{m.platform} · {m.budget}</div>
-                  </div>
-                  <div className="shrink-0 text-center">
-                    <div className="text-2xl font-black ltr-num leading-none" style={{ background: m.accent, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-                      {m.score}%
-                    </div>
-                    <div className="text-[9px] font-bold text-muted-foreground tracking-wider uppercase mt-0.5">התאמה</div>
-                  </div>
-                </div>
-
-                <div className="px-6 pb-4 flex-1">
-                  <ul className="space-y-2">
-                    {m.reasons.map((r) => (
-                      <li key={r} className="flex items-start gap-2 text-sm">
-                        <Check className="w-4 h-4 mt-0.5 shrink-0 text-brand" />
-                        <span className="text-foreground/80 font-medium leading-snug">{r}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="px-6 pb-6">
-                  <button
-                    onClick={onStart}
-                    className="btn-glow w-full py-3 rounded-full bg-foreground text-background font-extrabold text-sm inline-flex items-center justify-center gap-2"
-                  >
-                    פתחו קמפיין דומה
-                    <ArrowLeft className="w-4 h-4" />
-                  </button>
-                </div>
-              </StaggerItem>
-            ))}
-          </Stagger>
+  return (
+    <div className="flex w-full min-h-screen">
+      {/* Left sidebar */}
+      <div
+        className="w-80 flex flex-col justify-center px-12 py-20 relative overflow-hidden shrink-0"
+        style={{ background: "linear-gradient(160deg, #1a0533 0%, #2d0a4e 60%, #1f0a3d 100%)" }}
+      >
+        <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="relative z-10">
+          <p className="text-xs font-bold text-pink-400 uppercase tracking-wider mb-4">למפרסמים</p>
+          <h2 className="text-4xl font-black text-white mb-5 leading-tight">למה Matchly?</h2>
+          <p className="text-white/60 text-base leading-relaxed">היתרונות שעושים את ההבדל בין קמפיין בינוני לקמפיין מצוין</p>
         </div>
-      </section>
+      </div>
 
-      {/* Final CTA */}
-      <section className="py-20">
-        <div className="max-w-5xl mx-auto px-8">
-          <Reveal>
-            <div className="bg-brand animate-gradient-pan rounded-[2.5rem] p-12 shadow-cta-lg text-primary-foreground text-center relative overflow-hidden">
-              <h2 className="text-4xl font-black mb-4 leading-tight">
-                מוכנים למצוא את שיתוף הפעולה הבא שלכם?
-              </h2>
-              <p className="text-base font-medium mb-8 opacity-95 leading-relaxed max-w-2xl mx-auto">
-                בין אם אתם עסק שמחפש יוצרים או יוצרים שמחפשים קמפיינים - Matchly מחברת אתכם נכון.
-              </p>
-              <div className="flex justify-center gap-3">
-                <button
-                  onClick={onStart}
-                  className="btn-glow shine-on-hover inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-card text-foreground font-extrabold text-base shadow-soft"
-                >
-                  <Megaphone className="w-5 h-5" />
-                  אני מפרסם
-                </button>
-                <button
-                  onClick={goCreator}
-                  className="btn-glow inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-transparent border-2 border-white/70 text-primary-foreground font-extrabold text-base"
-                >
-                  <Heart className="w-5 h-5" />
-                  אני יוצר תוכן
-                </button>
+      {/* Content */}
+      <div className="flex-1 flex flex-col bg-gray-50">
+        <div className="flex-1 px-12 py-16 grid grid-cols-2 gap-5 content-center">
+          {benefits.map((b) => (
+            <div key={b.title} className="flex items-start gap-5 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0" style={{ background: b.bg }}>
+                {b.icon}
+              </div>
+              <div>
+                <p className="font-bold text-base text-gray-900 mb-1">{b.title}</p>
+                <p className="text-sm text-gray-400 leading-relaxed">{b.desc}</p>
               </div>
             </div>
-          </Reveal>
+          ))}
         </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="py-8 text-center border-t border-border">
-        <div className="flex items-center justify-center gap-2 mb-1">
-          <img src={matchlyIcon} alt="" className="h-6 w-6 object-contain" loading="lazy" />
-          <span className="text-base font-extrabold tracking-tight text-foreground">Matchly</span>
+        {/* Bottom buttons */}
+        <div className="px-12 py-8 bg-white border-t border-gray-100 flex gap-4">
+          <button
+            onClick={onBack}
+            className="flex items-center justify-center gap-2 px-7 py-4 rounded-2xl border border-gray-200 text-gray-500 font-semibold text-base hover:bg-gray-50 transition-colors"
+          >
+            <ChevronRight size={18} />
+            חזרה
+          </button>
+          <button
+            onClick={onContinue}
+            className="flex-1 py-4 rounded-2xl text-white font-extrabold text-base flex items-center justify-center gap-2 shadow-md hover:opacity-90 transition-opacity"
+            style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}
+          >
+            המשך
+            <ChevronLeft size={18} />
+          </button>
         </div>
-        <p className="text-[11px] text-muted-foreground font-medium tracking-wider" dir="ltr">
-          INFLUENCE TODAY. MATCH NOW.
-        </p>
-      </footer>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Screen 3: CTA ───────────────────────────────────────────────── */
+function CtaScreen({ onBack, onStart, onCreatorJoin }: { onBack: () => void; onStart: () => void; onCreatorJoin?: () => void }) {
+  return (
+    <div className="flex w-full min-h-screen">
+      {/* Left: dark hero */}
+      <div
+        className="flex-1 flex flex-col items-center justify-center px-16 text-center relative overflow-hidden"
+        style={{ background: "linear-gradient(160deg, #0f172a 0%, #1e1b4b 50%, #1a0533 100%)" }}
+      >
+        <div className="absolute top-0 left-0 right-0 bottom-0 opacity-20" style={{ background: "radial-gradient(circle at 50% 50%, hsl(var(--brand-pink)), transparent 60%)" }} />
+
+        <div className="relative z-10 max-w-xl mx-auto">
+          <div className="w-28 h-28 rounded-3xl mx-auto mb-8 flex items-center justify-center shadow-2xl" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}>
+            <Megaphone size={52} className="text-white" />
+          </div>
+
+          <h2 className="text-5xl font-black text-white mb-6 leading-tight">
+            מוכן להתחיל<br />
+            <span style={{ background: "linear-gradient(135deg, #f9a8d4, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              לפרסם?
+            </span>
+          </h2>
+
+          <p className="text-white/60 text-lg leading-relaxed max-w-md mx-auto">
+            צור קמפיין עכשיו וקבל 3 יוצרי תוכן מתאימים תוך פחות מדקה
+          </p>
+
+          <div className="flex items-center justify-center gap-14 mt-14">
+            {[
+              { val: "15+", label: "יוצרי תוכן" },
+              { val: "< 60s", label: "זמן התאמה" },
+              { val: "Instagram", label: "פלטפורמה" },
+            ].map((s) => (
+              <div key={s.label} className="text-center">
+                <div className="text-2xl font-black text-white">{s.val}</div>
+                <div className="text-xs text-white/50 font-medium mt-1">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right: actions panel */}
+      <div className="w-[420px] flex flex-col justify-center px-14 py-16 bg-white shadow-2xl gap-4">
+        <div className="mb-8">
+          <h3 className="text-3xl font-black text-gray-900 mb-3">הצעד הראשון</h3>
+          <p className="text-gray-400 text-base leading-relaxed">תאר את הקמפיין שלך ואנחנו נמצא את יוצרי התוכן המתאימים</p>
+        </div>
+        <button
+          onClick={onStart}
+          className="w-full py-5 rounded-2xl text-white font-extrabold text-lg flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-opacity"
+          style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}
+        >
+          <Megaphone size={22} />
+          צור קמפיין עכשיו
+        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={onBack}
+            className="flex items-center justify-center gap-2 px-6 py-4 rounded-2xl border border-gray-200 text-gray-500 font-semibold text-base hover:bg-gray-50 transition-colors"
+          >
+            <ChevronRight size={18} />
+            חזרה
+          </button>
+          <button
+            onClick={onCreatorJoin}
+            className="flex-1 py-4 rounded-2xl text-gray-600 font-semibold text-base border border-gray-200 hover:bg-gray-50 transition-colors"
+          >
+            אני יוצר תוכן
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
