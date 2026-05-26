@@ -121,7 +121,7 @@ function IntroScreen({ onContinue, onCreatorJoin }: { onContinue: () => void; on
               <span className="text-sm font-extrabold text-white">לבעלי עסקים ומפרסמים</span>
             </div>
             <ul className="space-y-1.5 flex-1 mb-4">
-              {["למצוא יוצרי תוכן רלוונטיים מהר יותר", "לחסוך זמן בחיפוש ידני", "לקבל התאמות מדויקות יותר", "להתמקד בתוצאות ו-ROI"].map(item => (
+              {["למצוא יוצרי תוכן רלוונטיים מהר יותר", "לחסוך זמן בחיפוש ידני", "לקבל התאמות מדויקות יותר", "להתחבר ליוצרים מתאימים במקום אחד"].map(item => (
                 <li key={item} className="flex items-start gap-2 text-xs text-white/70 leading-snug">
                   <span className="text-pink-400 shrink-0 mt-0.5">✓</span>{item}
                 </li>
