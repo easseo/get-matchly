@@ -180,7 +180,7 @@ function BenefitsScreen({ onBack, onContinue }: { onBack: () => void; onContinue
       {/* Header */}
       <div className="relative z-10 pt-14 pb-6 px-6 text-center">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 mb-5">
-          <span className="text-[11px] font-bold text-white/70 tracking-wide">שלב 2 מתוך 3</span>
+          <span className="text-[11px] font-bold text-white/70 tracking-wide">לבעלי עסקים / מפרסמים ויוצרי תוכן</span>
         </div>
         <h2 className="text-2xl font-black text-white mb-2 leading-tight">למה לבחור ב-Matchly?</h2>
         <p className="text-white/60 text-sm leading-relaxed max-w-xs mx-auto">
