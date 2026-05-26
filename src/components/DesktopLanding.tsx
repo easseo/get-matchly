@@ -228,7 +228,7 @@ function BenefitsScreen({ onBack, onContinue }: { onBack: () => void; onContinue
         </div>
         <h2 className="text-4xl font-black text-white mb-3 leading-tight">למה לבחור ב-Matchly?</h2>
         <p className="text-white/55 text-base leading-relaxed">
-          חיבור פשוט ומהיר בין בעלי עסקים, מפרסמים ויוצרי תוכן
+          חיבור פשוט ומהיר בין בעלי עסקים/מפרסמים ויוצרי תוכן
         </p>
       </div>
 
