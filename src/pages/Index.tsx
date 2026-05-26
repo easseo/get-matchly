@@ -7,13 +7,14 @@ import CampaignForm, { type CampaignData } from "@/components/CampaignForm";
 import Loading from "@/components/Loading";
 import Results from "@/components/Results";
 import CreatorOnboarding from "@/components/CreatorOnboarding";
+import CreatorOnboardingFlow from "@/components/CreatorOnboardingFlow";
 import { type ScoredCreator } from "@/data/creators";
 import { runMatchingEngine } from "@/lib/matching";
 import { toast } from "@/hooks/use-toast";
 import { LogIn } from "lucide-react";
 import { useDemoAuth } from "@/hooks/useDemoAuth";
 
-type Screen = "landing" | "form" | "loading" | "results" | "creator-onboarding";
+type Screen = "landing" | "form" | "loading" | "results" | "creator-onboarding" | "creator-flow";
 
 const Index = () => {
   const isMobile = useIsMobile();
@@ -84,11 +85,18 @@ const Index = () => {
       return (
         <Landing
           onStart={() => navigate("/auth?role=advertiser&mode=signup")}
-          onCreatorJoin={() => navigate("/auth?role=creator&mode=signup")}
+          onCreatorJoin={() => setScreen("creator-flow")}
         />
       );
     if (screen === "creator-onboarding")
       return <CreatorOnboarding onBack={() => setScreen("landing")} />;
+    if (screen === "creator-flow")
+      return (
+        <CreatorOnboardingFlow
+          onBack={() => setScreen("landing")}
+          onContinue={() => navigate("/auth?role=creator&mode=signup")}
+        />
+      );
     if (screen === "form") return <CampaignForm onSubmit={handleSubmit} onBack={() => setScreen("landing")} />;
     if (screen === "loading")
       return (

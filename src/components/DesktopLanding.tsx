@@ -7,8 +7,9 @@ interface DesktopLandingProps {
   onCreatorJoin?: () => void;
 }
 
-const SCREENS = ["intro", "benefits", "cta"] as const;
-type Screen = (typeof SCREENS)[number];
+const ADVERTISER_SCREENS = ["intro", "benefits", "cta"] as const;
+const CREATOR_SCREENS = ["creator-benefits", "creator-how"] as const;
+type Screen = (typeof ADVERTISER_SCREENS)[number] | (typeof CREATOR_SCREENS)[number];
 
 export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandingProps) {
   const [screen, setScreen] = useState<Screen>("intro");
@@ -19,11 +20,14 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
     setScreen(next);
   };
 
+  const isCreatorFlow = screen === "creator-benefits" || screen === "creator-how";
+  const dots = isCreatorFlow ? CREATOR_SCREENS : ADVERTISER_SCREENS;
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-background" dir="rtl">
       {/* Progress dots */}
       <div className="absolute top-6 left-0 right-0 flex justify-center gap-2 z-20">
-        {SCREENS.map((s) => (
+        {dots.map((s) => (
           <div
             key={s}
             className={`h-1.5 rounded-full transition-all duration-300 ${
@@ -36,13 +40,13 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
       <div
         key={screen}
         className="min-h-screen w-full flex"
-        style={{
-          animation: `${dir === "forward" ? "slideInRight" : "slideInLeft"} 0.35s cubic-bezier(0.4,0,0.2,1)`,
-        }}
+        style={{ animation: `${dir === "forward" ? "slideInRight" : "slideInLeft"} 0.35s cubic-bezier(0.4,0,0.2,1)` }}
       >
-        {screen === "intro" && <IntroScreen onContinue={() => go("benefits")} onCreatorJoin={onCreatorJoin} />}
+        {screen === "intro" && <IntroScreen onContinue={() => go("benefits")} onCreatorJoin={() => go("creator-benefits")} />}
         {screen === "benefits" && <BenefitsScreen onBack={() => go("intro", "back")} onContinue={() => go("cta")} />}
-        {screen === "cta" && <CtaScreen onBack={() => go("benefits", "back")} onStart={onStart} onCreatorJoin={onCreatorJoin} />}
+        {screen === "cta" && <CtaScreen onBack={() => go("benefits", "back")} onStart={onStart} onCreatorJoin={() => go("creator-benefits")} />}
+        {screen === "creator-benefits" && <CreatorBenefitsScreen onBack={() => go("intro", "back")} onContinue={() => go("creator-how")} />}
+        {screen === "creator-how" && <CreatorHowScreen onBack={() => go("creator-benefits", "back")} onContinue={() => onCreatorJoin?.()} />}
       </div>
 
       <style>{`
@@ -337,6 +341,140 @@ function CtaScreen({ onBack, onStart, onCreatorJoin }: { onBack: () => void; onS
             אני יוצר תוכן
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Creator Screen 1: Benefits ─────────────────────────────────── */
+function CreatorBenefitsScreen({ onBack, onContinue }: { onBack: () => void; onContinue: () => void }) {
+  const cards = [
+    { emoji: "💰", title: "להרוויח כסף משיתופי פעולה", desc: "קבל הזדמנויות לשיתופי פעולה בתשלום עם בעלי עסקים ומפרסמים" },
+    { emoji: "🤝", title: "להתחבר לבעלי עסקים ומפרסמים", desc: "היחשף לעסקים שמחפשים יוצרי תוכן" },
+    { emoji: "🎯", title: "למצוא התאמות רלוונטיות", desc: "ראה קמפיינים שמתאימים לתוכן שלך" },
+    { emoji: "🚀", title: "לצמוח דרך שיתופי פעולה", desc: "פתח קשרים והרחב את הפעילות שלך" },
+  ];
+
+  return (
+    <div
+      className="flex w-full min-h-screen flex-col items-center justify-between py-14 px-8 relative overflow-hidden"
+      style={{ background: "linear-gradient(170deg, #1a0533 0%, #2d0a4e 45%, #1c0a3a 100%)" }}
+      dir="rtl"
+    >
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-20 right-1/4 w-96 h-96 rounded-full blur-3xl opacity-20" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute bottom-0 -left-20 w-96 h-96 rounded-full blur-3xl opacity-15" style={{ background: "hsl(var(--brand-purple))" }} />
+      </div>
+
+      <div className="relative z-10 text-center mb-10 max-w-xl">
+        <h2 className="text-4xl font-black text-white mb-3 leading-tight">למה Matchly ליוצרי תוכן?</h2>
+        <p className="text-white/55 text-base leading-relaxed">
+          להרוויח משיתופי פעולה עם בעלי עסקים ומפרסמים באינסטגרם
+        </p>
+      </div>
+
+      <div className="relative z-10 w-full max-w-2xl grid grid-cols-2 gap-5 mb-10">
+        {cards.map((c) => (
+          <div
+            key={c.title}
+            className="flex flex-col rounded-2xl p-6 border border-white/10 transition-transform hover:scale-[1.02] hover:border-white/20"
+            style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(14px)" }}
+          >
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-4 shrink-0" style={{ background: "rgba(255,255,255,0.10)" }}>
+              {c.emoji}
+            </div>
+            <p className="font-extrabold text-base text-white leading-tight mb-1.5">{c.title}</p>
+            <p className="text-sm text-white/50 leading-relaxed">{c.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="relative z-10 w-full max-w-2xl flex gap-4">
+        <button
+          onClick={onBack}
+          className="flex items-center justify-center gap-2 px-7 py-4 rounded-2xl font-semibold text-base text-white/70 border border-white/15 hover:bg-white/10 transition-colors"
+        >
+          <ChevronRight size={18} />
+          חזרה
+        </button>
+        <button
+          onClick={onContinue}
+          className="flex-1 py-4 rounded-2xl text-white font-extrabold text-base flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-opacity"
+          style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}
+        >
+          המשך
+          <ChevronLeft size={18} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Creator Screen 2: How it works ─────────────────────────────── */
+function CreatorHowScreen({ onBack, onContinue }: { onBack: () => void; onContinue: () => void }) {
+  const steps = [
+    { emoji: "👤", num: "1", title: "צור פרופיל", desc: "הוסף את פרטי האינסטגרם שלך" },
+    { emoji: "🔍", num: "2", title: "מצא התאמות", desc: "ראה קמפיינים רלוונטיים" },
+    { emoji: "✉️", num: "3", title: "שלח הצעה", desc: "בחר קמפיינים שמתאימים לך" },
+    { emoji: "🤝", num: "4", title: "התחל לשתף פעולה", desc: "התחבר לבעלי עסקים ומפרסמים" },
+  ];
+
+  return (
+    <div
+      className="flex w-full min-h-screen flex-col items-center justify-between py-14 px-8 relative overflow-hidden"
+      style={{ background: "linear-gradient(170deg, #1a0533 0%, #2d0a4e 45%, #1c0a3a 100%)" }}
+      dir="rtl"
+    >
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-20 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-20" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute bottom-0 -right-20 w-96 h-96 rounded-full blur-3xl opacity-15" style={{ background: "hsl(var(--brand-purple))" }} />
+      </div>
+
+      <div className="relative z-10 text-center mb-10 max-w-xl">
+        <h2 className="text-4xl font-black text-white mb-3 leading-tight">איך זה עובד?</h2>
+        <p className="text-white/55 text-base leading-relaxed">
+          4 צעדים פשוטים להתחלת שיתופי פעולה
+        </p>
+      </div>
+
+      <div className="relative z-10 w-full max-w-2xl flex flex-col gap-4 mb-10">
+        {steps.map((s) => (
+          <div
+            key={s.num}
+            className="flex items-center gap-5 rounded-2xl px-6 py-4 border border-white/10 transition-transform hover:scale-[1.01]"
+            style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(14px)" }}
+          >
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 font-black text-white text-lg"
+              style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}
+            >
+              {s.num}
+            </div>
+            <div className="flex-1">
+              <p className="font-extrabold text-base text-white leading-tight">{s.title}</p>
+              <p className="text-sm text-white/50 mt-0.5">{s.desc}</p>
+            </div>
+            <div className="text-2xl shrink-0">{s.emoji}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="relative z-10 w-full max-w-2xl flex gap-4">
+        <button
+          onClick={onBack}
+          className="flex items-center justify-center gap-2 px-7 py-4 rounded-2xl font-semibold text-base text-white/70 border border-white/15 hover:bg-white/10 transition-colors"
+        >
+          <ChevronRight size={18} />
+          חזרה
+        </button>
+        <button
+          onClick={onContinue}
+          className="flex-1 py-4 rounded-2xl text-white font-extrabold text-base flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-opacity"
+          style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}
+        >
+          יצירת חשבון
+          <ChevronLeft size={18} />
+        </button>
       </div>
     </div>
   );
