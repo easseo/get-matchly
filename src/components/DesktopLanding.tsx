@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Instagram, Megaphone, Users, Zap, Target, TrendingUp, ChevronRight, ChevronLeft, Briefcase, Star } from "lucide-react";
 import matchlyIcon from "@/assets/matchly-icon.png";
-import heroImage from "@/assets/hero.png";
 
 interface DesktopLandingProps {
   onStart: () => void;
@@ -101,9 +100,10 @@ function IntroScreen({ onContinue, onCreatorJoin }: { onContinue: () => void; on
             {/* Glow behind photo */}
             <div className="absolute inset-0 rounded-full blur-3xl opacity-30 scale-75" style={{ background: "radial-gradient(circle, hsl(var(--brand-purple)), transparent 70%)" }} />
             <img
-              src={heroImage}
+              src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&q=80"
               alt="creator"
-              className="relative z-10 h-full w-full object-contain object-bottom"
+              className="relative z-10 h-full w-full object-cover object-top rounded-2xl"
+              style={{ maskImage: "linear-gradient(to top, transparent 0%, black 20%)" }}
             />
             {/* Floating Instagram badge */}
             <div
