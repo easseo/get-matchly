@@ -138,95 +138,93 @@ function IntroScreen({ onContinue, onCreatorJoin }: { onContinue: () => void; on
 
 /* ─── Screen 2: Benefits ──────────────────────────────────────────── */
 function BenefitsScreen({ onBack, onContinue }: { onBack: () => void; onContinue: () => void }) {
-  const benefits = [
+  const cards = [
     {
-      icon: <Zap size={20} className="text-white" />,
+      emoji: "⚡",
       bg: "linear-gradient(135deg, #f97316, #ec4899)",
       title: "מצא יוצרי תוכן מהר יותר",
-      desc: "במקום חיפוש ידני של שעות — קבל התאמות תוך שניות",
+      desc: "קבל התאמות במקום חיפוש ידני ממושך",
     },
     {
-      icon: <Target size={20} className="text-white" />,
+      emoji: "🎯",
       bg: "linear-gradient(135deg, #8b5cf6, #ec4899)",
-      title: "חסוך זמן על חיפוש ידני",
-      desc: "המערכת מנתחת תחום, תקציב ומיקום ומוצאת את המתאימים ביותר",
+      title: "התאמות מדויקות יותר",
+      desc: "מצא יוצרי תוכן רלוונטיים לקמפיין שלך",
     },
     {
-      icon: <TrendingUp size={20} className="text-white" />,
+      emoji: "🤝",
       bg: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
-      title: "התאמות טובות יותר לקמפיין",
-      desc: "ניקוד התאמה חכם שמסביר למה כל יוצר מתאים לך",
+      title: "שיתופי פעולה פשוטים",
+      desc: "התחבר והתחל לעבוד במקום אחד",
     },
     {
-      icon: <Users size={20} className="text-white" />,
+      emoji: "💬",
       bg: "linear-gradient(135deg, #10b981, #06b6d4)",
-      title: "ROI מדיד ותוצאות ברורות",
-      desc: "התמקדו בתוצאות עסקיות, לא בחיפוש ופילטור",
+      title: "תהליך מהיר ונוח",
+      desc: "פחות חיפוש, יותר חיבורים רלוונטיים",
     },
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 lg:flex-row">
-      {/* Left sidebar on desktop */}
-      <div
-        className="hidden lg:flex lg:w-80 lg:flex-col lg:justify-center lg:px-12 lg:py-20 relative overflow-hidden"
-        style={{ background: "linear-gradient(160deg, #1a0533 0%, #2d0a4e 60%, #1f0a3d 100%)" }}
-      >
-        <div className="absolute bottom-0 right-0 w-48 h-48 rounded-full blur-3xl opacity-20" style={{ background: "hsl(var(--brand-pink))" }} />
-        <div className="relative z-10">
-          <p className="text-xs font-bold text-pink-400 uppercase tracking-wider mb-3">למפרסמים</p>
-          <h2 className="text-3xl font-black text-white mb-4">למה Matchly?</h2>
-          <p className="text-white/60 text-sm leading-relaxed">היתרונות שעושים את ההבדל בין קמפיין בינוני לקמפיין מצוין</p>
-        </div>
+    <div
+      className="flex flex-col min-h-screen"
+      style={{ background: "linear-gradient(170deg, #1a0533 0%, #2d0a4e 45%, #1c0a3a 100%)" }}
+      dir="rtl"
+    >
+      {/* Ambient blobs */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-20 right-1/4 w-72 h-72 rounded-full blur-3xl opacity-25" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute bottom-0 -left-20 w-64 h-64 rounded-full blur-3xl opacity-20" style={{ background: "hsl(var(--brand-purple))" }} />
       </div>
 
-      {/* Header — mobile only */}
-      <div className="lg:hidden px-6 pt-14 pb-6 bg-white border-b border-gray-100">
-        <p className="text-xs font-bold text-pink-500 uppercase tracking-wider mb-1">למפרסמים</p>
-        <h2 className="text-2xl font-black text-gray-900">למה Matchly?</h2>
-        <p className="text-sm text-gray-400 mt-1">היתרונות שעושים את ההבדל</p>
+      {/* Header */}
+      <div className="relative z-10 pt-14 pb-6 px-6 text-center">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 mb-5">
+          <span className="text-[11px] font-bold text-white/70 tracking-wide">שלב 2 מתוך 3</span>
+        </div>
+        <h2 className="text-2xl font-black text-white mb-2 leading-tight">למה לבחור ב-Matchly?</h2>
+        <p className="text-white/60 text-sm leading-relaxed max-w-xs mx-auto">
+          חיבור פשוט ומהיר בין בעלי עסקים, מפרסמים ויוצרי תוכן
+        </p>
       </div>
 
-      {/* Benefits */}
-      <div className="flex-1 flex flex-col">
-        <div className="hidden lg:block px-12 pt-16 pb-6">
-          <p className="text-xs font-bold text-pink-500 uppercase tracking-wider mb-1">למפרסמים</p>
-          <h2 className="text-3xl font-black text-gray-900">למה Matchly?</h2>
-          <p className="text-sm text-gray-400 mt-1">היתרונות שעושים את ההבדל</p>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-5 lg:px-12 py-5 grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4 content-start">
-          {benefits.map((b) => (
-            <div key={b.title} className="flex items-start gap-4 bg-white rounded-2xl p-4 lg:p-5 shadow-sm border border-gray-100">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: b.bg }}>
-                {b.icon}
-              </div>
-              <div>
-                <p className="font-bold text-sm lg:text-base text-gray-900 mb-0.5 lg:mb-1">{b.title}</p>
-                <p className="text-xs lg:text-sm text-gray-400 leading-relaxed">{b.desc}</p>
-              </div>
+      {/* Cards 2x2 */}
+      <div className="relative z-10 flex-1 px-5 pb-4 grid grid-cols-2 gap-3 content-center">
+        {cards.map((c) => (
+          <div
+            key={c.title}
+            className="flex flex-col rounded-2xl p-4 border border-white/10 transition-transform hover:scale-[1.02]"
+            style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(12px)" }}
+          >
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-3 shrink-0"
+              style={{ background: "rgba(255,255,255,0.10)" }}
+            >
+              {c.emoji}
             </div>
-          ))}
-        </div>
+            <p className="font-extrabold text-sm text-white leading-tight mb-1">{c.title}</p>
+            <p className="text-xs text-white/55 leading-relaxed">{c.desc}</p>
+          </div>
+        ))}
+      </div>
 
-        {/* Bottom buttons */}
-        <div className="px-6 lg:px-12 py-6 bg-white border-t border-gray-100 flex gap-3">
-          <button
-            onClick={onBack}
-            className="flex items-center justify-center gap-1 px-5 py-4 rounded-2xl border border-gray-200 text-gray-500 font-semibold text-sm hover:bg-gray-50 transition-colors"
-          >
-            <ChevronRight size={16} />
-            חזרה
-          </button>
-          <button
-            onClick={onContinue}
-            className="flex-1 py-4 rounded-2xl text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-md hover:opacity-90 transition-opacity"
-            style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}
-          >
-            המשך
-            <ChevronLeft size={16} />
-          </button>
-        </div>
+      {/* Bottom buttons */}
+      <div className="relative z-10 px-5 pt-3 pb-8 flex gap-3">
+        <button
+          onClick={onBack}
+          className="flex items-center justify-center gap-1 px-5 py-4 rounded-2xl font-semibold text-sm text-white/70 border border-white/15 hover:bg-white/10 transition-colors"
+        >
+          <ChevronRight size={16} />
+          חזרה
+        </button>
+        <button
+          onClick={onContinue}
+          className="flex-1 py-4 rounded-2xl text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-opacity"
+          style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}
+        >
+          המשך
+          <ChevronLeft size={16} />
+        </button>
       </div>
     </div>
   );
