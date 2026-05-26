@@ -19,16 +19,9 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
         <div className="absolute bottom-0 -left-20 w-64 h-64 rounded-full blur-3xl opacity-25" style={{ background: "hsl(var(--brand-purple))" }} />
       </div>
 
-      {/* ── Header: logo + badge ── */}
-      <div className="relative z-10 flex items-center justify-between px-5 pt-10 pb-4">
-        <div className="flex items-center gap-2.5">
-          <img src={matchlyIcon} alt="Matchly" className="w-8 h-8 object-contain" />
-          <span className="text-xl font-black text-white tracking-tight">Matchly</span>
-        </div>
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20">
-          <Instagram size={11} className="text-pink-300" />
-          <span className="text-[10px] font-bold text-white/70">Instagram only</span>
-        </div>
+      {/* ── Header: logo only ── */}
+      <div className="relative z-10 flex items-center px-5 pt-10 pb-4">
+        <img src={matchlyIcon} alt="Matchly" className="w-8 h-8 object-contain" />
       </div>
 
       {/* ── Title ── */}
@@ -106,10 +99,6 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
         </div>
       </div>
 
-      {/* Small hint */}
-      <p className="relative z-10 text-center text-[10px] text-white/30 pb-6">
-        אפשר לשנות את הבחירה בהמשך
-      </p>
     </div>
   );
 }
