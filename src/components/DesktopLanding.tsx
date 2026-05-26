@@ -223,9 +223,6 @@ function BenefitsScreen({ onBack, onContinue }: { onBack: () => void; onContinue
 
       {/* Header */}
       <div className="relative z-10 text-center mb-10 max-w-xl">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 mb-5">
-          <span className="text-xs font-bold text-white/60 tracking-wide">לבעלי עסקים / מפרסמים ויוצרי תוכן</span>
-        </div>
         <h2 className="text-4xl font-black text-white mb-3 leading-tight">למה לבחור ב-Matchly?</h2>
         <p className="text-white/55 text-base leading-relaxed">
           חיבור פשוט ומהיר בין בעלי עסקים/מפרסמים ויוצרי תוכן
