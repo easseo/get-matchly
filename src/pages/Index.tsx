@@ -83,8 +83,8 @@ const Index = () => {
     if (screen === "landing")
       return (
         <Landing
-          onStart={() => setScreen("form")}
-          onCreatorJoin={() => navigate("/auth?role=creator")}
+          onStart={() => navigate("/auth?role=advertiser&mode=signup")}
+          onCreatorJoin={() => navigate("/auth?role=creator&mode=signup")}
         />
       );
     if (screen === "creator-onboarding")
@@ -119,8 +119,8 @@ const Index = () => {
       <>
         {FloatingAuthBtn}
         <DesktopLanding
-          onStart={() => setScreen("form")}
-          onCreatorJoin={() => navigate("/auth?role=creator")}
+          onStart={() => navigate("/auth?role=advertiser&mode=signup")}
+          onCreatorJoin={() => navigate("/auth?role=creator&mode=signup")}
         />
       </>
     );

@@ -11,7 +11,8 @@ export default function Auth() {
   const [params] = useSearchParams();
   const { signIn } = useDemoAuth();
   const initialRole = (params.get("role") as AppRole) || "advertiser";
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const initialMode = params.get("mode") === "signup" ? "signup" : "signin";
+  const [mode, setMode] = useState<"signin" | "signup">(initialMode);
   const [role, setRole] = useState<AppRole>(initialRole);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
