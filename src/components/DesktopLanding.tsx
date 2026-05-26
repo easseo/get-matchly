@@ -72,11 +72,6 @@ function IntroScreen({ onContinue, onCreatorJoin }: { onContinue: () => void; on
         <div className="absolute -top-20 left-1/3 w-96 h-96 rounded-full blur-3xl opacity-25" style={{ background: "hsl(var(--brand-pink))" }} />
         <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: "hsl(var(--brand-purple))" }} />
 
-        {/* Logo row */}
-        <div className="relative z-10 flex items-center gap-3 mb-8">
-          <img src={matchlyIcon} alt="Matchly" className="w-10 h-10 object-contain" />
-          <span className="text-2xl font-black text-white tracking-tight">Matchly</span>
-        </div>
 
         {/* Middle: text + woman photo */}
         <div className="relative z-10 flex items-center gap-8 flex-1 mb-6">
