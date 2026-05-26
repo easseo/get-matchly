@@ -63,79 +63,92 @@ export default function DesktopLanding({ onStart, onCreatorJoin }: DesktopLandin
 function IntroScreen({ onContinue, onCreatorJoin }: { onContinue: () => void; onCreatorJoin?: () => void }) {
   return (
     <div className="flex w-full min-h-screen" dir="rtl">
-      {/* Left: new hero */}
+      {/* Left: hero */}
       <div
-        className="flex-1 flex flex-col justify-center px-14 py-12 relative overflow-hidden"
+        className="flex-1 flex flex-col px-12 py-10 relative overflow-hidden"
         style={{ background: "linear-gradient(160deg, #1a0533 0%, #2d0a4e 45%, #1c0a3a 100%)" }}
       >
         {/* Ambient blobs */}
-        <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full blur-3xl opacity-30" style={{ background: "hsl(var(--brand-pink))" }} />
-        <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full blur-3xl opacity-25" style={{ background: "hsl(var(--brand-purple))" }} />
+        <div className="absolute -top-20 left-1/3 w-96 h-96 rounded-full blur-3xl opacity-25" style={{ background: "hsl(var(--brand-pink))" }} />
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: "hsl(var(--brand-purple))" }} />
 
-        <div className="relative z-10 max-w-2xl">
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-8">
-            <img src={matchlyIcon} alt="Matchly" className="w-10 h-10 object-contain" />
-            <span className="text-2xl font-black text-white tracking-tight">Matchly</span>
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 mr-2">
-              <Instagram size={12} className="text-pink-300" />
-              <span className="text-[11px] font-bold text-white/70">Instagram only</span>
-            </div>
+        {/* Logo row */}
+        <div className="relative z-10 flex items-center gap-3 mb-8">
+          <img src={matchlyIcon} alt="Matchly" className="w-10 h-10 object-contain" />
+          <span className="text-2xl font-black text-white tracking-tight">Matchly</span>
+        </div>
+
+        {/* Middle: text + woman photo */}
+        <div className="relative z-10 flex items-center gap-8 flex-1 mb-6">
+          {/* Text column */}
+          <div className="flex-1 min-w-0">
+            <h1 className="text-5xl font-black text-white leading-tight mb-4">
+              ברוכים הבאים ל-Matchly
+            </h1>
+            <p className="text-lg text-white/85 font-semibold leading-snug mb-4">
+              הדרך הפשוטה לחבר בין בעלי עסקים,<br />
+              מפרסמים ויוצרי תוכן{" "}
+              <span style={{ color: "#f472b6", fontWeight: 800 }}>באינסטגרם</span>
+            </p>
+            <p className="text-white/55 text-sm leading-relaxed max-w-sm">
+              Matchly עוזרת לבעלי עסקים ולמפרסמים למצוא יוצרי תוכן מתאימים לקמפיינים באינסטגרם, וליוצרי תוכן לקבל הזדמנויות לשיתופי פעולה בתשלום.
+            </p>
           </div>
 
-          {/* Title */}
-          <h1 className="text-5xl font-black text-white leading-tight mb-4">
-            ברוכים הבאים ל-Matchly
-          </h1>
-
-          {/* Subtitle */}
-          <p className="text-xl text-white/80 font-semibold leading-snug mb-4">
-            הדרך הפשוטה לחבר בין בעלי עסקים, מפרסמים ויוצרי תוכן{" "}
-            <span style={{ background: "linear-gradient(135deg, #f9a8d4, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              באינסטגרם
-            </span>
-          </p>
-
-          {/* Description */}
-          <p className="text-white/55 text-sm leading-relaxed mb-8 max-w-lg">
-            Matchly עוזרת לבעלי עסקים ולמפרסמים למצוא יוצרי תוכן מתאימים לקמפיינים באינסטגרם, וליוצרי תוכן לקבל הזדמנויות לשיתופי פעולה בתשלום.
-          </p>
-
-          {/* Value cards */}
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            {/* Advertisers */}
-            <div className="rounded-2xl p-5 border border-white/10" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(10px)" }}>
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}>
-                  <Briefcase size={14} className="text-white" />
-                </div>
-                <span className="text-sm font-extrabold text-white">לבעלי עסקים ומפרסמים</span>
-              </div>
-              <ul className="space-y-2">
-                {["למצוא יוצרי תוכן רלוונטיים מהר יותר", "לחסוך זמן בחיפוש ידני", "לקבל התאמות מדויקות יותר", "להתמקד בתוצאות ו-ROI"].map(item => (
-                  <li key={item} className="flex items-start gap-2 text-xs text-white/65 leading-snug">
-                    <span className="text-pink-400 shrink-0 mt-0.5">✓</span>{item}
-                  </li>
-                ))}
-              </ul>
+          {/* Woman photo */}
+          <div className="relative shrink-0 w-72 h-80 flex items-end justify-center">
+            {/* Glow behind photo */}
+            <div className="absolute inset-0 rounded-full blur-3xl opacity-30 scale-75" style={{ background: "radial-gradient(circle, hsl(var(--brand-purple)), transparent 70%)" }} />
+            <img
+              src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&q=80"
+              alt="creator"
+              className="relative z-10 h-full w-full object-cover object-top rounded-2xl"
+              style={{ maskImage: "linear-gradient(to top, transparent 0%, black 20%)" }}
+            />
+            {/* Floating Instagram badge */}
+            <div
+              className="absolute top-6 left-2 z-20 w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl"
+              style={{ background: "linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" }}
+            >
+              <Instagram size={28} className="text-white" />
             </div>
+          </div>
+        </div>
 
-            {/* Creators */}
-            <div className="rounded-2xl p-5 border border-white/10" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(10px)" }}>
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg, #06b6d4, #8b5cf6)" }}>
-                  <Star size={14} className="text-white" />
-                </div>
-                <span className="text-sm font-extrabold text-white">ליוצרי תוכן</span>
+        {/* Value cards */}
+        <div className="relative z-10 grid grid-cols-2 gap-4">
+          {/* Advertisers */}
+          <div className="rounded-2xl p-4 border border-white/10" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(10px)" }}>
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}>
+                <Briefcase size={14} className="text-white" />
               </div>
-              <ul className="space-y-2">
-                {["לקבל הזדמנויות לשיתופי פעולה בתשלום", "להיחשף לבעלי עסקים ומפרסמים", "לבחור קמפיינים מתאימים", "לגדול דרך שיתופי פעולה"].map(item => (
-                  <li key={item} className="flex items-start gap-2 text-xs text-white/65 leading-snug">
-                    <span className="text-cyan-400 shrink-0 mt-0.5">✓</span>{item}
-                  </li>
-                ))}
-              </ul>
+              <span className="text-sm font-extrabold text-white">לבעלי עסקים ומפרסמים</span>
             </div>
+            <ul className="space-y-1.5">
+              {["למצוא יוצרי תוכן רלוונטיים מהר יותר", "לחסוך זמן בחיפוש ידני", "לקבל התאמות מדויקות יותר", "להתמקד בתוצאות ו-ROI"].map(item => (
+                <li key={item} className="flex items-start gap-2 text-xs text-white/65 leading-snug">
+                  <span className="text-pink-400 shrink-0 mt-0.5">✓</span>{item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Creators */}
+          <div className="rounded-2xl p-4 border border-white/10" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(10px)" }}>
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg, #06b6d4, #8b5cf6)" }}>
+                <Star size={14} className="text-white" />
+              </div>
+              <span className="text-sm font-extrabold text-white">ליוצרי תוכן</span>
+            </div>
+            <ul className="space-y-1.5">
+              {["לקבל הזדמנויות לשיתופי פעולה בתשלום", "להיחשף לבעלי עסקים ומפרסמים", "לבחור קמפיינים מתאימים", "לגדול דרך שיתופי פעולה"].map(item => (
+                <li key={item} className="flex items-start gap-2 text-xs text-white/65 leading-snug">
+                  <span className="text-cyan-400 shrink-0 mt-0.5">✓</span>{item}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
