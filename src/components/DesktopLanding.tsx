@@ -115,40 +115,56 @@ function IntroScreen({ onContinue, onCreatorJoin }: { onContinue: () => void; on
           </div>
         </div>
 
-        {/* Value cards */}
+        {/* Value cards + buttons */}
         <div className="relative z-10 grid grid-cols-2 gap-4 mb-5">
           {/* Advertisers */}
-          <div className="rounded-2xl p-4 border border-white/15" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(10px)" }}>
+          <div className="flex flex-col rounded-2xl p-4 border border-white/15" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(10px)" }}>
             <div className="flex items-center gap-2.5 mb-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)" }}>
                 <Briefcase size={16} className="text-white" />
               </div>
               <span className="text-sm font-extrabold text-white">לבעלי עסקים ומפרסמים</span>
             </div>
-            <ul className="space-y-1.5">
+            <ul className="space-y-1.5 flex-1 mb-4">
               {["למצוא יוצרי תוכן רלוונטיים מהר יותר", "לחסוך זמן בחיפוש ידני", "לקבל התאמות מדויקות יותר", "להתמקד בתוצאות ו-ROI"].map(item => (
                 <li key={item} className="flex items-start gap-2 text-xs text-white/70 leading-snug">
                   <span className="text-pink-400 shrink-0 mt-0.5">✓</span>{item}
                 </li>
               ))}
             </ul>
+            <button
+              onClick={onContinue}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-extrabold text-sm shadow-lg hover:opacity-90 transition-opacity"
+              style={{ background: "linear-gradient(135deg, #f97316, #ec4899)" }}
+            >
+              <Briefcase size={14} className="text-white" />
+              אני בעל עסק / מפרסם
+            </button>
           </div>
 
           {/* Creators */}
-          <div className="rounded-2xl p-4 border border-white/15" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(10px)" }}>
+          <div className="flex flex-col rounded-2xl p-4 border border-white/15" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(10px)" }}>
             <div className="flex items-center gap-2.5 mb-3">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)" }}>
                 <Star size={16} className="text-white" />
               </div>
               <span className="text-sm font-extrabold text-white">ליוצרי תוכן</span>
             </div>
-            <ul className="space-y-1.5">
+            <ul className="space-y-1.5 flex-1 mb-4">
               {["לקבל הזדמנויות לשיתופי פעולה בתשלום", "להיחשף לבעלי עסקים ומפרסמים", "לבחור קמפיינים מתאימים", "לגדול דרך שיתופי פעולה"].map(item => (
                 <li key={item} className="flex items-start gap-2 text-xs text-white/70 leading-snug">
                   <span className="text-pink-400 shrink-0 mt-0.5">✓</span>{item}
                 </li>
               ))}
             </ul>
+            <button
+              onClick={onCreatorJoin}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-extrabold text-sm border border-white/30 hover:bg-white/10 transition-colors"
+              style={{ background: "rgba(255,255,255,0.10)" }}
+            >
+              <Star size={14} className="text-white" />
+              אני יוצר תוכן
+            </button>
           </div>
         </div>
 
