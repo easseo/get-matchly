@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Landing from "@/components/Landing";
+import DesktopLanding from "@/components/DesktopLanding";
 import { useIsMobile } from "@/hooks/use-mobile";
 import CampaignForm, { type CampaignData } from "@/components/CampaignForm";
 import Loading from "@/components/Loading";
@@ -113,10 +114,22 @@ const Index = () => {
     </Link>
   );
 
+  if (!isMobile && screen === "landing") {
+    return (
+      <>
+        {FloatingAuthBtn}
+        <DesktopLanding
+          onStart={() => setScreen("form")}
+          onCreatorJoin={() => navigate("/auth?role=creator")}
+        />
+      </>
+    );
+  }
+
   return (
-    <div className="mobile-bg min-h-screen md:flex md:items-start md:justify-center md:py-6">
+    <div className={isMobile ? "mobile-bg md:min-h-screen md:flex md:items-start md:justify-center md:py-6" : "mobile-bg min-h-screen"}>
       {screen === "landing" && FloatingAuthBtn}
-      <div className="mobile-shell">{renderScreen()}</div>
+      <div className={isMobile ? "mobile-shell" : "desktop-shell"}>{renderScreen()}</div>
     </div>
   );
 };
