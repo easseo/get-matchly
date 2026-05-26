@@ -116,18 +116,18 @@ function IntroScreen({ onContinue, onCreatorJoin }: { onContinue: () => void; on
         </div>
 
         {/* Value cards */}
-        <div className="relative z-10 grid grid-cols-2 gap-4">
+        <div className="relative z-10 grid grid-cols-2 gap-4 mb-5">
           {/* Advertisers */}
-          <div className="rounded-2xl p-4 border border-white/10" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(10px)" }}>
+          <div className="rounded-2xl p-4 border border-white/15" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(10px)" }}>
             <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}>
-                <Briefcase size={14} className="text-white" />
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)" }}>
+                <Briefcase size={16} className="text-white" />
               </div>
               <span className="text-sm font-extrabold text-white">לבעלי עסקים ומפרסמים</span>
             </div>
             <ul className="space-y-1.5">
               {["למצוא יוצרי תוכן רלוונטיים מהר יותר", "לחסוך זמן בחיפוש ידני", "לקבל התאמות מדויקות יותר", "להתמקד בתוצאות ו-ROI"].map(item => (
-                <li key={item} className="flex items-start gap-2 text-xs text-white/65 leading-snug">
+                <li key={item} className="flex items-start gap-2 text-xs text-white/70 leading-snug">
                   <span className="text-pink-400 shrink-0 mt-0.5">✓</span>{item}
                 </li>
               ))}
@@ -135,44 +135,46 @@ function IntroScreen({ onContinue, onCreatorJoin }: { onContinue: () => void; on
           </div>
 
           {/* Creators */}
-          <div className="rounded-2xl p-4 border border-white/10" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(10px)" }}>
+          <div className="rounded-2xl p-4 border border-white/15" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(10px)" }}>
             <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg, #06b6d4, #8b5cf6)" }}>
-                <Star size={14} className="text-white" />
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)" }}>
+                <Star size={16} className="text-white" />
               </div>
               <span className="text-sm font-extrabold text-white">ליוצרי תוכן</span>
             </div>
             <ul className="space-y-1.5">
               {["לקבל הזדמנויות לשיתופי פעולה בתשלום", "להיחשף לבעלי עסקים ומפרסמים", "לבחור קמפיינים מתאימים", "לגדול דרך שיתופי פעולה"].map(item => (
-                <li key={item} className="flex items-start gap-2 text-xs text-white/65 leading-snug">
-                  <span className="text-cyan-400 shrink-0 mt-0.5">✓</span>{item}
+                <li key={item} className="flex items-start gap-2 text-xs text-white/70 leading-snug">
+                  <span className="text-pink-400 shrink-0 mt-0.5">✓</span>{item}
                 </li>
               ))}
             </ul>
           </div>
         </div>
-      </div>
 
-      {/* Right: actions panel — unchanged */}
-      <div className="w-[380px] flex flex-col justify-center px-12 py-16 bg-white shadow-2xl gap-4">
-        <div className="mb-6">
-          <h2 className="text-2xl font-black text-gray-900 mb-2">מוכן להתחיל?</h2>
-          <p className="text-gray-400 text-sm leading-relaxed">בחר את הסוג שלך וגלה את ההזדמנויות המתאימות לך</p>
+        {/* CTA Buttons */}
+        <div className="relative z-10 grid grid-cols-2 gap-4">
+          <button
+            onClick={onContinue}
+            className="flex items-center justify-center gap-3 py-4 rounded-2xl text-white font-extrabold text-base shadow-lg hover:opacity-90 transition-opacity"
+            style={{ background: "linear-gradient(135deg, #f97316, #ec4899)" }}
+          >
+            <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+              <Briefcase size={16} className="text-white" />
+            </div>
+            אני בעל עסק / מפרסם
+          </button>
+          <button
+            onClick={onCreatorJoin}
+            className="flex items-center justify-center gap-3 py-4 rounded-2xl text-white font-extrabold text-base border border-white/25 hover:bg-white/10 transition-colors"
+            style={{ background: "rgba(255,255,255,0.07)" }}
+          >
+            <div className="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+              <Star size={16} className="text-white" />
+            </div>
+            אני יוצר תוכן
+          </button>
         </div>
-        <button
-          onClick={onContinue}
-          className="w-full py-4 rounded-2xl text-white font-extrabold text-base flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-opacity"
-          style={{ background: "linear-gradient(135deg, hsl(var(--brand-pink)), hsl(var(--brand-purple)))" }}
-        >
-          המשך
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          onClick={onCreatorJoin}
-          className="w-full py-3.5 rounded-2xl text-gray-500 font-semibold text-sm border border-gray-200 hover:bg-gray-50 transition-colors"
-        >
-          אני יוצר תוכן — כניסה
-        </button>
       </div>
     </div>
   );
