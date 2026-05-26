@@ -122,7 +122,7 @@ const Index = () => {
     </Link>
   );
 
-  if (!isMobile && screen === "landing") {
+  if (isMobile === false && screen === "landing") {
     return (
       <>
         {FloatingAuthBtn}
@@ -135,9 +135,9 @@ const Index = () => {
   }
 
   return (
-    <div className={isMobile ? "mobile-bg md:min-h-screen md:flex md:items-start md:justify-center md:py-6" : "mobile-bg min-h-screen"}>
+    <div className="mobile-bg md:min-h-screen md:flex md:items-start md:justify-center md:py-6">
       {screen === "landing" && FloatingAuthBtn}
-      <div className={isMobile ? "mobile-shell" : "desktop-shell"}>{renderScreen()}</div>
+      <div className="mobile-shell">{renderScreen()}</div>
     </div>
   );
 };
