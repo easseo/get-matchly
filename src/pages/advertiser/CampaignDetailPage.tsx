@@ -162,7 +162,7 @@ export default function AdvertiserCampaignDetailPage() {
 
   return (
     <div className="p-4 md:p-6 max-w-5xl" dir="rtl">
-      <Link to="/advertiser/campaigns" className="flex items-center gap-1 text-sm font-semibold text-gray-400 hover:text-gray-800 mb-5 w-fit transition-colors" dir="ltr">
+      <Link to="/app/campaigns" className="flex items-center gap-1 text-sm font-semibold text-gray-400 hover:text-gray-800 mb-5 w-fit transition-colors" dir="ltr">
         <ChevronRight size={15} /> חזרה לקמפיינים
       </Link>
 

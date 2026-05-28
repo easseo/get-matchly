@@ -71,7 +71,7 @@ export default function CreateCampaignPage() {
 
   return (
     <div className="p-4 md:p-6 max-w-2xl" dir="rtl">
-      <button onClick={() => navigate("/advertiser/campaigns")} className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-gray-800 mb-5 transition-colors" dir="ltr">
+      <button onClick={() => navigate("/app/campaigns")} className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-gray-800 mb-5 transition-colors" dir="ltr">
         <ArrowRight size={15} /> חזרה לקמפיינים
       </button>
 
