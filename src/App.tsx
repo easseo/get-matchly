@@ -25,6 +25,7 @@ import CreatorProposals from "./pages/creator/MyProposals.tsx";
 import Earnings from "./pages/creator/Earnings.tsx";
 import CreatorReviews from "./pages/creator/CreatorReviews.tsx";
 import CreatorProfile from "./pages/creator/CreatorProfile.tsx";
+import ContentDelivery from "./pages/creator/ContentDelivery.tsx";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,7 @@ const App = () => (
               <Route path="earnings" element={<Earnings />} />
               <Route path="reviews" element={<CreatorReviews />} />
               <Route path="profile" element={<CreatorProfile />} />
+              <Route path="submit" element={<ContentDelivery />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
