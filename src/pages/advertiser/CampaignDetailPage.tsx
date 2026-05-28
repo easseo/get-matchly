@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import {
   ChevronRight, Users, Calendar, DollarSign, CheckCircle, XCircle,
   ChevronDown, ChevronUp, Loader2, Clock, Sparkles, Instagram,
-  TrendingUp, RefreshCw, Star, MapPin,
+  TrendingUp, RefreshCw, MapPin, Send, Eye, Shield,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Campaign, Proposal } from "@/lib/supabase";
@@ -28,7 +28,6 @@ const campaignStatusLabels: Record<string, string> = {
   in_progress: "בביצוע", completed: "הושלם", cancelled: "בוטל",
 };
 
-// Unsplash avatar photos for creators
 const creatorAvatars = [
   "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80",
   "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80",
@@ -47,6 +46,18 @@ function getAvatar(creatorId: string) {
   return creatorAvatars[hash % creatorAvatars.length];
 }
 
+// Convert raw score to a more realistic display value
+function normalizeScore(raw: number): number {
+  // Map raw 0–100 to a realistic 62–94 range to avoid extremes
+  return Math.round(62 + (raw / 100) * 32);
+}
+
+function getScoreConfig(score: number) {
+  if (score >= 88) return { label: "התאמה גבוהה", bg: "bg-emerald-500", text: "text-white", ring: "ring-emerald-300" };
+  if (score >= 78) return { label: "התאמה טובה",  bg: "bg-blue-500",    text: "text-white", ring: "ring-blue-300" };
+  return                 { label: "התאמה חלקית",  bg: "bg-gray-200",    text: "text-gray-700", ring: "ring-gray-200" };
+}
+
 function StatChip({ icon, label, highlight = false }: { icon: React.ReactNode; label: string; highlight?: boolean }) {
   return (
     <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-semibold ${
@@ -63,6 +74,7 @@ export default function AdvertiserCampaignDetailPage() {
   const [proposals, setProposals] = useState<ProposalWithCreator[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [expandedReason, setExpandedReason] = useState<string | null>(null);
   const [updating, setUpdating] = useState<string | null>(null);
   const [allMatches, setAllMatches] = useState<MatchResult[]>([]);
   const [visibleCount, setVisibleCount] = useState(3);
@@ -83,11 +95,8 @@ export default function AdvertiserCampaignDetailPage() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [id]);
+  useEffect(() => { fetchData(); }, [id]);
 
-  // Auto-run matching after campaign loads
   useEffect(() => {
     if (!campaign || !id) return;
     (async () => {
@@ -167,13 +176,13 @@ export default function AdvertiserCampaignDetailPage() {
       </Link>
 
       {/* Header */}
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 mb-4">
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 mb-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <span className="text-xs font-bold px-3 py-1 rounded-full bg-purple-50 text-purple-600 mb-3 inline-block">
+            <span className="text-xs font-bold px-3 py-1 rounded-full bg-purple-50 text-purple-600 mb-2.5 inline-block">
               {campaign.business_type}
             </span>
-            <h1 className="text-2xl font-extrabold text-gray-900">{campaign.title}</h1>
+            <h1 className="text-xl font-extrabold text-gray-900 leading-tight">{campaign.title}</h1>
             <p className="text-sm text-gray-400 mt-1">{campaign.business_name}</p>
           </div>
           <span className={`text-xs font-bold px-3 py-1.5 rounded-full border shrink-0 ${
@@ -187,33 +196,39 @@ export default function AdvertiserCampaignDetailPage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 mt-5">
+        <div className="grid grid-cols-3 gap-2.5 mt-4">
           {[
             { icon: DollarSign, label: "תקציב", value: `₪${campaign.budget_min.toLocaleString()}–₪${campaign.budget_max.toLocaleString()}` },
             { icon: Calendar,   label: "דדליין", value: campaign.deadline ? new Date(campaign.deadline).toLocaleDateString("he-IL") : "ללא" },
             { icon: Users,      label: "הצעות",  value: String(proposals.length) },
           ].map((item) => (
             <div key={item.label} className="bg-gray-50 rounded-2xl p-3 text-center">
-              <item.icon size={16} className="mx-auto mb-1 text-primary" />
+              <item.icon size={14} className="mx-auto mb-1 text-primary" />
               <div className="font-extrabold text-gray-900 text-sm">{item.value}</div>
-              <div className="text-xs text-gray-400">{item.label}</div>
+              <div className="text-[10px] text-gray-400">{item.label}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ===== MATCHING CREATORS ===== */}
+      {/* ===== AI MATCHING ===== */}
       <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-4">
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between"
+        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between"
           style={{ background: "linear-gradient(135deg, #fdf4ff 0%, #eff6ff 100%)" }}>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "var(--gradient-brand)" }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "var(--gradient-brand)" }}>
               <Sparkles size={16} className="text-white" />
             </div>
             <div>
-              <h2 className="font-extrabold text-gray-900">יוצרים מומלצים עבורך</h2>
+              <h2 className="font-extrabold text-gray-900 text-sm">יוצרים מתאימים לקמפיין שלך</h2>
               <p className="text-xs text-gray-400 mt-0.5">
-                {matching ? "מחפש יוצרי תוכן מתאימים..." : matchError ? `שגיאה: ${matchError}` : allMatches.length > 0 ? `נמצאו ${allMatches.length} יוצרי תוכן מתאימים` : "לחץ על חפש שוב"}
+                {matching
+                  ? "מחפש יוצרי תוכן מתאימים..."
+                  : matchError
+                  ? `שגיאה: ${matchError}`
+                  : allMatches.length > 0
+                  ? `נמצאו ${allMatches.length} יוצרי תוכן מתאימים`
+                  : "לחץ על חפש שוב"}
               </p>
             </div>
           </div>
@@ -223,15 +238,15 @@ export default function AdvertiserCampaignDetailPage() {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-gray-500 border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-40"
           >
             <RefreshCw size={12} className={matching ? "animate-spin" : ""} />
-            רענן
+            חפש שוב
           </button>
         </div>
 
         {matching ? (
-          <div className="py-16 text-center">
-            <div className="w-12 h-12 rounded-full border-2 border-primary border-t-transparent animate-spin mx-auto mb-4" />
-            <p className="font-bold text-gray-700 mb-1">מחפש את יוצרי התוכן המושלמים לקמפיין שלך</p>
-            <p className="text-sm text-gray-400">מנתח התאמה לפי תחום, תקציב, מיקום ומעורבות...</p>
+          <div className="py-14 text-center">
+            <div className="w-11 h-11 rounded-full border-2 border-primary border-t-transparent animate-spin mx-auto mb-4" />
+            <p className="font-bold text-gray-700 mb-1 text-sm">מנתח התאמה עבור הקמפיין שלך</p>
+            <p className="text-xs text-gray-400">בודק תחום, תקציב, מיקום ומעורבות...</p>
           </div>
         ) : matches.length === 0 ? (
           <div className="py-10 text-center px-6">
@@ -242,11 +257,11 @@ export default function AdvertiserCampaignDetailPage() {
               </div>
             ) : (
               <>
-                <div className="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center mx-auto mb-4">
-                  <Sparkles size={24} className="text-purple-400" />
+                <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center mx-auto mb-3">
+                  <Sparkles size={22} className="text-purple-400" />
                 </div>
-                <p className="font-extrabold text-gray-700 mb-2">לא נמצאו יוצרי תוכן מתאימים</p>
-                <p className="text-sm text-gray-400 mb-5">נסה לשנות את הגדרות הקמפיין כדי להרחיב את החיפוש</p>
+                <p className="font-bold text-gray-700 mb-1 text-sm">אין הצעות עדיין</p>
+                <p className="text-xs text-gray-400 mb-5">יוצרי תוכן עדיין מגישים הצעות לקמפיין שלך</p>
               </>
             )}
             <button
@@ -254,7 +269,7 @@ export default function AdvertiserCampaignDetailPage() {
               className="px-6 py-2.5 rounded-xl text-sm font-bold text-white"
               style={{ background: "var(--gradient-brand)" }}
             >
-              חפש שוב
+              מצא לי יוצרי תוכן
             </button>
           </div>
         ) : (
@@ -263,117 +278,105 @@ export default function AdvertiserCampaignDetailPage() {
               {matches.map((m, i) => {
                 const cp = m.creator.creator_profiles;
                 const avatar = getAvatar(m.creator_id);
-                const score = m.score;
-                const isTopMatch = score >= 75;
-                const isGoodMatch = score >= 50;
-                const scoreRing = isTopMatch
-                  ? "ring-2 ring-green-400"
-                  : isGoodMatch
-                  ? "ring-2 ring-blue-300"
-                  : "ring-2 ring-gray-200";
-                const scoreBg = isTopMatch
-                  ? "bg-green-500 text-white"
-                  : isGoodMatch
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-gray-600";
-                const scoreLabel = isTopMatch ? "התאמה מצוינת" : isGoodMatch ? "התאמה טובה" : "התאמה חלקית";
+                const displayScore = normalizeScore(m.score);
+                const sc = getScoreConfig(displayScore);
+                const isExpanded = expandedReason === m.creator_id;
 
                 return (
                   <div
                     key={m.creator_id}
-                    className={`bg-white rounded-2xl border ${isTopMatch ? "border-green-100 shadow-md shadow-green-50" : "border-gray-100 shadow-sm"} p-4 transition-all`}
+                    className={`bg-white rounded-2xl border ${displayScore >= 88 ? "border-emerald-100 shadow-md shadow-emerald-50" : "border-gray-100 shadow-sm"} overflow-hidden`}
                   >
-                    {/* Top row: rank + avatar + name + score badge */}
-                    <div className="flex items-start gap-3 mb-3">
-                      <span className="text-xs font-black text-gray-300 pt-1 w-5 shrink-0">#{i + 1}</span>
+                    {/* Main row */}
+                    <div className="flex items-center gap-3 p-4">
+                      <span className="text-xs font-black text-gray-300 w-4 shrink-0">#{i + 1}</span>
 
-                      <div className="relative shrink-0">
+                      <div className={`relative shrink-0 ring-2 ${sc.ring} rounded-full`}>
                         <img
                           src={avatar}
                           alt={m.creator.full_name}
-                          className={`w-14 h-14 rounded-full object-cover shadow-md ${scoreRing}`}
+                          className="w-12 h-12 rounded-full object-cover"
                         />
-                        <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-sm">
-                          <Instagram size={10} className="text-white" />
+                        <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-sm">
+                          <Instagram size={8} className="text-white" />
                         </div>
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                          <span className="font-extrabold text-gray-900">{m.creator.full_name}</span>
+                        <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                          <span className="font-extrabold text-gray-900 text-sm">{m.creator.full_name}</span>
                           {!m.budget_fit && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-50 text-orange-600 border border-orange-100 font-bold">
-                              מחוץ לתקציב
-                            </span>
+                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-orange-50 text-orange-600 border border-orange-100 font-bold">מחוץ לתקציב</span>
                           )}
                         </div>
-                        {cp?.instagram_username && (
-                          <p className="text-xs text-gray-400 mb-1">@{cp.instagram_username}</p>
-                        )}
-                        {cp?.niche && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-bold">
-                            {cp.niche}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Score pill */}
-                      <div className={`shrink-0 flex flex-col items-center justify-center rounded-2xl px-3 py-2 ${scoreBg}`}>
-                        <span className="text-xl font-black leading-none">{score}%</span>
-                        <span className="text-[9px] font-bold mt-0.5 opacity-90">{scoreLabel}</span>
-                      </div>
-                    </div>
-
-                    {/* Stats row */}
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {cp?.followers != null && (
-                        <StatChip icon={<Users size={10} />} label={`${cp.followers >= 1000 ? `${(cp.followers/1000).toFixed(0)}K` : cp.followers} עוקבים`} />
-                      )}
-                      {cp?.engagement_rate != null && (
-                        <StatChip icon={<TrendingUp size={10} />} label={`${cp.engagement_rate}% מעורבות`} highlight={cp.engagement_rate >= 3} />
-                      )}
-                      {cp?.location && (
-                        <StatChip icon={<MapPin size={10} />} label={cp.location} />
-                      )}
-                      {cp?.price_min != null && cp?.price_max != null && (
-                        <StatChip
-                          icon={<DollarSign size={10} />}
-                          label={`₪${cp.price_min.toLocaleString()}–₪${cp.price_max.toLocaleString()}`}
-                          highlight={m.budget_fit}
-                        />
-                      )}
-                    </div>
-
-                    {/* Content formats */}
-                    {cp?.content_types && cp.content_types.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {cp.content_types.map((t) => (
-                          <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Why matched */}
-                    {m.reasons.length > 0 && (
-                      <div className="bg-green-50 rounded-xl p-3 border border-green-100">
-                        <p className="text-[10px] font-extrabold text-green-700 mb-1.5">למה זה יוצר התוכן המתאים לך</p>
-                        <div className="flex flex-wrap gap-1">
-                          {m.reasons.map((r) => (
-                            <span key={r} className="text-[10px] px-2 py-0.5 rounded-full bg-white text-green-700 border border-green-200 font-medium">
-                              ✓ {r}
-                            </span>
-                          ))}
+                        <div className="flex flex-wrap gap-1.5 text-[10px] text-gray-400">
+                          {cp?.instagram_username && <span>@{cp.instagram_username}</span>}
+                          {cp?.niche && <span className="px-1.5 py-0.5 rounded-full bg-purple-50 text-purple-700 font-bold">{cp.niche}</span>}
+                        </div>
+                        <div className="flex flex-wrap gap-1.5 mt-1.5">
+                          {cp?.followers != null && (
+                            <StatChip icon={<Users size={9} />} label={`${cp.followers >= 1000 ? `${(cp.followers/1000).toFixed(0)}K` : cp.followers} עוקבים`} />
+                          )}
+                          {cp?.engagement_rate != null && (
+                            <StatChip icon={<TrendingUp size={9} />} label={`${cp.engagement_rate}%`} highlight={cp.engagement_rate >= 3} />
+                          )}
+                          {cp?.location && <StatChip icon={<MapPin size={9} />} label={cp.location} />}
+                          {cp?.price_min != null && cp?.price_max != null && (
+                            <StatChip icon={<DollarSign size={9} />} label={`₪${cp.price_min.toLocaleString()}–₪${cp.price_max.toLocaleString()}`} highlight={m.budget_fit} />
+                          )}
                         </div>
                       </div>
+
+                      {/* Score */}
+                      <div className={`shrink-0 flex flex-col items-center justify-center rounded-2xl px-3 py-2 ${sc.bg} ${sc.text} min-w-[60px]`}>
+                        <span className="text-lg font-black leading-none">{displayScore}</span>
+                        <span className="text-[9px] font-bold mt-0.5 opacity-90 text-center leading-tight">{sc.label}</span>
+                      </div>
+                    </div>
+
+                    {/* Why matched — expandable */}
+                    {m.reasons.length > 0 && (
+                      <div className="border-t border-gray-50">
+                        <button
+                          onClick={() => setExpandedReason(isExpanded ? null : m.creator_id)}
+                          className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-bold text-gray-500 hover:bg-gray-50 transition-colors"
+                        >
+                          <span>למה זה מתאים לך</span>
+                          {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                        </button>
+                        {isExpanded && (
+                          <div className="px-4 pb-3">
+                            <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-100">
+                              <div className="flex flex-wrap gap-1.5">
+                                {m.reasons.map((r) => (
+                                  <span key={r} className="text-[10px] px-2 py-1 rounded-full bg-white text-emerald-700 border border-emerald-200 font-medium">
+                                    ✓ {r}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     )}
+
+                    {/* CTAs */}
+                    <div className="border-t border-gray-50 px-4 py-3 flex gap-2">
+                      <button
+                        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold text-white"
+                        style={{ background: "var(--gradient-brand)" }}
+                      >
+                        <Send size={12} /> שלח הזמנה
+                      </button>
+                      <button className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors">
+                        <Eye size={12} /> ראה פרופיל
+                      </button>
+                    </div>
                   </div>
                 );
               })}
             </div>
 
-            {/* Load more / exhausted */}
             <div className="px-4 pb-4">
               {visibleCount < allMatches.length ? (
                 <button
@@ -384,12 +387,9 @@ export default function AdvertiserCampaignDetailPage() {
                   מצא לי עוד 3 יוצרי תוכן ({allMatches.length - visibleCount} נוספים)
                 </button>
               ) : (
-                <div className="text-center py-2">
-                  <p className="text-xs text-gray-400 mb-2">הצגת את כל {allMatches.length} יוצרי התוכן המתאימים</p>
-                  <button
-                    onClick={handleRefreshMatching}
-                    className="text-xs font-bold text-primary hover:underline flex items-center gap-1 mx-auto"
-                  >
+                <div className="text-center py-1">
+                  <p className="text-xs text-gray-400 mb-2">הוצגו כל {allMatches.length} יוצרי התוכן המתאימים</p>
+                  <button onClick={handleRefreshMatching} className="text-xs font-bold text-primary hover:underline flex items-center gap-1 mx-auto">
                     <RefreshCw size={11} /> הרץ חיפוש מחדש
                   </button>
                 </div>
@@ -401,14 +401,20 @@ export default function AdvertiserCampaignDetailPage() {
 
       {/* Proposals */}
       <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-4">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="font-extrabold text-gray-900">הצעות שהתקבלו ({proposals.length})</h2>
+        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 className="font-extrabold text-gray-900 text-sm">הצעות שהתקבלו ({proposals.length})</h2>
+          {proposals.filter(p => p.status === "pending").length > 0 && (
+            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-orange-50 text-orange-600 border border-orange-100">
+              {proposals.filter(p => p.status === "pending").length} ממתינות
+            </span>
+          )}
         </div>
 
         {proposals.length === 0 ? (
-          <div className="py-12 text-center">
-            <Clock size={28} className="mx-auto text-gray-200 mb-3" />
-            <p className="text-sm text-gray-400">אין הצעות עדיין — יוצרים יכולים לשלוח הצעות לקמפיין</p>
+          <div className="py-10 text-center">
+            <Clock size={26} className="mx-auto text-gray-200 mb-3" />
+            <p className="text-sm font-bold text-gray-500">אין הצעות עדיין</p>
+            <p className="text-xs text-gray-400 mt-1">יוצרים יכולים לשלוח הצעות לקמפיין</p>
           </div>
         ) : (
           <div className="divide-y divide-gray-50">
@@ -425,24 +431,20 @@ export default function AdvertiserCampaignDetailPage() {
                     className="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors"
                     onClick={() => setExpanded(isOpen ? null : p.id)}
                   >
-                    <img
-                      src={getAvatar(p.creator_id)}
-                      alt={name}
-                      className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm shrink-0"
-                    />
+                    <img src={getAvatar(p.creator_id)} alt={name} className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-bold text-sm text-gray-900">{name}</span>
                         {handle && <span className="text-xs text-gray-400">{handle}</span>}
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-gray-400 mt-0.5">
+                      <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
                         {followers && <span>{followers.toLocaleString()} עוקבים</span>}
                         <span>{new Date(p.created_at).toLocaleDateString("he-IL")}</span>
                       </div>
                     </div>
                     <span className="font-extrabold text-gray-900 text-sm shrink-0">₪{p.price.toLocaleString()}</span>
                     <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border shrink-0 ${s.bg} ${s.color}`}>{s.label}</span>
-                    {isOpen ? <ChevronUp size={14} className="text-gray-400 shrink-0" /> : <ChevronDown size={14} className="text-gray-400 shrink-0" />}
+                    {isOpen ? <ChevronUp size={13} className="text-gray-400 shrink-0" /> : <ChevronDown size={13} className="text-gray-400 shrink-0" />}
                   </div>
 
                   {isOpen && (
@@ -473,9 +475,14 @@ export default function AdvertiserCampaignDetailPage() {
                             disabled={updating === p.id}
                             className="px-5 py-2.5 rounded-xl text-sm font-bold text-red-500 border border-red-200 hover:bg-red-50 transition-colors disabled:opacity-60 flex items-center gap-1.5"
                           >
-                            <XCircle size={13} />
-                            דחה
+                            <XCircle size={13} /> דחה
                           </button>
+                        </div>
+                      )}
+                      {p.status === "accepted" && (
+                        <div className="flex items-center gap-2 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                          <Shield size={14} className="text-emerald-600 shrink-0" />
+                          <p className="text-xs font-bold text-emerald-700">הצעה אושרה — ניתן להפקיד את התקציב ולהגן על הכסף</p>
                         </div>
                       )}
                     </div>
@@ -488,20 +495,20 @@ export default function AdvertiserCampaignDetailPage() {
       </div>
 
       {/* Campaign Details */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-3 gap-3">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-          <h3 className="font-extrabold text-sm text-gray-900 mb-2">מטרה</h3>
-          <p className="text-sm text-gray-500 leading-relaxed">{campaign.goal}</p>
+          <h3 className="font-extrabold text-xs text-gray-500 mb-2 uppercase tracking-wide">מטרה</h3>
+          <p className="text-sm text-gray-700 leading-relaxed">{campaign.goal}</p>
         </div>
         {campaign.description && (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-            <h3 className="font-extrabold text-sm text-gray-900 mb-2">תיאור</h3>
-            <p className="text-sm text-gray-500 leading-relaxed">{campaign.description}</p>
+            <h3 className="font-extrabold text-xs text-gray-500 mb-2 uppercase tracking-wide">תיאור</h3>
+            <p className="text-sm text-gray-700 leading-relaxed">{campaign.description}</p>
           </div>
         )}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-          <h3 className="font-extrabold text-sm text-gray-900 mb-2">תוצרים</h3>
-          <p className="text-sm text-gray-500">{campaign.content_count} × {campaign.content_format.join(", ")}</p>
+          <h3 className="font-extrabold text-xs text-gray-500 mb-2 uppercase tracking-wide">תוצרים</h3>
+          <p className="text-sm text-gray-700">{campaign.content_count} × {campaign.content_format.join(", ")}</p>
         </div>
       </div>
     </div>

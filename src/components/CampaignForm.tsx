@@ -201,7 +201,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         </Section>
 
         {/* Budget */}
-        <Section title="תקציב" subtitle="כמה תרצו להשקיע בקמפיין?">
+        <Section title="טווח תקציב לקמפיין" subtitle="יוצרי תוכן יגישו הצעות בטווח הזה">
           <div className="relative bg-card rounded-3xl p-5 shadow-card border border-border overflow-hidden">
             <div className="absolute inset-0 bg-brand-soft opacity-60 pointer-events-none" />
             <div className="relative">
@@ -248,7 +248,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         </Section>
 
         {/* Location */}
-        <Section title="קהל יעד" subtitle="איפה נמצאים הלקוחות שלכם?">
+        <Section title="קהל יעד" subtitle="איפה נמצאים הלקוחות שאליהם תרצו להגיע?">
           <Select value={location} onValueChange={setLocation}>
             <SelectTrigger className="w-full bg-card border border-border rounded-2xl py-3.5 pr-12 pl-4 font-semibold shadow-soft h-auto relative">
               <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
@@ -261,7 +261,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         </Section>
 
         {/* Platform */}
-        <Section title="פלטפורמה" subtitle="איפה הקמפיין ירוץ?">
+        <Section title="פלטפורמה" subtitle="הקמפיין ירוץ באינסטגרם בלבד">
           <div className="bg-brand p-0.5 rounded-2xl shadow-glow">
             <div className="bg-card rounded-[14px] py-3 px-4 flex items-center gap-3">
               <Instagram className="w-5 h-5" style={{ color: "hsl(var(--brand-pink))" }} />
@@ -272,7 +272,8 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         </Section>
 
         {/* Content type - multi select with quantity */}
-        <Section title="פורמט התוכן" subtitle="בחרו סוגים וכמויות">
+        <Section title="פורמט התוכן" subtitle="בחרו אילו סוגי תוכן תרצו וכמה מכל סוג">
+          <p className="text-[11px] text-muted-foreground font-medium mb-3 leading-relaxed">הכמות תשפיע על המחיר וההתאמות שתקבלו</p>
           <div className="space-y-2">
             {contentTypes.map(({ value, plural, icon: Icon }) => {
               const qty = quantities[value] ?? 0;
@@ -410,7 +411,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
           disabled={!canSubmit}
           className="w-full py-4 rounded-full font-bold text-base text-primary-foreground bg-brand shadow-cta-lg disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed tap-scale"
         >
-          קבלו 3 התאמות חכמות
+          מצא לי 3 יוצרי תוכן מתאימים
         </button>
       </div>
 
