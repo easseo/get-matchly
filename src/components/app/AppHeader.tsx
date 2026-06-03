@@ -13,7 +13,7 @@ export function AppHeader() {
 
   return (
     <header className="h-16 sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100 flex items-center gap-3 px-4 md:px-6">
-      <SidebarTrigger className="shrink-0 text-gray-500 hover:text-gray-900" />
+      <SidebarTrigger className="hidden md:flex shrink-0 text-gray-500 hover:text-gray-900" />
 
       <div className="relative flex-1 max-w-sm">
         <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />

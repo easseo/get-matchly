@@ -151,22 +151,30 @@ const Sidebar = React.forwardRef<
   }
 
   if (isMobile) {
+    // On mobile: always show the collapsed icon rail (never the Sheet drawer)
     return (
-      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
-        <SheetContent
-          data-sidebar="sidebar"
-          data-mobile="true"
-          className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-          style={
-            {
-              "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-            } as React.CSSProperties
-          }
-          side={side}
+      <div
+        ref={ref}
+        className="group peer block text-sidebar-foreground"
+        data-state="collapsed"
+        data-collapsible="icon"
+        data-variant={variant}
+        data-side={side}
+      >
+        <div className="relative h-svh w-[--sidebar-width-icon] bg-transparent" />
+        <div
+          className={cn(
+            "fixed inset-y-0 z-10 flex h-svh w-[--sidebar-width-icon] flex-col border-l border-sidebar-border bg-sidebar text-sidebar-foreground",
+            side === "right" ? "right-0" : "left-0",
+            className,
+          )}
+          {...props}
         >
-          <div className="flex h-full w-full flex-col">{children}</div>
-        </SheetContent>
-      </Sheet>
+          <div data-sidebar="sidebar" className="flex h-full w-full flex-col bg-sidebar">
+            {children}
+          </div>
+        </div>
+      </div>
     );
   }
 
