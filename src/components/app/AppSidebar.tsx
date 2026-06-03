@@ -32,9 +32,9 @@ const creatorItems = [
 ];
 
 export function AppSidebar({ role }: { role: "advertiser" | "creator" }) {
-  const { state, isMobile } = useSidebar();
+  const { state } = useSidebar();
   const { user, signOut } = useDemoAuth();
-  const collapsed = state === "collapsed" || isMobile;
+  const collapsed = state === "collapsed";
   const { pathname } = useLocation();
   const items = role === "advertiser" ? advertiserItems : creatorItems;
 
