@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
-import { ArrowLeft, Utensils, Shirt, Dumbbell, Sparkles as SparkleIcon, MoreHorizontal, Users, Eye, ShoppingBag, MapPin, Instagram, Film, Image as ImageIcon, Clock, Check, Minus, Plus, CalendarIcon } from "lucide-react";
+import { ArrowLeft, Utensils, Shirt, Dumbbell, Sparkles as SparkleIcon, MoreHorizontal, Users, Eye, ShoppingBag, MapPin, Instagram, Film, Image as ImageIcon, Clock, Check, Minus, Plus, CalendarIcon, X, Laptop, Heart, GraduationCap, Home, Car, Music, Plane, PawPrint, Coins, Gamepad2, Baby } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -31,6 +31,21 @@ const businesses = [
   { value: "כושר", icon: Dumbbell },
   { value: "ביוטי", icon: SparkleIcon },
   { value: "אחר", icon: MoreHorizontal },
+];
+
+const moreBusinesses = [
+  { value: "טכנולוגיה",   icon: Laptop },
+  { value: "בריאות",      icon: Heart },
+  { value: "חינוך",       icon: GraduationCap },
+  { value: "בית ועיצוב",  icon: Home },
+  { value: "רכב",         icon: Car },
+  { value: "מוזיקה",      icon: Music },
+  { value: "תיירות",      icon: Plane },
+  { value: "חיות מחמד",  icon: PawPrint },
+  { value: "פיננסים",     icon: Coins },
+  { value: "גיימינג",     icon: Gamepad2 },
+  { value: "ילדים ותינוקות", icon: Baby },
+  { value: "ספורט",       icon: ShoppingBag },
 ];
 
 const goals = [
@@ -78,6 +93,7 @@ function getBudgetRange(value: number): [number, number] {
 export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
   const [businessList, setBusinessList] = useState<string[]>([]);
   const [goalList, setGoalList] = useState<string[]>([]);
+  const [showMoreBusinesses, setShowMoreBusinesses] = useState(false);
   const business = businessList.join(", ");
   const goal = goalList.join(", ");
   const toggleFromList = (setter: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
@@ -179,14 +195,81 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         {/* Business */}
         <Section title="תחום העסק" subtitle="במה אתם עוסקים?">
           <div className="grid grid-cols-3 gap-2">
-            {businesses.map(({ value, icon: Icon }) => (
-              <ChipCard key={value} active={businessList.includes(value)} onClick={() => toggleFromList(setBusinessList, value)}>
-                <Icon className="w-5 h-5 mb-1.5" />
-                <span className="text-xs font-bold">{value}</span>
-              </ChipCard>
-            ))}
+            {businesses.map(({ value, icon: Icon }) => {
+              if (value === "אחר") {
+                const extraSelected = businessList.filter(
+                  (b) => !businesses.slice(0, -1).map((x) => x.value).includes(b)
+                );
+                return (
+                  <ChipCard
+                    key={value}
+                    active={extraSelected.length > 0}
+                    onClick={() => setShowMoreBusinesses(true)}
+                  >
+                    <MoreHorizontal className="w-5 h-5 mb-1.5" />
+                    <span className="text-xs font-bold">
+                      {extraSelected.length > 0 ? `+ ${extraSelected.length} נבחרו` : "אחר"}
+                    </span>
+                  </ChipCard>
+                );
+              }
+              return (
+                <ChipCard key={value} active={businessList.includes(value)} onClick={() => toggleFromList(setBusinessList, value)}>
+                  <Icon className="w-5 h-5 mb-1.5" />
+                  <span className="text-xs font-bold">{value}</span>
+                </ChipCard>
+              );
+            })}
           </div>
         </Section>
+
+        {/* More Businesses Bottom Sheet */}
+        {showMoreBusinesses && (
+          <div className="fixed inset-0 z-50 flex items-end justify-center" dir="rtl">
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowMoreBusinesses(false)} />
+            <div className="relative bg-white w-full rounded-t-3xl max-h-[80dvh] overflow-hidden flex flex-col shadow-2xl">
+              {/* Handle */}
+              <div className="flex justify-center pt-3 pb-1 shrink-0">
+                <div className="w-10 h-1 rounded-full bg-gray-200" />
+              </div>
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 shrink-0">
+                <h3 className="font-extrabold text-gray-900">תחומים נוספים</h3>
+                <button
+                  onClick={() => setShowMoreBusinesses(false)}
+                  className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+                >
+                  <X className="w-4 h-4 text-gray-500" />
+                </button>
+              </div>
+              {/* Grid */}
+              <div className="flex-1 overflow-y-auto px-5 py-4">
+                <div className="grid grid-cols-3 gap-2">
+                  {moreBusinesses.map(({ value, icon: Icon }) => (
+                    <ChipCard
+                      key={value}
+                      active={businessList.includes(value)}
+                      onClick={() => toggleFromList(setBusinessList, value)}
+                    >
+                      <Icon className="w-5 h-5 mb-1.5" />
+                      <span className="text-[11px] font-bold text-center leading-tight">{value}</span>
+                    </ChipCard>
+                  ))}
+                </div>
+              </div>
+              {/* Confirm */}
+              <div className="px-5 py-4 border-t border-gray-100 shrink-0 safe-bottom">
+                <button
+                  onClick={() => setShowMoreBusinesses(false)}
+                  className="w-full py-3.5 rounded-2xl text-white font-bold text-sm"
+                  style={{ background: "var(--gradient-brand)" }}
+                >
+                  אישור
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Goal */}
         <Section title="מטרת הקמפיין" subtitle="מה הכי חשוב לכם להשיג?">
