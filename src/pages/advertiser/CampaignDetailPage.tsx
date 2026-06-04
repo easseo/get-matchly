@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   ChevronRight, Users, Calendar, DollarSign, CheckCircle, XCircle,
   ChevronDown, ChevronUp, Loader2, Clock, Sparkles, Instagram,
-  TrendingUp, RefreshCw, MapPin, Tag, Eye, Shield,
+  TrendingUp, RefreshCw, MapPin, Tag, MessageSquare, Shield,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Campaign, Proposal } from "@/lib/supabase";
@@ -70,6 +70,7 @@ function StatChip({ icon, label, highlight = false }: { icon: React.ReactNode; l
 
 export default function AdvertiserCampaignDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [proposals, setProposals] = useState<ProposalWithCreator[]>([]);
   const [loading, setLoading] = useState(true);
@@ -379,8 +380,11 @@ export default function AdvertiserCampaignDetailPage() {
                       >
                         <Tag size={12} /> בקש הצעת מחיר
                       </button>
-                      <button className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors">
-                        <Eye size={12} /> ראה פרופיל
+                      <button
+                        onClick={() => navigate("/app/messages")}
+                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors"
+                      >
+                        <MessageSquare size={12} /> שלח הודעה
                       </button>
                     </div>
                   </div>
