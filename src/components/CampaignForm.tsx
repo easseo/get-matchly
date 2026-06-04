@@ -1,11 +1,10 @@
-import { useState, useMemo } from "react";
-import { format } from "date-fns";
-import { he } from "date-fns/locale";
-import { ArrowLeft, Utensils, Shirt, Dumbbell, Sparkles as SparkleIcon, MoreHorizontal, Users, Eye, ShoppingBag, MapPin, Instagram, Film, Image as ImageIcon, Clock, Check, Minus, Plus, CalendarIcon, X, Laptop, Heart, GraduationCap, Home, Car, Music, Plane, PawPrint, Coins, Gamepad2, Baby } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useState, useMemo, lazy, Suspense } from "react";
+import { ArrowLeft, Utensils, Shirt, Dumbbell, Sparkles as SparkleIcon, MoreHorizontal, Users, Eye, ShoppingBag, MapPin, Instagram, Film, Image as ImageIcon, Clock, Check, Minus, Plus, X, Laptop, Heart, GraduationCap, Home, Car, Music, Plane, PawPrint, Coins, Gamepad2, Baby } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+
+// Lazy-load Calendar + Popover + date-fns — only needed when user reaches the deadline section
+const LazyDatePicker = lazy(() => import("@/components/DatePickerField"));
 
 export type ContentSelection = { type: string; qty: number };
 
@@ -438,52 +437,13 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
           </div>
         </Section>
 
-        {/* Deadline */}
+        {/* Deadline — Calendar loaded lazily only when this section renders */}
         <Section title="דד ליין לקמפיין" subtitle="מתי תרצו שהתוכן יעלה?">
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                className={cn(
-                  "w-full flex items-center gap-3 bg-card border-2 rounded-2xl py-3.5 px-4 font-semibold shadow-soft tap-scale transition-bounce",
-                  deadline ? "border-transparent shadow-cta" : "border-border hover:border-primary/30"
-                )}
-                style={deadline ? { backgroundImage: "var(--gradient-brand-soft)" } : undefined}
-              >
-                <span
-                  className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-primary-foreground"
-                  style={{ background: "var(--gradient-brand)" }}
-                >
-                  <CalendarIcon className="w-5 h-5" />
-                </span>
-                <div className="flex-1 text-right">
-                  {deadline ? (
-                    <>
-                      <div className="text-[11px] font-bold text-muted-foreground">תאריך נבחר</div>
-                      <div className="font-bold text-sm">
-                        {format(deadline, "EEEE, d בMMMM yyyy", { locale: he })}
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="font-bold text-sm">בחרו תאריך</div>
-                      <div className="text-[11px] text-muted-foreground font-medium">בחרו את המועד הרצוי לעלייה</div>
-                    </>
-                  )}
-                </div>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 rounded-2xl shadow-card border-border" align="center">
-              <Calendar
-                mode="single"
-                selected={deadline}
-                onSelect={setDeadline}
-                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                locale={he}
-                initialFocus
-                className={cn("p-3 pointer-events-auto")}
-              />
-            </PopoverContent>
-          </Popover>
+          <Suspense fallback={
+            <div className="w-full h-14 rounded-2xl bg-muted animate-pulse" />
+          }>
+            <LazyDatePicker value={deadline} onChange={setDeadline} />
+          </Suspense>
         </Section>
       </main>
 
