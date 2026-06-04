@@ -21,7 +21,7 @@ export function AppHeader() {
 
       {/* Matchly logo — links to dashboard */}
       <Link to={dashboardUrl} className="shrink-0 hover:opacity-80 transition-opacity">
-        <img src={matchlyIcon} alt="Matchly" className="h-7 w-7 object-contain rounded-lg" />
+        <img src={matchlyIcon} alt="Matchly" className="h-10 w-10 object-contain rounded-xl" />
       </Link>
 
       <div className="relative flex-1 max-w-sm">
