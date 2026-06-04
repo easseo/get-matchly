@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Film, Clock, Image as ImageIcon, Info, ArrowLeft } from "lucide-react";
+import { Film, Clock, Image as ImageIcon, Info } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import matchlyIcon from "@/assets/matchly-icon.png";
 
@@ -42,11 +42,7 @@ export default function PricingSetup() {
     navigate("/app/creator/dashboard");
   };
 
-  const handleSkip = () => {
-    navigate("/app/creator/dashboard");
-  };
-
-  return (
+return (
     <div className="min-h-screen bg-mesh flex flex-col" dir="rtl">
       {/* Header */}
       <div className="px-5 pt-10 pb-6 flex items-center gap-3">
@@ -128,12 +124,6 @@ export default function PricingSetup() {
           {saving ? (
             <span className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
           ) : "שמירת מחירון"}
-        </button>
-        <button
-          onClick={handleSkip}
-          className="w-full py-2.5 text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors flex items-center justify-center gap-1.5"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" /> דלג לעת עתה
         </button>
       </div>
     </div>
