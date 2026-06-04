@@ -204,29 +204,84 @@ export default function Messages() {
 
   return (
     <>
-      {/* Mobile: show header only on list view */}
-      {!activeId && (
-        <PageHeader title="הודעות" subtitle="תקשורת ישירה עם יוצרי התוכן" />
-      )}
+      <PageHeader title="הודעות" subtitle="תקשורת ישירה עם יוצרי התוכן" />
 
-      <div className={`bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden ${
-        activeId ? "h-[calc(100dvh-80px)]" : "h-[calc(100dvh-180px)]"
-      } md:h-[600px] grid md:grid-cols-[300px_1fr]`}>
-
-        {/* Conversation list: full screen on mobile when no chat open */}
-        <aside className={`border-l border-gray-100 bg-white flex flex-col ${
-          activeId ? "hidden md:flex" : "flex"
-        }`}>
+      {/* Desktop: 2-column layout */}
+      <div className="hidden md:grid md:grid-cols-[300px_1fr] bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden h-[600px]">
+        <aside className="border-l border-gray-100 bg-white flex flex-col">
           {ConversationList}
         </aside>
-
-        {/* Chat: full screen on mobile when chat is open */}
-        <div className={`flex flex-col min-h-0 ${
-          activeId ? "flex" : "hidden md:flex"
-        }`}>
+        <div className="flex flex-col min-h-0">
           {ChatPanel}
         </div>
       </div>
+
+      {/* Mobile: conversation list */}
+      <div className="md:hidden bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        {ConversationList}
+      </div>
+
+      {/* Mobile: full-screen chat overlay */}
+      {activeId && active && (
+        <div className="md:hidden fixed inset-0 z-50 bg-white flex flex-col" dir="rtl">
+          {/* Header */}
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-3 bg-white shrink-0"
+            style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}>
+            <button
+              onClick={handleBack}
+              className="p-2 -mr-1 rounded-xl hover:bg-gray-100 transition-colors shrink-0"
+              aria-label="חזרה"
+            >
+              <ArrowRight className="w-5 h-5 text-gray-600" />
+            </button>
+            <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${active.gradient} flex items-center justify-center text-white font-bold text-sm shrink-0`}>
+              {active.creatorName.slice(0, 1)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-bold text-gray-900 text-sm">{active.creatorName}</div>
+              <div className="text-[11px] text-gray-400 truncate">{active.campaignTitle}</div>
+            </div>
+            <span className={`text-[10px] font-bold px-2 py-1 rounded-full border shrink-0 ${
+              active.status === "אושר"
+                ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                : "bg-orange-50 text-orange-600 border-orange-100"
+            }`}>
+              {active.status === "אושר" ? "מאושר" : "ממתין"}
+            </span>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50/30">
+            {activeMessages.map((msg) => (
+              <Bubble key={msg.id} side={msg.side} gradient={active.gradient} time={msg.time} read={msg.read}>
+                {msg.text}
+              </Bubble>
+            ))}
+            <div ref={bottomRef} />
+          </div>
+
+          {/* Input */}
+          <div className="px-3 py-3 border-t border-gray-100 bg-white flex gap-2 items-end shrink-0"
+            style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 12px)" }}>
+            <input
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), handleSend())}
+              className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              placeholder="כתבו הודעה..."
+              autoFocus
+            />
+            <button
+              onClick={handleSend}
+              disabled={!input.trim()}
+              className="w-11 h-11 rounded-2xl text-white disabled:opacity-40 transition-opacity flex items-center justify-center shrink-0"
+              style={{ background: "var(--gradient-brand)" }}
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
