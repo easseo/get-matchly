@@ -50,7 +50,6 @@ const moreBusinesses = [
 const goals = [
   { value: "יותר לקוחות", icon: Users },
   { value: "יותר חשיפה",  icon: Eye },
-  { value: "יותר מכירות", icon: ShoppingBag },
 ];
 
 const contentTypes = [
@@ -64,9 +63,9 @@ const cities = ["כל הארץ", "תל אביב", "ירושלים", "חיפה", 
 const MAX_QTY = 20;
 
 const CREATOR_TIERS = [
-  { value: "מיקרו",   label: "מיקרו-משפיענים",    range: "1K – 10K עוקבים" },
-  { value: "בינוני",  label: "משפיענים בינוניים", range: "10K – 50K עוקבים" },
-  { value: "מאקרו",   label: "מאקרו-משפיענים",    range: "50K+ עוקבים" },
+  { value: "מיקרו",   label: "מיקרו יוצרי תוכן",    range: "1K – 10K עוקבים" },
+  { value: "בינוני",  label: "יוצרי תוכן בינוניים", range: "10K – 50K עוקבים" },
+  { value: "מאקרו",   label: "מאקרו יוצרי תוכן",    range: "50K+ עוקבים" },
 ];
 
 export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
@@ -375,7 +374,7 @@ export default function CampaignForm({ onSubmit, onBack }: CampaignFormProps) {
         </Section>
 
         {/* ── Creator tier preference (optional) ── */}
-        <Section title="גודל משפיען מבוקש" subtitle="אופציונלי — בחרו את הגודל המועדף. ניתן לבחור יותר מאחד.">
+        <Section title="גודל יוצר/ת רצוי" subtitle="אופציונלי — בחרו את סוג יוצרי התוכן שמתאים לקמפיין שלכם">
           <div className="space-y-2">
             {CREATOR_TIERS.map(({ value, label, range }) => {
               const selected = creatorTiers.includes(value);
