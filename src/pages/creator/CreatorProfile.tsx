@@ -2,9 +2,9 @@ import { useState } from "react";
 import { PageHeader } from "@/components/app/KpiCard";
 import { useDemoAuth } from "@/hooks/useDemoAuth";
 import { toast } from "@/hooks/use-toast";
-import { Instagram, Check } from "lucide-react";
+import { Instagram, Check, Film, Clock, Image as ImageIcon, Info } from "lucide-react";
 
-const tabs = ["פרטים אישיים", "סושיאל", "אבטחה", "התראות", "תשלום"] as const;
+const tabs = ["פרטים אישיים", "סושיאל", "מחירון", "אבטחה", "התראות", "תשלום"] as const;
 type Tab = (typeof tabs)[number];
 
 export default function CreatorProfile() {
@@ -69,6 +69,65 @@ export default function CreatorProfile() {
               </div>
               <button className="px-4 py-2 rounded-xl border border-border font-bold text-sm hover:bg-muted">+ חיבור פלטפורמה</button>
             </div>
+          )}
+          {tab === "מחירון" && (
+            <form
+              onSubmit={(e) => { e.preventDefault(); toast({ title: "המחירון עודכן" }); }}
+              className="space-y-5 max-w-xl"
+            >
+              <div>
+                <h2 className="text-base font-extrabold text-gray-900">המחירון שלי</h2>
+                <p className="text-xs text-gray-400 mt-0.5">המחירים יוצגו למפרסמים בפרופיל שלך ויסייעו לשיפור ההתאמות</p>
+              </div>
+
+              {/* Info banner */}
+              <div className="flex items-start gap-2.5 bg-purple-50 border border-purple-100 rounded-2xl p-3.5">
+                <Info className="w-4 h-4 text-purple-500 mt-0.5 shrink-0" />
+                <p className="text-xs text-purple-700 font-medium leading-relaxed">
+                  המחירים הם עבור תוצר בודד. מפרסמים יכולים לבקש כמויות שונות ולהתאים את התקציב בהתאם.
+                </p>
+              </div>
+
+              {/* Price cards */}
+              <div className="space-y-3">
+                {[
+                  { label: "רילס",  sublabel: "סרטון קצר עד 90 שניות",     icon: Film,       placeholder: "600" },
+                  { label: "סטורי", sublabel: "תמונה או סרטון עד 15 שניות", icon: Clock,      placeholder: "200" },
+                  { label: "פוסט",  sublabel: "תמונה או קרוסלה בפיד",       icon: ImageIcon,  placeholder: "400" },
+                ].map(({ label, sublabel, icon: Icon, placeholder }) => (
+                  <div key={label} className="flex items-center gap-4 bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 text-white"
+                      style={{ background: "var(--gradient-brand)" }}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-sm text-gray-900">{label}</div>
+                      <div className="text-[11px] text-gray-400 font-medium">{sublabel}</div>
+                    </div>
+                    <div className="relative shrink-0 w-28">
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none">₪</span>
+                      <input
+                        type="number"
+                        min={0}
+                        placeholder={placeholder}
+                        className="w-full bg-white border border-gray-200 rounded-xl pr-7 pl-3 py-2.5 text-sm font-bold text-left focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white transition-colors"
+                        dir="ltr"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="submit"
+                className="px-5 py-2.5 rounded-xl text-white font-bold text-sm shadow-md min-h-[44px]"
+                style={{ background: "var(--gradient-brand)" }}
+              >
+                שמירת מחירון
+              </button>
+            </form>
           )}
           {tab === "אבטחה" && (
             <div className="space-y-4 max-w-xl">
