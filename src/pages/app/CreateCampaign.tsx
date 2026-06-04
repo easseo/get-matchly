@@ -4,6 +4,21 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
 import CampaignForm, { type CampaignData } from "@/components/CampaignForm";
 
+async function insertCampaign(payload: object, retries = 2): Promise<{ data: any; error: any }> {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    const result = await supabase.from("campaigns").insert(payload).select().single();
+    if (!result.error) return result;
+    // Retry on network errors (Load failed, fetch failed, etc.)
+    const isNetworkError = result.error.message?.toLowerCase().includes("load failed") ||
+      result.error.message?.toLowerCase().includes("fetch") ||
+      result.error.message?.toLowerCase().includes("network");
+    if (!isNetworkError || attempt === retries - 1) return result;
+    // Wait 1.5s before retry to let Supabase wake up
+    await new Promise(r => setTimeout(r, 1500));
+  }
+  return { data: null, error: { message: "לא הצלחנו להתחבר לשרת" } };
+}
+
 export default function CreateCampaignPage() {
   const navigate = useNavigate();
 
@@ -26,30 +41,30 @@ export default function CreateCampaignPage() {
     }
     const requirements = requirementsParts.length > 0 ? requirementsParts.join("\n\n") : null;
 
-    const { data: campaign, error } = await supabase
-      .from("campaigns")
-      .insert({
-        advertiser_id:   userId,
-        title,
-        business_name:   data.business,
-        business_type:   data.business,
-        goal:            data.goal,
-        description:     data.brief ?? null,
-        platform:        "instagram",
-        content_format:  contentFormats,
-        content_count:   contentCount,
-        budget_min:      0,
-        budget_max:      0,
-        target_location: data.location,
-        deadline:        data.deadline ?? null,
-        requirements,
-        status:          "receiving_proposals",
-      })
-      .select()
-      .single();
+    const { data: campaign, error } = await insertCampaign({
+      advertiser_id:   userId,
+      title,
+      business_name:   data.business,
+      business_type:   data.business,
+      goal:            data.goal,
+      description:     data.brief ?? null,
+      platform:        "instagram",
+      content_format:  contentFormats,
+      content_count:   contentCount,
+      budget_min:      0,
+      budget_max:      0,
+      target_location: data.location,
+      deadline:        data.deadline ?? null,
+      requirements,
+      status:          "receiving_proposals",
+    });
 
     if (error) {
-      toast({ title: "שגיאה בשמירה", description: error.message, variant: "destructive" });
+      toast({
+        title: "שגיאה בשמירה",
+        description: "נסו שוב — ייתכן שהשרת לא היה זמין לרגע",
+        variant: "destructive",
+      });
       return;
     }
 
