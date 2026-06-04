@@ -31,6 +31,7 @@ const Earnings          = lazy(() => import("./pages/creator/Earnings.tsx"));
 const CreatorReviews    = lazy(() => import("./pages/creator/CreatorReviews.tsx"));
 const CreatorProfile    = lazy(() => import("./pages/creator/CreatorProfile.tsx"));
 const ContentDelivery   = lazy(() => import("./pages/creator/ContentDelivery.tsx"));
+const PricingSetup      = lazy(() => import("./pages/creator/PricingSetup.tsx"));
 
 // Spinner shown while lazy chunks load
 function PageLoader() {
@@ -84,6 +85,7 @@ const App = () => (
                 <Route path="reviews" element={<CreatorReviews />} />
                 <Route path="profile" element={<CreatorProfile />} />
                 <Route path="submit" element={<ContentDelivery />} />
+                <Route path="pricing-setup" element={<PricingSetup />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />

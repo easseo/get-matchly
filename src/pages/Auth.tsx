@@ -52,7 +52,14 @@ export default function Auth() {
       const { data: profile } = await supabase.from("profiles").select("full_name, role").eq("id", session.user.id).maybeSingle();
       const userRole: AppRole = (profile?.role as AppRole) ?? role;
       signIn(email, profile?.full_name ?? email.split("@")[0], userRole);
-      navigate(userRole === "advertiser" ? "/app/dashboard" : "/app/creator/dashboard");
+      if (userRole === "advertiser") {
+        navigate("/app/dashboard");
+      } else if (mode === "signup") {
+        // New creators go through pricing setup
+        navigate("/app/creator/pricing-setup");
+      } else {
+        navigate("/app/creator/dashboard");
+      }
     }
     setLoading(false);
   };
