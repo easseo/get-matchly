@@ -152,9 +152,9 @@ export default function AdvertiserDashboard() {
           </div>
           <Link
             to="/app/campaigns"
-            className="text-xs font-bold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all"
+            className="text-sm font-bold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all"
           >
-            לכל הקמפיינים <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
+            לכל הקמפיינים <ArrowLeft className="w-4 h-4 rotate-180" />
           </Link>
         </div>
 
