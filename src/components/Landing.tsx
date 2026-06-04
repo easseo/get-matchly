@@ -68,6 +68,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
             <Briefcase size={12} />
             אני בעל עסק / מפרסם
           </button>
+          <p className="text-center text-[10px] font-bold text-emerald-400 mt-1.5">✓ חינם לחלוטין</p>
         </div>
 
         {/* Creators card */}
@@ -100,6 +101,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
             <Instagram size={12} />
             אני יוצר/ת תוכן
           </button>
+          <p className="text-center text-[10px] font-bold text-emerald-400 mt-1.5">✓ חינם לחלוטין</p>
         </div>
       </div>
 
