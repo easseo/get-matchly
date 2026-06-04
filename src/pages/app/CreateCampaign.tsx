@@ -1,11 +1,8 @@
-import { lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/app/KpiCard";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
-import type { CampaignData } from "@/components/CampaignForm";
-
-const CampaignForm = lazy(() => import("@/components/CampaignForm"));
+import CampaignForm, { type CampaignData } from "@/components/CampaignForm";
 
 export default function CreateCampaignPage() {
   const navigate = useNavigate();
@@ -22,11 +19,10 @@ export default function CreateCampaignPage() {
     const contentFormats = data.contents.map(c => c.type);
     const contentCount   = data.contents.reduce((sum, c) => sum + c.qty, 0);
 
-    // Build requirements string: brief + creator tier preferences
     const requirementsParts: string[] = [];
     if (data.brief) requirementsParts.push(data.brief);
     if (data.creatorTiers.length > 0) {
-      requirementsParts.push(`גודל משפיען מבוקש: ${data.creatorTiers.join(", ")}`);
+      requirementsParts.push(`גודל יוצר/ת רצוי: ${data.creatorTiers.join(", ")}`);
     }
     const requirements = requirementsParts.length > 0 ? requirementsParts.join("\n\n") : null;
 
@@ -65,13 +61,7 @@ export default function CreateCampaignPage() {
     <>
       <PageHeader title="יצירת קמפיין חדש" subtitle="ספרו לנו על הקמפיין — יוצרי התוכן יגישו לכם הצעות מחיר" />
       <div className="bg-card rounded-3xl border border-border shadow-soft overflow-hidden">
-        <Suspense fallback={
-          <div className="flex items-center justify-center py-24">
-            <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-          </div>
-        }>
-          <CampaignForm onSubmit={handleSubmit} onBack={() => navigate("/app/dashboard")} />
-        </Suspense>
+        <CampaignForm onSubmit={handleSubmit} onBack={() => navigate("/app/dashboard")} />
       </div>
     </>
   );
