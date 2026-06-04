@@ -295,6 +295,8 @@ export default function AdvertiserCampaignDetailPage() {
                         <img
                           src={avatar}
                           alt={m.creator.full_name}
+                          loading="lazy"
+                          decoding="async"
                           className="w-12 h-12 rounded-full object-cover"
                         />
                         <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-sm">
@@ -431,7 +433,7 @@ export default function AdvertiserCampaignDetailPage() {
                     className="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors"
                     onClick={() => setExpanded(isOpen ? null : p.id)}
                   >
-                    <img src={getAvatar(p.creator_id)} alt={name} className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm shrink-0" />
+                    <img src={getAvatar(p.creator_id)} alt={name} loading="lazy" decoding="async" className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-bold text-sm text-gray-900">{name}</span>

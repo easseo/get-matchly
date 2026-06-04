@@ -68,7 +68,7 @@ function ProposalModal({
         <div className="px-5 py-3 bg-gray-50 border-b border-gray-100 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0">
-              <img src={campaign.coverImage} alt="" className="w-full h-full object-cover" />
+              <img src={campaign.coverImage} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
             </div>
             <div className="min-w-0">
               <p className="font-bold text-sm text-gray-900 truncate">{campaign.title}</p>
@@ -238,6 +238,8 @@ export default function BrowseCampaigns() {
                 <img
                   src={c.coverImage}
                   alt={c.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
