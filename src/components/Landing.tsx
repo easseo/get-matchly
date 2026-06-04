@@ -70,38 +70,34 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
           </button>
         </div>
 
-        {/* Creators card — prominent */}
+        {/* Creators card */}
         <div
-          className="flex flex-col rounded-2xl p-4 relative overflow-hidden"
-          style={{ background: "var(--gradient-brand)", boxShadow: "0 0 32px hsl(322 85% 58% / 0.45)" }}
+          className="flex flex-col rounded-2xl p-4 border"
+          style={{
+            background: "rgba(255,255,255,0.08)",
+            backdropFilter: "blur(10px)",
+            borderColor: "hsl(322 85% 58% / 0.35)",
+          }}
         >
-          {/* Shine overlay */}
-          <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%)" }} />
-
-          <div className="relative flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-white/25">
-              <Instagram size={14} className="text-white" />
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: "hsl(322 85% 58% / 0.25)", border: "1px solid hsl(322 85% 58% / 0.4)" }}>
+              <Instagram size={14} className="text-pink-300" />
             </div>
-            <div>
-              <span className="text-xs font-extrabold text-white leading-tight block">ליוצרי תוכן</span>
-              <span className="text-[10px] text-white/70 font-medium">הרשמה חינם</span>
-            </div>
+            <span className="text-xs font-extrabold text-white leading-tight">ליוצרי תוכן</span>
           </div>
-
-          <ul className="relative space-y-1.5 flex-1 mb-4">
+          <ul className="space-y-1.5 flex-1 mb-4">
             {["קבלו הצעות תשלום מעסקים", "בחרו קמפיינים שמתאימים לכם", "הגישו הצעת מחיר בקלות", "גדלו דרך שיתופי פעולה"].map(item => (
-              <li key={item} className="flex items-start gap-1.5 text-[11px] text-white/90 leading-snug font-medium">
-                <span className="text-white shrink-0 mt-0.5">✓</span>{item}
+              <li key={item} className="flex items-start gap-1.5 text-[11px] text-white/65 leading-snug">
+                <span className="text-pink-400 shrink-0 mt-0.5">✓</span>{item}
               </li>
             ))}
           </ul>
-
           <button
             onClick={onCreatorJoin}
-            className="relative w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl font-extrabold text-xs transition-all hover:scale-[1.02] active:scale-[0.98]"
-            style={{ background: "white", color: "hsl(322, 85%, 52%)" }}
+            className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-white font-extrabold text-xs shadow-md hover:opacity-90 transition-opacity"
+            style={{ background: "linear-gradient(135deg, #ec4899, #a855f7)" }}
           >
-            <Sparkles size={12} />
+            <Instagram size={12} />
             אני יוצר/ת תוכן
           </button>
         </div>
