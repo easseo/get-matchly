@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, PlusCircle, Megaphone, FileText, MessageSquare,
-  Star, CreditCard, Settings, LogOut, Sparkles, Compass, DollarSign,
+  Star, CreditCard, Settings, LogOut, Compass, DollarSign,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent,
@@ -46,9 +46,8 @@ export function AppSidebar({ role }: { role: "advertiser" | "creator" }) {
           {!collapsed && (
             <div className="flex flex-col leading-tight">
               <span className="text-base font-extrabold tracking-tight text-gray-900">Matchly</span>
-              <span className="text-[9px] font-bold tracking-widest px-1.5 py-0.5 rounded-full w-fit" dir="ltr"
-                style={{ background: "var(--gradient-brand)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                {role === "advertiser" ? "ADVERTISER" : "CREATOR"}
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full w-fit text-gray-500">
+                {role === "advertiser" ? "בעל עסק / מפרסם" : "יוצר/ת תוכן"}
               </span>
             </div>
           )}
@@ -85,20 +84,6 @@ export function AppSidebar({ role }: { role: "advertiser" | "creator" }) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {!collapsed && (
-          <div className="mx-3 mt-4 rounded-2xl p-4 relative overflow-hidden" style={{ background: "var(--gradient-brand)" }}>
-            <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-white/10 -translate-y-8 translate-x-8" />
-            <Sparkles className="w-5 h-5 text-white mb-2 relative" />
-            <div className="text-sm font-extrabold text-white mb-0.5 relative">שדרגו לPro</div>
-            <div className="text-[11px] text-white/75 font-medium mb-3 relative">
-              יוצרים פרימיום והתאמות AI
-            </div>
-            <button className="w-full py-2 rounded-xl bg-white text-xs font-extrabold relative"
-              style={{ color: "hsl(322, 85%, 58%)" }}>
-              שדרוג עכשיו ✨
-            </button>
-          </div>
-        )}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-gray-100 bg-white">

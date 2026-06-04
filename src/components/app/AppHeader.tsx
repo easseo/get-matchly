@@ -1,6 +1,8 @@
 import { Search, Bell, ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useDemoAuth } from "@/hooks/useDemoAuth";
+import matchlyIcon from "@/assets/matchly-icon.png";
 
 export function AppHeader() {
   const { user } = useDemoAuth();
@@ -11,9 +13,16 @@ export function AppHeader() {
     .slice(0, 2)
     .toUpperCase();
 
+  const dashboardUrl = user?.role === "creator" ? "/app/creator/dashboard" : "/app/dashboard";
+
   return (
     <header className="h-16 sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100 flex items-center gap-3 px-4 md:px-6">
       <SidebarTrigger className="shrink-0 text-gray-500 hover:text-gray-900" />
+
+      {/* Matchly logo — links to dashboard */}
+      <Link to={dashboardUrl} className="shrink-0 hover:opacity-80 transition-opacity">
+        <img src={matchlyIcon} alt="Matchly" className="h-7 w-7 object-contain rounded-lg" />
+      </Link>
 
       <div className="relative flex-1 max-w-sm">
         <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
