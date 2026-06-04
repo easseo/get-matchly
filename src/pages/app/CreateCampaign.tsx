@@ -5,7 +5,6 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
 import type { CampaignData } from "@/components/CampaignForm";
 
-// Lazy-load the heavy form component (date-fns, Calendar, 20+ icons)
 const CampaignForm = lazy(() => import("@/components/CampaignForm"));
 
 export default function CreateCampaignPage() {
@@ -19,28 +18,36 @@ export default function CreateCampaignPage() {
       return;
     }
 
-    const title = `קמפיין ${data.business} — ${data.goal}`;
-    const contentFormats = data.contents.map((c) => c.type);
-    const contentCount = data.contents.reduce((sum, c) => sum + c.qty, 0);
+    const title          = `קמפיין ${data.business} — ${data.goal}`;
+    const contentFormats = data.contents.map(c => c.type);
+    const contentCount   = data.contents.reduce((sum, c) => sum + c.qty, 0);
+
+    // Build requirements string: brief + creator tier preferences
+    const requirementsParts: string[] = [];
+    if (data.brief) requirementsParts.push(data.brief);
+    if (data.creatorTiers.length > 0) {
+      requirementsParts.push(`גודל משפיען מבוקש: ${data.creatorTiers.join(", ")}`);
+    }
+    const requirements = requirementsParts.length > 0 ? requirementsParts.join("\n\n") : null;
 
     const { data: campaign, error } = await supabase
       .from("campaigns")
       .insert({
-        advertiser_id: userId,
+        advertiser_id:   userId,
         title,
-        business_name: data.business,
-        business_type: data.business,
-        goal: data.goal,
-        description: null,
-        platform: "instagram",
-        content_format: contentFormats,
-        content_count: contentCount,
-        budget_min: Math.max(100, Math.round(data.budget * 0.7)),
-        budget_max: Math.round(data.budget * 1.3),
+        business_name:   data.business,
+        business_type:   data.business,
+        goal:            data.goal,
+        description:     data.brief ?? null,
+        platform:        "instagram",
+        content_format:  contentFormats,
+        content_count:   contentCount,
+        budget_min:      0,
+        budget_max:      0,
         target_location: data.location,
-        deadline: data.deadline ?? null,
-        requirements: null,
-        status: "receiving_proposals",
+        deadline:        data.deadline ?? null,
+        requirements,
+        status:          "receiving_proposals",
       })
       .select()
       .single();
@@ -50,13 +57,13 @@ export default function CreateCampaignPage() {
       return;
     }
 
-    toast({ title: "הקמפיין נוצר!", description: `${data.business} · ₪${data.budget.toLocaleString()}` });
+    toast({ title: "הקמפיין נוצר!", description: `${data.business} · ${data.contentType}` });
     navigate(`/app/campaigns/${campaign.id}`);
   };
 
   return (
     <>
-      <PageHeader title="יצירת קמפיין חדש" subtitle="ספרו לנו על הקמפיין ונתאים לכם יוצרי תוכן מנצחים" />
+      <PageHeader title="יצירת קמפיין חדש" subtitle="ספרו לנו על הקמפיין — יוצרי התוכן יגישו לכם הצעות מחיר" />
       <div className="bg-card rounded-3xl border border-border shadow-soft overflow-hidden">
         <Suspense fallback={
           <div className="flex items-center justify-center py-24">
