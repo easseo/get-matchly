@@ -108,8 +108,8 @@ export default function Auth() {
                 <Building2 className={cn("w-5 h-5", role === "advertiser" ? "text-white" : "text-gray-500")} />
               </div>
               <div>
-                <div className={cn("font-extrabold text-sm", role === "advertiser" ? "text-white" : "text-foreground")}>
-                  בעל עסק
+                <div className={cn("font-extrabold text-sm leading-tight", role === "advertiser" ? "text-white" : "text-foreground")}>
+                  בעל עסק / מפרסם
                 </div>
                 <div className={cn("text-[10px] font-medium mt-0.5", role === "advertiser" ? "text-white/75" : "text-muted-foreground")}>
                   פרסום קמפיינים
@@ -151,8 +151,8 @@ export default function Auth() {
                 <div className={cn("font-extrabold text-sm", role === "creator" ? "text-white" : "text-foreground")}>
                   יוצר/ת תוכן
                 </div>
-                <div className={cn("text-[10px] font-medium mt-0.5", role === "creator" ? "text-white/75" : "text-muted-foreground")}>
-                  קבלו הצעות ורווחו
+                <div className={cn("text-[10px] font-medium mt-0.5 leading-tight", role === "creator" ? "text-white/75" : "text-muted-foreground")}>
+                  תהנו משיתופי פעולה והרוויחו
                 </div>
               </div>
               <span className={cn(
