@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { Megaphone, Users, Sparkles, ArrowLeft, Loader2 } from "lucide-react";
+import { Megaphone, Sparkles, ArrowLeft, Loader2, Instagram, Star, TrendingUp, Building2 } from "lucide-react";
 import { useDemoAuth, type AppRole } from "@/hooks/useDemoAuth";
 import { supabase } from "@/lib/supabase";
 import matchlyIcon from "@/assets/matchly-icon.png";
@@ -71,20 +71,95 @@ export default function Auth() {
         </div>
 
         <div className="bg-card rounded-3xl shadow-card border border-border p-6">
-          {/* Role toggle */}
-          <div className="grid grid-cols-2 gap-2 p-1 bg-muted rounded-2xl mb-5">
-            <RoleButton
-              active={role === "advertiser"}
+          {/* Role cards */}
+          <p className="text-xs font-bold text-muted-foreground text-center mb-3">אני מצטרף/ת בתור:</p>
+          <div className="grid grid-cols-2 gap-3 mb-5">
+            {/* Advertiser card */}
+            <button
+              type="button"
               onClick={() => setRole("advertiser")}
-              icon={<Megaphone className="w-4 h-4" />}
-              label="אני מפרסם"
-            />
-            <RoleButton
-              active={role === "creator"}
+              className={cn(
+                "relative flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all tap-scale text-center",
+                role === "advertiser"
+                  ? "border-gray-300 bg-gray-50 shadow-sm"
+                  : "border-border bg-card hover:border-gray-200"
+              )}
+            >
+              {role === "advertiser" && (
+                <span className="absolute top-2 left-2 w-4 h-4 rounded-full bg-gray-800 flex items-center justify-center">
+                  <Sparkles className="w-2.5 h-2.5 text-white" />
+                </span>
+              )}
+              <div className={cn(
+                "w-10 h-10 rounded-xl flex items-center justify-center",
+                role === "advertiser" ? "bg-gray-200" : "bg-muted"
+              )}>
+                <Building2 className="w-5 h-5 text-gray-600" />
+              </div>
+              <div>
+                <div className="font-extrabold text-sm text-foreground">בעל עסק</div>
+                <div className="text-[10px] text-muted-foreground font-medium mt-0.5 leading-tight">פרסום קמפיינים</div>
+              </div>
+            </button>
+
+            {/* Creator card — prominent with gradient */}
+            <button
+              type="button"
               onClick={() => setRole("creator")}
-              icon={<Users className="w-4 h-4" />}
-              label="אני יוצר תוכן"
-            />
+              className={cn(
+                "relative flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all tap-scale text-center overflow-hidden",
+                role === "creator"
+                  ? "border-transparent shadow-lg"
+                  : "border-border bg-card hover:border-primary/40"
+              )}
+              style={role === "creator" ? { background: "var(--gradient-brand)" } : undefined}
+            >
+              {/* Glow ring when not selected */}
+              {role !== "creator" && (
+                <span className="absolute inset-0 rounded-2xl ring-2 ring-primary/20 pointer-events-none" />
+              )}
+              {role === "creator" && (
+                <span className="absolute top-2 left-2 w-4 h-4 rounded-full bg-white/30 flex items-center justify-center">
+                  <Sparkles className="w-2.5 h-2.5 text-white" />
+                </span>
+              )}
+
+              {/* Instagram icon cluster */}
+              <div className={cn(
+                "w-10 h-10 rounded-xl flex items-center justify-center",
+                role === "creator" ? "bg-white/20" : "bg-gradient-to-br from-pink-100 to-purple-100"
+              )}>
+                <Instagram className={cn("w-5 h-5", role === "creator" ? "text-white" : "text-primary")} />
+              </div>
+
+              <div>
+                <div className={cn("font-extrabold text-sm", role === "creator" ? "text-white" : "text-foreground")}>
+                  יוצר/ת תוכן
+                </div>
+                <div className={cn("text-[10px] font-medium mt-0.5 leading-tight", role === "creator" ? "text-white/75" : "text-muted-foreground")}>
+                  קבלו הצעות ורווחו
+                </div>
+              </div>
+
+              {/* Social proof chips */}
+              {role !== "creator" && (
+                <div className="flex gap-1 mt-0.5">
+                  <span className="text-[9px] font-bold bg-primary/10 text-primary px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                    <Star className="w-2 h-2 fill-current" /> פופולרי
+                  </span>
+                  <span className="text-[9px] font-bold bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                    <TrendingUp className="w-2 h-2" /> חינם
+                  </span>
+                </div>
+              )}
+              {role === "creator" && (
+                <div className="flex gap-1 mt-0.5">
+                  <span className="text-[9px] font-bold bg-white/20 text-white px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                    <Star className="w-2 h-2 fill-current" /> נבחר
+                  </span>
+                </div>
+              )}
+            </button>
           </div>
 
           {/* Mode tabs */}
@@ -148,22 +223,6 @@ export default function Auth() {
   );
 }
 
-function RoleButton({ active, onClick, icon, label }: { active: boolean; onClick: () => void; icon: React.ReactNode; label: string }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all tap-scale",
-        active ? "text-primary-foreground shadow-cta" : "text-foreground/70 hover:text-foreground"
-      )}
-      style={active ? { background: "var(--gradient-brand)" } : undefined}
-    >
-      {icon}
-      {label}
-    </button>
-  );
-}
 
 function TabButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
