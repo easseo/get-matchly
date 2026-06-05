@@ -9,6 +9,13 @@ const goals = ["מכירות", "מודעות למותג", "הגדלת עוקבי
 const locations = ["תל אביב", "ירושלים", "חיפה", "באר שבע", "ראשון לציון", "כל הארץ"];
 const contentFormats = ["פוסט", "סטורי", "ריל"];
 
+// Typical price ranges per content type (based on platform creator pricing)
+const FORMAT_PRICE_HINTS: Record<string, string> = {
+  "פוסט":  "₪300–₪900",
+  "סטורי": "₪150–₪500",
+  "ריל":   "₪400–₪1,200",
+};
+
 export default function CreateCampaignPage() {
   const { user } = useUser();
   const navigate = useNavigate();
@@ -141,6 +148,15 @@ export default function CreateCampaignPage() {
                 </button>
               ))}
             </div>
+            {selectedFormats.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {selectedFormats.map(f => (
+                  <span key={f} className="text-[11px] px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-100 font-medium">
+                    {f}: {FORMAT_PRICE_HINTS[f]} ליוצר
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>

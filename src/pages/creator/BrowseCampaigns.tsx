@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Search, Calendar, Wallet, Send, X, Check, ChevronLeft,
-  Clock, Eye, Briefcase,
+  Clock, Eye, Briefcase, Info,
 } from "lucide-react";
 import { PageHeader } from "@/components/app/KpiCard";
 import { mockCampaigns, type AppCampaign } from "@/data/mockApp";
 import { toast } from "@/hooks/use-toast";
+import { CREATOR_PRICING_KEY } from "@/pages/creator/PricingSetup";
 
 const categories = ["הכל", "אופנה", "ביוטי", "כושר", "אוכל", "מסעדה"];
 
@@ -19,6 +20,21 @@ const statusConfig: Record<string, { label: string; bg: string; text: string }> 
   "הסתיים":{ label: "נסגר",  bg: "bg-gray-100",   text: "text-gray-500" },
 };
 
+const FORMAT_TO_KEY: Record<string, string> = {
+  "ריל": "reel",
+  "סטורי": "story",
+  "פוסט": "post",
+};
+
+function getSuggestedPrice(contentFormat: string[], pricing: Record<string, string>): string {
+  const total = contentFormat.reduce((sum, fmt) => {
+    const key = FORMAT_TO_KEY[fmt];
+    const p = key ? parseInt(pricing[key] || "0", 10) : 0;
+    return sum + p;
+  }, 0);
+  return total > 0 ? String(total) : "";
+}
+
 // ──────────────── Proposal Modal ────────────────
 function ProposalModal({
   campaign,
@@ -29,7 +45,14 @@ function ProposalModal({
   onClose: () => void;
   onSubmit: () => void;
 }) {
-  const [price, setPrice] = useState("");
+  const savedPricing: Record<string, string> = (() => {
+    try { return JSON.parse(localStorage.getItem(CREATOR_PRICING_KEY) || "{}"); } catch { return {}; }
+  })();
+
+  const suggested = getSuggestedPrice(campaign.contentFormat ?? [], savedPricing);
+  const hasSavedPricing = Object.values(savedPricing).some(v => v && parseInt(v) > 0);
+
+  const [price, setPrice] = useState(suggested);
   const [message, setMessage] = useState("");
   const [deliverables, setDeliverables] = useState("");
   const [delivery, setDelivery] = useState("");
@@ -101,7 +124,15 @@ function ProposalModal({
           <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
             {/* Price */}
             <div>
-              <label className="block text-xs font-bold text-gray-600 mb-1.5">מחיר מוצע</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-bold text-gray-600">מחיר מוצע</label>
+                {hasSavedPricing && suggested && (
+                  <span className="flex items-center gap-1 text-[10px] text-purple-600 font-semibold">
+                    <Info className="w-3 h-3" />
+                    לפי המחירון שלך
+                  </span>
+                )}
+              </div>
               <div className="relative">
                 <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">₪</span>
                 <input
@@ -112,6 +143,20 @@ function ProposalModal({
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl pr-8 pl-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white transition-colors"
                 />
               </div>
+              {hasSavedPricing && campaign.contentFormat?.length > 0 && (
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  {campaign.contentFormat.map(fmt => {
+                    const key = FORMAT_TO_KEY[fmt];
+                    const p = key ? parseInt(savedPricing[key] || "0", 10) : 0;
+                    if (!p) return null;
+                    return (
+                      <span key={fmt} className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-100 font-medium">
+                        {fmt}: ₪{p.toLocaleString()}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Message */}

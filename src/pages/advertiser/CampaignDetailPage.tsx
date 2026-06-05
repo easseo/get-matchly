@@ -333,9 +333,22 @@ export default function AdvertiserCampaignDetailPage() {
                             <StatChip icon={<TrendingUp size={9} />} label={`${cp.engagement_rate}%`} highlight={cp.engagement_rate >= 3} />
                           )}
                           {cp?.location && <StatChip icon={<MapPin size={9} />} label={cp.location} />}
-                          {cp?.price_min != null && cp?.price_max != null && (
-                            <StatChip icon={<Tag size={9} />} label={`הערכת מחיר: ₪${cp.price_min.toLocaleString()}–₪${cp.price_max.toLocaleString()}`} highlight />
-                          )}
+                          {(() => {
+                            const pricing = (cp as any)?.content_pricing as Record<string, number> | null | undefined;
+                            const formatKeyMap: Record<string, string> = { "פוסט": "post", "סטורי": "story", "ריל": "reel" };
+                            const formats = campaign.content_format ?? [];
+                            const perTypeTotal = formats.reduce((sum: number, fmt: string) => {
+                              const key = formatKeyMap[fmt];
+                              return sum + (key && pricing?.[key] ? pricing[key] : 0);
+                            }, 0);
+                            if (perTypeTotal > 0) {
+                              return <StatChip icon={<Tag size={9} />} label={`מחיר לקמפיין: ₪${perTypeTotal.toLocaleString()}`} highlight />;
+                            }
+                            if (cp?.price_min != null && cp?.price_max != null) {
+                              return <StatChip icon={<Tag size={9} />} label={`הערכת מחיר: ₪${cp.price_min.toLocaleString()}–₪${cp.price_max.toLocaleString()}`} highlight />;
+                            }
+                            return null;
+                          })()}
                         </div>
                       </div>
 

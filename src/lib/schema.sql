@@ -47,6 +47,7 @@ create table public.creator_profiles (
   price_min integer not null default 0,
   price_max integer not null default 0,
   content_types text[] not null default '{}',
+  content_pricing jsonb not null default '{}',
   availability boolean not null default true,
   portfolio_urls text[] not null default '{}',
   created_at timestamptz default now() not null,

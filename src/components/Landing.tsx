@@ -105,6 +105,51 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
         </div>
       </div>
 
+      {/* ── Influencer image banner ── */}
+      <div className="relative z-10 px-5 pb-8">
+        <div className="relative rounded-3xl overflow-hidden" style={{ height: 180 }}>
+
+          {/* 4-photo mosaic grid */}
+          <div className="grid grid-cols-4 h-full gap-0.5">
+            {[
+              "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=80",
+              "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=300&q=80",
+              "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&q=80",
+              "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&q=80",
+            ].map((src, i) => (
+              <img
+                key={i}
+                src={src}
+                alt=""
+                loading="eager"
+                decoding="async"
+                className="w-full h-full object-cover"
+              />
+            ))}
+          </div>
+
+          {/* Instagram gradient overlay */}
+          <div
+            className="absolute inset-0"
+            style={{ background: "linear-gradient(135deg, rgba(131,58,180,0.6) 0%, rgba(253,29,29,0.4) 50%, rgba(252,176,69,0.35) 100%)" }}
+          />
+          {/* Bottom fade to page bg */}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(26,5,51,0.82) 0%, transparent 50%)" }} />
+
+          {/* Instagram badge */}
+          <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-white/15 backdrop-blur-sm rounded-2xl px-2.5 py-1.5 border border-white/25">
+            <Instagram size={13} className="text-white" />
+            <span className="text-white text-[11px] font-extrabold">Instagram</span>
+          </div>
+
+          {/* Bottom text */}
+          <div className="absolute bottom-3 right-4 left-4">
+            <p className="text-white font-extrabold text-sm leading-tight">יוצרי תוכן × מותגים</p>
+            <p className="text-white/65 text-[11px] mt-0.5 font-medium">שיתופי פעולה שמייצרים תוצאות אמיתיות</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }

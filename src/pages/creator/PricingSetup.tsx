@@ -28,15 +28,24 @@ const contentTypes = [
   },
 ];
 
+export const CREATOR_PRICING_KEY = "creator_pricing";
+
 export default function PricingSetup() {
   const navigate = useNavigate();
-  const [prices, setPrices] = useState<Record<string, string>>({});
+  const [prices, setPrices] = useState<Record<string, string>>(() => {
+    try {
+      const saved = localStorage.getItem(CREATOR_PRICING_KEY);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
     setSaving(true);
-    // Small delay to simulate save
     await new Promise(r => setTimeout(r, 600));
+    localStorage.setItem(CREATOR_PRICING_KEY, JSON.stringify(prices));
     setSaving(false);
     toast({ title: "המחירון נשמר!", description: "תוכלו לעדכן אותו בכל עת דרך הגדרות הפרופיל" });
     navigate("/app/creator/dashboard");

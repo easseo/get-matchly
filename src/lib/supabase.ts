@@ -47,6 +47,7 @@ export type CreatorProfile = {
   price_min: number;
   price_max: number;
   content_types: string[];
+  content_pricing: Record<string, number>;
   availability: boolean;
   portfolio_urls: string[];
   created_at: string;
