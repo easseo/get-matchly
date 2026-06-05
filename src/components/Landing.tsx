@@ -144,7 +144,7 @@ export default function Landing({ onStart, onCreatorJoin }: LandingProps) {
 
           {/* Bottom text */}
           <div className="absolute bottom-3 right-4 left-4">
-            <p className="text-white font-extrabold text-sm leading-tight">יוצרי תוכן × מותגים</p>
+            <p className="text-white font-extrabold text-sm leading-tight">יוצרי תוכן × בעלי עסקים</p>
             <p className="text-white/65 text-[11px] mt-0.5 font-medium">שיתופי פעולה שמייצרים תוצאות אמיתיות</p>
           </div>
         </div>
