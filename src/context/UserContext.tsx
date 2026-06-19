@@ -35,12 +35,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async (userId: string) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
-      .select("*")
+      .select("id, role, full_name, email, avatar_url, created_at, updated_at")
       .eq("id", userId)
       .maybeSingle();
-    if (data) setProfile(data as Profile);
+    if (!error && data) setProfile(data as Profile);
   };
 
   useEffect(() => {
@@ -54,8 +54,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      if (session?.user) fetchProfile(session.user.id);
-      else setProfile(null);
+      if (session?.user) fetchProfile(session.user.id).finally(() => setLoading(false));
+      else { setProfile(null); setLoading(false); }
     });
 
     return () => subscription.unsubscribe();

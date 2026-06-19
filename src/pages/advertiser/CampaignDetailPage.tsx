@@ -85,7 +85,15 @@ export default function AdvertiserCampaignDetailPage() {
 
   const fetchData = async () => {
     if (!id) return;
-    const { data: c } = await supabase.from("campaigns").select("*").eq("id", id).maybeSingle();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { setLoading(false); return; }
+    const { data: c } = await supabase
+      .from("campaigns")
+      .select("*")
+      .eq("id", id)
+      .eq("advertiser_id", session.user.id)
+      .maybeSingle();
+    if (!c) { setLoading(false); return; }
     setCampaign(c as Campaign);
     const { data: p } = await supabase
       .from("proposals")
@@ -495,7 +503,7 @@ export default function AdvertiserCampaignDetailPage() {
                         <div className="flex gap-2 mt-2">
                           <button
                             onClick={() => updateProposalStatus(p, "accepted")}
-                            disabled={updating === p.id}
+                            disabled={!!updating}
                             className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-1.5 disabled:opacity-60 shadow-md"
                             style={{ background: "var(--gradient-brand)" }}
                           >
@@ -504,7 +512,7 @@ export default function AdvertiserCampaignDetailPage() {
                           </button>
                           <button
                             onClick={() => updateProposalStatus(p, "rejected")}
-                            disabled={updating === p.id}
+                            disabled={!!updating}
                             className="px-5 py-2.5 rounded-xl text-sm font-bold text-red-500 border border-red-200 hover:bg-red-50 transition-colors disabled:opacity-60 flex items-center gap-1.5"
                           >
                             <XCircle size={13} /> דחה
