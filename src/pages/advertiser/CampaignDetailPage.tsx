@@ -46,16 +46,10 @@ function getAvatar(creatorId: string) {
   return creatorAvatars[hash % creatorAvatars.length];
 }
 
-// Convert raw score to a more realistic display value
-function normalizeScore(raw: number): number {
-  // Map raw 0–100 to a realistic 62–94 range to avoid extremes
-  return Math.round(62 + (raw / 100) * 32);
-}
-
 function getScoreConfig(score: number) {
-  if (score >= 88) return { label: "התאמה גבוהה", bg: "bg-emerald-500", text: "text-white", ring: "ring-emerald-300" };
-  if (score >= 78) return { label: "התאמה טובה",  bg: "bg-blue-500",    text: "text-white", ring: "ring-blue-300" };
-  return                 { label: "התאמה חלקית",  bg: "bg-gray-200",    text: "text-gray-700", ring: "ring-gray-200" };
+  if (score >= 75) return { label: "התאמה גבוהה", bg: "bg-emerald-500", text: "text-white", ring: "ring-emerald-300" };
+  if (score >= 50) return { label: "התאמה טובה",  bg: "bg-blue-500",    text: "text-white", ring: "ring-blue-300" };
+  return                  { label: "התאמה חלקית", bg: "bg-gray-200",    text: "text-gray-700", ring: "ring-gray-200" };
 }
 
 function StatChip({ icon, label, highlight = false }: { icon: React.ReactNode; label: string; highlight?: boolean }) {
@@ -81,6 +75,7 @@ export default function AdvertiserCampaignDetailPage() {
   const [visibleCount, setVisibleCount] = useState(3);
   const [matching, setMatching] = useState(false);
   const [matchError, setMatchError] = useState<string | null>(null);
+  const [lastMatchRun, setLastMatchRun] = useState(0);
   const matches = allMatches.slice(0, visibleCount);
 
   const fetchData = async () => {
@@ -89,7 +84,7 @@ export default function AdvertiserCampaignDetailPage() {
     if (!session) { setLoading(false); return; }
     const { data: c } = await supabase
       .from("campaigns")
-      .select("*")
+      .select("id, advertiser_id, title, business_name, business_type, goal, description, platform, content_format, content_count, budget_min, budget_max, target_location, deadline, requirements, status, created_at, updated_at")
       .eq("id", id)
       .eq("advertiser_id", session.user.id)
       .maybeSingle();
@@ -129,6 +124,8 @@ export default function AdvertiserCampaignDetailPage() {
 
   const handleRefreshMatching = async () => {
     if (!campaign) return;
+    if (Date.now() - lastMatchRun < 10_000) return;
+    setLastMatchRun(Date.now());
     setMatching(true);
     setMatchError(null);
     setVisibleCount(3);
@@ -290,7 +287,7 @@ export default function AdvertiserCampaignDetailPage() {
               {matches.map((m, i) => {
                 const cp = m.creator.creator_profiles;
                 const avatar = getAvatar(m.creator_id);
-                const displayScore = normalizeScore(m.score);
+                const displayScore = m.score;
                 const sc = getScoreConfig(displayScore);
                 const isExpanded = expandedReason === m.creator_id;
 

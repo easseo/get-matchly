@@ -81,7 +81,7 @@ export default function MyCampaigns() {
       if (!userId) { setLoading(false); return; }
       const { data } = await supabase
         .from("campaigns")
-        .select("*")
+        .select("id, advertiser_id, title, business_name, business_type, goal, description, platform, content_format, content_count, budget_min, budget_max, target_location, deadline, requirements, status, created_at, updated_at")
         .eq("advertiser_id", userId)
         .order("created_at", { ascending: false });
       setCampaigns((data as Campaign[]) ?? []);

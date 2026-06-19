@@ -103,7 +103,7 @@ export async function runMatchingEngine(campaign: Campaign): Promise<MatchResult
 
   const { data, error } = await supabase
     .from("creator_profiles")
-    .select("*");
+    .select("user_id, instagram_username, niche, location, followers, engagement_rate, price_min, price_max, content_types, content_pricing, bio, availability");
 
   if (error) throw new Error(`creator_profiles query failed: ${error.message}`);
   if (!data || data.length === 0) throw new Error(`creator_profiles returned empty (count=0)`);
@@ -146,19 +146,26 @@ export async function runMatchingEngine(campaign: Campaign): Promise<MatchResult
   return results;
 }
 
+type MatchRow = {
+  creator_id: string;
+  score: number;
+  reasons: string[];
+  creator_profiles: CreatorProfile | null;
+};
+
 export async function getExistingMatches(campaignId: string): Promise<MatchResult[]> {
   const { data } = await supabase
     .from("matches")
-    .select("*, creator_profiles!matches_creator_id_fkey(*)")
+    .select("creator_id, score, reasons, creator_profiles!matches_creator_id_fkey(user_id, instagram_username, niche, location, followers, engagement_rate, price_min, price_max, content_types, content_pricing, bio, availability)")
     .eq("campaign_id", campaignId)
     .order("score", { ascending: false });
 
   if (!data) return [];
 
-  return data
-    .filter((m: any) => m.creator_profiles)
-    .map((m: any) => {
-      const cp = m.creator_profiles as CreatorProfile;
+  return (data as MatchRow[])
+    .filter((m): m is MatchRow & { creator_profiles: CreatorProfile } => m.creator_profiles !== null)
+    .map((m) => {
+      const cp = m.creator_profiles;
       const displayName = cp.instagram_username ?? "יוצר תוכן";
       return {
         creator_id: m.creator_id,

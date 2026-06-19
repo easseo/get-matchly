@@ -1,24 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Search, Calendar, Wallet, Send, X, Check, ChevronLeft,
-  Clock, Eye, Briefcase, Info,
+  Search, Calendar, Wallet, Send, X, Check,
+  Eye, Briefcase, Info, Loader2,
 } from "lucide-react";
 import { PageHeader } from "@/components/app/KpiCard";
-import { mockCampaigns, type AppCampaign } from "@/data/mockApp";
-import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
+import type { Campaign } from "@/lib/supabase";
 import { CREATOR_PRICING_KEY } from "@/pages/creator/PricingSetup";
 
-const categories = ["הכל", "אופנה", "ביוטי", "כושר", "אוכל", "מסעדה"];
-
+const ALL = "הכל";
 const deliveryOptions = ["3 ימים", "5 ימים", "שבוע", "שבועיים"];
-
-const statusConfig: Record<string, { label: string; bg: string; text: string }> = {
-  "פעיל":  { label: "פעיל",  bg: "bg-emerald-50", text: "text-emerald-700" },
-  "ממתין": { label: "ממתין", bg: "bg-orange-50",  text: "text-orange-700" },
-  "נסגר":  { label: "נסגר",  bg: "bg-gray-100",   text: "text-gray-500" },
-  "הסתיים":{ label: "נסגר",  bg: "bg-gray-100",   text: "text-gray-500" },
-};
 
 const FORMAT_TO_KEY: Record<string, string> = {
   "ריל": "reel",
@@ -26,11 +18,25 @@ const FORMAT_TO_KEY: Record<string, string> = {
   "פוסט": "post",
 };
 
+const nicheGradient: Record<string, string> = {
+  "ביוטי":          "from-pink-400 to-purple-500",
+  "אופנה":          "from-blue-400 to-purple-500",
+  "אוכל ומסעדות":  "from-orange-400 to-red-500",
+  "כושר ובריאות":  "from-green-400 to-emerald-600",
+  "טכנולוגיה":     "from-sky-400 to-blue-600",
+  "תיירות":        "from-teal-400 to-cyan-600",
+  "גיימינג":        "from-violet-500 to-purple-700",
+  "בית ועיצוב":    "from-amber-400 to-orange-500",
+  "חינוך":          "from-blue-400 to-indigo-600",
+};
+function heroGradient(niche: string) {
+  return nicheGradient[niche] ?? "from-pink-500 to-purple-600";
+}
+
 function getSuggestedPrice(contentFormat: string[], pricing: Record<string, string>): string {
   const total = contentFormat.reduce((sum, fmt) => {
     const key = FORMAT_TO_KEY[fmt];
-    const p = key ? parseInt(pricing[key] || "0", 10) : 0;
-    return sum + p;
+    return sum + (key ? parseInt(pricing[key] || "0", 10) : 0);
   }, 0);
   return total > 0 ? String(total) : "";
 }
@@ -39,17 +45,17 @@ function getSuggestedPrice(contentFormat: string[], pricing: Record<string, stri
 function ProposalModal({
   campaign,
   onClose,
-  onSubmit,
+  onDone,
 }: {
-  campaign: AppCampaign;
+  campaign: Campaign;
   onClose: () => void;
-  onSubmit: () => void;
+  onDone: () => void;
 }) {
   const savedPricing: Record<string, string> = (() => {
     try { return JSON.parse(localStorage.getItem(CREATOR_PRICING_KEY) || "{}"); } catch { return {}; }
   })();
 
-  const suggested = getSuggestedPrice(campaign.contentFormat ?? [], savedPricing);
+  const suggested = getSuggestedPrice(campaign.content_format ?? [], savedPricing);
   const hasSavedPricing = Object.values(savedPricing).some(v => v && parseInt(v) > 0);
 
   const [price, setPrice] = useState(suggested);
@@ -58,20 +64,27 @@ function ProposalModal({
   const [delivery, setDelivery] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const canSubmit = price && message.trim().length > 10 && deliverables.trim() && delivery;
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
+    setError("");
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 900));
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { setError("יש להתחבר מחדש"); setLoading(false); return; }
+    const { error: err } = await supabase.from("proposals").insert({
+      campaign_id: campaign.id,
+      creator_id: session.user.id,
+      price: Number(price),
+      message: `${message.trim()}\n\nתוצרים: ${deliverables.trim()}`,
+      estimated_delivery: delivery,
+      status: "pending",
+    });
     setLoading(false);
+    if (err) { setError(err.message); return; }
     setSubmitted(true);
-  };
-
-  const handleDone = () => {
-    onSubmit();
-    onClose();
   };
 
   return (
@@ -90,18 +103,15 @@ function ProposalModal({
         {/* Campaign preview */}
         <div className="px-5 py-3 bg-gray-50 border-b border-gray-100 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0">
-              <img src={campaign.coverImage} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
-            </div>
+            <div className={`w-10 h-10 rounded-xl shrink-0 bg-gradient-to-br ${heroGradient(campaign.business_type)}`} />
             <div className="min-w-0">
               <p className="font-bold text-sm text-gray-900 truncate">{campaign.title}</p>
-              <p className="text-[11px] text-gray-400">{campaign.brand} · {campaign.budgetRange}</p>
+              <p className="text-[11px] text-gray-400">{campaign.business_name} · {campaign.business_type}</p>
             </div>
           </div>
         </div>
 
         {submitted ? (
-          /* Success state */
           <div className="flex-1 flex flex-col items-center justify-center px-6 py-10 text-center">
             <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 shadow-lg" style={{ background: "var(--gradient-brand)" }}>
               <Check className="w-8 h-8 text-white" strokeWidth={3} />
@@ -112,7 +122,7 @@ function ProposalModal({
               <br />תוכלו לעקוב אחר הסטטוס בעמוד ההצעות שלי.
             </p>
             <button
-              onClick={handleDone}
+              onClick={() => { onDone(); onClose(); }}
               className="px-8 py-3 rounded-2xl text-white font-bold text-sm"
               style={{ background: "var(--gradient-brand)" }}
             >
@@ -120,7 +130,6 @@ function ProposalModal({
             </button>
           </div>
         ) : (
-          /* Form */
           <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
             {/* Price */}
             <div>
@@ -143,9 +152,9 @@ function ProposalModal({
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl pr-8 pl-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white transition-colors"
                 />
               </div>
-              {hasSavedPricing && campaign.contentFormat?.length > 0 && (
+              {hasSavedPricing && campaign.content_format?.length > 0 && (
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  {campaign.contentFormat.map(fmt => {
+                  {campaign.content_format.map(fmt => {
                     const key = FORMAT_TO_KEY[fmt];
                     const p = key ? parseInt(savedPricing[key] || "0", 10) : 0;
                     if (!p) return null;
@@ -203,10 +212,11 @@ function ProposalModal({
                 ))}
               </div>
             </div>
+
+            {error && <p className="text-xs text-red-500 font-semibold">{error}</p>}
           </div>
         )}
 
-        {/* Submit bar */}
         {!submitted && (
           <div className="px-5 py-4 border-t border-gray-100 shrink-0 safe-bottom">
             <button
@@ -215,11 +225,7 @@ function ProposalModal({
               className="w-full py-3.5 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-40 transition-opacity"
               style={{ background: "var(--gradient-brand)" }}
             >
-              {loading ? (
-                <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-              ) : (
-                <Send className="w-4 h-4" />
-              )}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               {loading ? "שולח..." : "שליחת הצעה"}
             </button>
           </div>
@@ -232,15 +238,32 @@ function ProposalModal({
 // ──────────────── Main Page ────────────────
 export default function BrowseCampaigns() {
   const navigate = useNavigate();
-  const [cat, setCat] = useState("הכל");
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [loadingCampaigns, setLoadingCampaigns] = useState(true);
+  const [categories, setCategories] = useState<string[]>([ALL]);
+  const [cat, setCat] = useState(ALL);
   const [q, setQ] = useState("");
-  const [modalCampaign, setModalCampaign] = useState<AppCampaign | null>(null);
+  const [modalCampaign, setModalCampaign] = useState<Campaign | null>(null);
 
-  const list = mockCampaigns.filter(
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("campaigns")
+        .select("id, advertiser_id, title, business_name, business_type, goal, description, platform, content_format, content_count, budget_min, budget_max, target_location, deadline, requirements, status, created_at, updated_at")
+        .eq("status", "receiving_proposals")
+        .order("created_at", { ascending: false });
+      const list = (data as Campaign[]) ?? [];
+      setCampaigns(list);
+      const niches = [...new Set(list.map(c => c.business_type).filter(Boolean))];
+      setCategories([ALL, ...niches]);
+      setLoadingCampaigns(false);
+    })();
+  }, []);
+
+  const list = campaigns.filter(
     (c) =>
-      c.status !== "הסתיים" &&
-      (cat === "הכל" || c.category === cat) &&
-      (q === "" || c.title.includes(q) || c.brand.includes(q))
+      (cat === ALL || c.business_type === cat) &&
+      (q === "" || c.title.includes(q) || c.business_name.includes(q))
   );
 
   return (
@@ -273,69 +296,73 @@ export default function BrowseCampaigns() {
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {list.map((c) => {
-          const st = statusConfig[c.status] ?? { label: c.status, bg: "bg-gray-100", text: "text-gray-500" };
-          return (
+      {loadingCampaigns ? (
+        <div className="flex justify-center py-16">
+          <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        </div>
+      ) : (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {list.map((c) => (
             <div key={c.id} className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 group flex flex-col">
-              {/* Image */}
-              <div className="relative h-44 overflow-hidden shrink-0">
-                <img
-                  src={c.coverImage}
-                  alt={c.title}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
-
-                {/* Category badge */}
+              {/* Hero gradient */}
+              <div className={`relative h-32 bg-gradient-to-br ${heroGradient(c.business_type)} overflow-hidden shrink-0`}>
+                <div className="absolute inset-0 bg-black/20" />
                 <div className="absolute top-2.5 right-2.5">
                   <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                    {c.category}
+                    {c.business_type}
                   </span>
                 </div>
-
-                {/* Status badge */}
                 <div className="absolute top-2.5 left-2.5">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border border-current/20 ${st.bg} ${st.text}`}>
-                    {st.label}
+                  <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                    מקבל הצעות
                   </span>
                 </div>
-
                 <div className="absolute bottom-0 right-0 left-0 p-3">
                   <p className="font-extrabold text-white text-sm leading-tight line-clamp-2">{c.title}</p>
-                  <p className="text-white/70 text-[11px] font-medium mt-0.5">{c.brand}</p>
+                  <p className="text-white/70 text-[11px] font-medium mt-0.5">{c.business_name}</p>
                 </div>
               </div>
 
               {/* Content */}
               <div className="p-4 flex-1 flex flex-col">
-                <p className="text-xs text-gray-500 mb-3 line-clamp-2 flex-1 leading-relaxed">{c.description}</p>
+                {c.description && (
+                  <p className="text-xs text-gray-500 mb-3 line-clamp-2 flex-1 leading-relaxed">{c.description}</p>
+                )}
 
                 <div className="grid grid-cols-2 gap-2 mb-3.5">
                   <div className="bg-gray-50 rounded-xl px-2.5 py-2 flex items-center gap-2">
                     <Wallet className="w-3.5 h-3.5 text-primary shrink-0" />
                     <div>
-                      <div className="text-[9px] text-gray-400 font-semibold">תקציב</div>
-                      <div className="font-extrabold text-gray-900 text-[11px]">{c.budgetRange}</div>
+                      <div className="text-[9px] text-gray-400 font-semibold">תמחור</div>
+                      <div className="font-extrabold text-gray-900 text-[11px]">חופשי</div>
                     </div>
                   </div>
                   <div className="bg-gray-50 rounded-xl px-2.5 py-2 flex items-center gap-2">
                     <Calendar className="w-3.5 h-3.5 text-primary shrink-0" />
                     <div>
                       <div className="text-[9px] text-gray-400 font-semibold">דדליין</div>
-                      <div className="font-extrabold text-gray-900 text-[10px] line-clamp-1">{c.deadline}</div>
+                      <div className="font-extrabold text-gray-900 text-[10px] line-clamp-1">
+                        {c.deadline ? new Date(c.deadline).toLocaleDateString("he-IL") : "ללא"}
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                {c.content_format?.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {c.content_format.map(fmt => (
+                      <span key={fmt} className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-100 font-medium">
+                        {fmt}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
                 <div className="flex gap-2">
                   <button
                     onClick={() => setModalCampaign(c)}
                     className="flex-1 py-3 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity min-h-[44px]"
                     style={{ background: "var(--gradient-brand)" }}
-                    disabled={c.status === "הסתיים" || c.status === "נסגר"}
                   >
                     <Send className="w-4 h-4" /> הגשת הצעה
                   </button>
@@ -345,29 +372,25 @@ export default function BrowseCampaigns() {
                 </div>
               </div>
             </div>
-          );
-        })}
+          ))}
 
-        {list.length === 0 && (
-          <div className="col-span-full text-center py-16">
-            <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
-              <Briefcase className="w-6 h-6 text-gray-300" />
+          {list.length === 0 && (
+            <div className="col-span-full text-center py-16">
+              <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <Briefcase className="w-6 h-6 text-gray-300" />
+              </div>
+              <p className="text-gray-500 font-semibold text-sm mb-1">לא נמצאו קמפיינים</p>
+              <p className="text-gray-400 text-xs">נסו לשנות את הפילטר או החיפוש</p>
             </div>
-            <p className="text-gray-500 font-semibold text-sm mb-1">לא נמצאו קמפיינים</p>
-            <p className="text-gray-400 text-xs">נסו לשנות את הפילטר או החיפוש</p>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
-      {/* Proposal Modal */}
       {modalCampaign && (
         <ProposalModal
           campaign={modalCampaign}
           onClose={() => setModalCampaign(null)}
-          onSubmit={() => {
-            setModalCampaign(null);
-            navigate("/app/creator/proposals");
-          }}
+          onDone={() => navigate("/app/creator/proposals")}
         />
       )}
     </>

@@ -5,6 +5,12 @@ import { useDemoAuth } from "@/hooks/useDemoAuth";
 import { supabase } from "@/lib/supabase";
 import type { Campaign } from "@/lib/supabase";
 import { useState, useEffect } from "react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel,
+  AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+  AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "@/hooks/use-toast";
 
 const statusLabel: Record<string, string> = {
   draft: "טיוטה",
@@ -34,13 +40,14 @@ export default function AdvertiserDashboard() {
   const [campaigns, setCampaigns] = useState<CampaignWithCount[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session?.user?.id) { setLoading(false); return; }
       const { data } = await supabase
         .from("campaigns")
-        .select("*")
+        .select("id, advertiser_id, title, goal, budget_min, budget_max, deadline, status, created_at")
         .eq("advertiser_id", session.user.id)
         .order("created_at", { ascending: false });
       setCampaigns((data as CampaignWithCount[]) ?? []);
@@ -48,24 +55,33 @@ export default function AdvertiserDashboard() {
     });
   }, []);
 
-  const handleDelete = async (e: React.MouseEvent, campaignId: string) => {
+  const handleDelete = (e: React.MouseEvent, campaignId: string) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!confirm("למחוק את הקמפיין? כל הנתונים הקשורים אליו יימחקו.")) return;
-    setDeleting(campaignId);
+    setDeleteTarget(campaignId);
+  };
+
+  const executeDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(deleteTarget);
+    setDeleteTarget(null);
     const { data: { session } } = await supabase.auth.getSession();
     const { data: deleted, error } = await supabase
       .from("campaigns")
       .delete()
-      .eq("id", campaignId)
+      .eq("id", deleteTarget)
       .eq("advertiser_id", session?.user?.id ?? "")
       .select("id");
     if (error || !deleted?.length) {
-      alert(error ? `שגיאה: ${error.message}` : "המחיקה נכשלה — אין הרשאה");
+      toast({
+        title: "המחיקה נכשלה",
+        description: error?.message ?? "אין הרשאה למחיקה זו",
+        variant: "destructive",
+      });
       setDeleting(null);
       return;
     }
-    setCampaigns(prev => prev.filter(c => c.id !== campaignId));
+    setCampaigns(prev => prev.filter(c => c.id !== deleteTarget));
     setDeleting(null);
   };
 
@@ -83,6 +99,25 @@ export default function AdvertiserDashboard() {
 
   return (
     <>
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}>
+        <AlertDialogContent dir="rtl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>מחיקת קמפיין</AlertDialogTitle>
+            <AlertDialogDescription>
+              האם למחוק את הקמפיין? כל הנתונים הקשורים אליו יימחקו לצמיתות.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row-reverse gap-2">
+            <AlertDialogCancel>ביטול</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={executeDelete}
+              className="bg-red-500 hover:bg-red-600 text-white"
+            >
+              מחק
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <PageHeader
         title={`שלום, ${user?.fullName?.split(" ")[0] || "מפרסם"}`}
         subtitle="נהלו את הקמפיינים שלכם ופתחו הזדמנויות חדשות"
