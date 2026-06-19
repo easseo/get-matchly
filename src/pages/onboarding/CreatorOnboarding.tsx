@@ -46,15 +46,7 @@ export default function CreatorOnboarding() {
       const authUser = session?.user;
       if (!authUser) throw new Error("לא מחובר — נסה להתחבר מחדש");
 
-      // Ensure profile row exists before inserting creator_profiles (FK constraint)
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: authUser.id,
-        role: "creator",
-        full_name: authUser.user_metadata?.full_name ?? authUser.email?.split("@")[0] ?? "יוצר תוכן",
-        email: authUser.email ?? "",
-      }, { onConflict: "id" });
-      if (profileError) throw profileError;
-
+      // Profile row is created by the handle_new_user() DB trigger on signup.
       const { error } = await supabase.from("creator_profiles").insert({
         user_id: authUser.id,
         instagram_username: form.instagram_username.replace("@", ""),
@@ -69,7 +61,7 @@ export default function CreatorOnboarding() {
       });
       if (error) throw error;
       await refreshProfile();
-      window.location.href = "/creator";
+      navigate("/app/creator/dashboard");
     } catch (err: any) {
       setError(err.message);
     } finally {

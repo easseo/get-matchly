@@ -26,9 +26,9 @@ interface CampaignFormProps {
 }
 
 const businesses = [
-  { value: "מסעדה", icon: Utensils },
+  { value: "אוכל ומסעדות", icon: Utensils },
   { value: "אופנה", icon: Shirt },
-  { value: "כושר", icon: Dumbbell },
+  { value: "כושר ובריאות", icon: Dumbbell },
   { value: "ביוטי", icon: SparkleIcon },
   { value: "אחר", icon: MoreHorizontal },
 ];

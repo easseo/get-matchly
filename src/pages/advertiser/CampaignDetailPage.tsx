@@ -142,16 +142,7 @@ export default function AdvertiserCampaignDetailPage() {
         creator_id: proposal.creator_id,
       }, { onConflict: "campaign_id,creator_id" });
     }
-    await supabase.from("notifications").insert({
-      user_id: proposal.creator_id,
-      type: status === "accepted" ? "proposal_accepted" : "proposal_rejected",
-      data: {
-        message: status === "accepted"
-          ? `ההצעה שלך על "${campaign!.title}" התקבלה!`
-          : `ההצעה שלך על "${campaign!.title}" נדחתה`,
-        campaign_id: proposal.campaign_id,
-      },
-    });
+    // Notification is sent automatically by the on_proposal_status_change DB trigger.
     await fetchData();
     setUpdating(null);
   };

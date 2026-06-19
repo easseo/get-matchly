@@ -38,8 +38,10 @@ function scoreCreator(
   const reasons: string[] = [];
 
   // ── Niche match: 40 pts ─────────────────────────────────────────────────
+  // business_type may be comma-joined (e.g. "ביוטי, אופנה") when multiple were selected
   const creatorNiche = cp.niche ?? "";
-  if (creatorNiche && creatorNiche === campaign.business_type) {
+  const campaignNiches = campaign.business_type.split(",").map((n) => n.trim());
+  if (creatorNiche && campaignNiches.includes(creatorNiche)) {
     score += 40;
     reasons.push(`מומחה בתחום ${creatorNiche}`);
   } else if (creatorNiche) {
@@ -93,6 +95,11 @@ function scoreCreator(
 }
 
 export async function runMatchingEngine(campaign: Campaign): Promise<MatchResult[]> {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session || session.user.id !== campaign.advertiser_id) {
+    throw new Error("Not authorized to run matching for this campaign");
+  }
+
   const { data, error } = await supabase
     .from("creator_profiles")
     .select("*");

@@ -299,7 +299,10 @@ create table public.notifications (
 alter table public.notifications enable row level security;
 create policy "Users view own notifications" on public.notifications for select using (auth.uid() = user_id);
 create policy "Users update own notifications" on public.notifications for update using (auth.uid() = user_id);
-create policy "System can create notifications" on public.notifications for insert with check (true);
+-- Direct client inserts are blocked. Notifications are created server-side by
+-- the notify_proposal_status_change() SECURITY DEFINER trigger on public.proposals.
+-- See supabase/migration_001_fix_notifications.sql.
+create policy "No direct client inserts on notifications" on public.notifications for insert with check (false);
 
 -- ─── AUTO-UPDATE updated_at ──────────────────────────────────────────────────
 create or replace function public.handle_updated_at()
@@ -335,3 +338,48 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- ─── PROPOSAL NOTIFICATION TRIGGER ───────────────────────────────────────────
+create or replace function public.notify_proposal_status_change()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_campaign_title text;
+begin
+  if new.status not in ('accepted', 'rejected') then
+    return new;
+  end if;
+  if old.status is not distinct from new.status then
+    return new;
+  end if;
+
+  select title into v_campaign_title
+  from public.campaigns
+  where id = new.campaign_id;
+
+  insert into public.notifications (user_id, type, data)
+  values (
+    new.creator_id,
+    case when new.status = 'accepted' then 'proposal_accepted' else 'proposal_rejected' end,
+    jsonb_build_object(
+      'campaign_id', new.campaign_id,
+      'proposal_id', new.id,
+      'message', case
+        when new.status = 'accepted'
+          then 'ההצעה שלך התקבלה! — ' || coalesce(v_campaign_title, '')
+          else 'ההצעה שלך נדחתה — '    || coalesce(v_campaign_title, '')
+      end
+    )
+  );
+
+  return new;
+end;
+$$;
+
+create trigger on_proposal_status_change
+  after update of status on public.proposals
+  for each row
+  execute function public.notify_proposal_status_change();

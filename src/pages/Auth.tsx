@@ -32,11 +32,7 @@ export default function Auth() {
       const name = fullName.trim() || email.split("@")[0];
       const { error: err } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name, role } } });
       if (err) { setError(err.message); setLoading(false); return; }
-      // Save role to profiles table
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        await supabase.from("profiles").upsert({ id: session.user.id, email, full_name: name, role });
-      }
+      // Profile row is created automatically by the handle_new_user() DB trigger — no client upsert needed.
     }
 
     // Also set demo auth so AppLayout knows the role

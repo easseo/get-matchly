@@ -34,15 +34,7 @@ export default function AdvertiserOnboarding() {
       const authUser = session?.user;
       if (!authUser) throw new Error("לא מחובר — נסה להתחבר מחדש");
 
-      // Ensure profile row exists before inserting advertiser_profiles (FK constraint)
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: authUser.id,
-        role: "advertiser",
-        full_name: authUser.user_metadata?.full_name ?? authUser.email?.split("@")[0] ?? "מפרסם",
-        email: authUser.email ?? "",
-      }, { onConflict: "id" });
-      if (profileError) throw profileError;
-
+      // Profile row is created by the handle_new_user() DB trigger on signup.
       const { error } = await supabase.from("advertiser_profiles").insert({
         user_id: authUser.id,
         business_name: form.business_name,
@@ -53,7 +45,7 @@ export default function AdvertiserOnboarding() {
       });
       if (error) throw error;
       await refreshProfile();
-      window.location.href = "/advertiser";
+      navigate("/app/dashboard");
     } catch (err: any) {
       setError(err.message);
     } finally {

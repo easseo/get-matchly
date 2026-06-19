@@ -3,15 +3,15 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app/AppSidebar";
 import { AppHeader } from "@/components/app/AppHeader";
 import { BottomNav } from "@/components/app/BottomNav";
-import { useDemoAuth } from "@/hooks/useDemoAuth";
+import { useUser } from "@/context/UserContext";
 
 export default function AppLayout({ role }: { role: "advertiser" | "creator" }) {
-  const { user, loading } = useDemoAuth();
+  const { user, profile, loading } = useUser();
 
   if (loading) return null;
   if (!user) return <Navigate to={`/auth?role=${role}`} replace />;
-  if (user.role !== role) {
-    return <Navigate to={user.role === "advertiser" ? "/app/dashboard" : "/app/creator/dashboard"} replace />;
+  if (profile && profile.role !== role) {
+    return <Navigate to={profile.role === "advertiser" ? "/app/dashboard" : "/app/creator/dashboard"} replace />;
   }
 
   return (
