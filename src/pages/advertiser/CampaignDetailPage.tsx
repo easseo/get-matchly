@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   ChevronRight, Users, Calendar, DollarSign, CheckCircle, XCircle,
   ChevronDown, ChevronUp, Loader2, Clock, Sparkles, Instagram,
-  TrendingUp, RefreshCw, MapPin, Send, Eye, Shield,
+  TrendingUp, RefreshCw, MapPin, Tag, MessageSquare, Shield,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Campaign, Proposal } from "@/lib/supabase";
@@ -70,6 +70,7 @@ function StatChip({ icon, label, highlight = false }: { icon: React.ReactNode; l
 
 export default function AdvertiserCampaignDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [proposals, setProposals] = useState<ProposalWithCreator[]>([]);
   const [loading, setLoading] = useState(true);
@@ -187,18 +188,30 @@ export default function AdvertiserCampaignDetailPage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-3 gap-2.5 mt-4">
-          {[
-            { icon: DollarSign, label: "תקציב", value: `₪${campaign.budget_min.toLocaleString()}–₪${campaign.budget_max.toLocaleString()}` },
-            { icon: Calendar,   label: "דדליין", value: campaign.deadline ? new Date(campaign.deadline).toLocaleDateString("he-IL") : "ללא" },
-            { icon: Users,      label: "הצעות",  value: String(proposals.length) },
-          ].map((item) => (
-            <div key={item.label} className="bg-gray-50 rounded-2xl p-3 text-center">
-              <item.icon size={14} className="mx-auto mb-1 text-primary" />
-              <div className="font-extrabold text-gray-900 text-sm">{item.value}</div>
-              <div className="text-[10px] text-gray-400">{item.label}</div>
+        <div className="grid grid-cols-2 gap-2.5 mt-4">
+          {/* Proposals — primary metric in bidding model */}
+          <div className={`rounded-2xl p-3 text-center ${
+            proposals.length > 0
+              ? "bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-100"
+              : "bg-gray-50"
+          }`}>
+            <Users size={14} className="mx-auto mb-1 text-primary" />
+            <div className="font-extrabold text-gray-900 text-lg leading-none">{proposals.length}</div>
+            <div className="text-[10px] text-gray-500 mt-0.5">הצעות שהתקבלו</div>
+            {proposals.filter(p => p.status === "pending").length > 0 && (
+              <div className="text-[9px] font-bold text-orange-600 mt-1">
+                {proposals.filter(p => p.status === "pending").length} ממתינות לבדיקה
+              </div>
+            )}
+          </div>
+          {/* Deadline */}
+          <div className="bg-gray-50 rounded-2xl p-3 text-center">
+            <Calendar size={14} className="mx-auto mb-1 text-primary" />
+            <div className="font-extrabold text-gray-900 text-sm">
+              {campaign.deadline ? new Date(campaign.deadline).toLocaleDateString("he-IL") : "ללא"}
             </div>
-          ))}
+            <div className="text-[10px] text-gray-400">דדליין</div>
+          </div>
         </div>
       </div>
 
@@ -237,7 +250,7 @@ export default function AdvertiserCampaignDetailPage() {
           <div className="py-14 text-center">
             <div className="w-11 h-11 rounded-full border-2 border-primary border-t-transparent animate-spin mx-auto mb-4" />
             <p className="font-bold text-gray-700 mb-1 text-sm">מנתח התאמה עבור הקמפיין שלך</p>
-            <p className="text-xs text-gray-400">בודק תחום, תקציב, מיקום ומעורבות...</p>
+            <p className="text-xs text-gray-400">בודק תחום, מיקום ומעורבות...</p>
           </div>
         ) : matches.length === 0 ? (
           <div className="py-10 text-center px-6">
@@ -286,6 +299,8 @@ export default function AdvertiserCampaignDetailPage() {
                         <img
                           src={avatar}
                           alt={m.creator.full_name}
+                          loading="lazy"
+                          decoding="async"
                           className="w-12 h-12 rounded-full object-cover"
                         />
                         <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-sm">
@@ -296,9 +311,6 @@ export default function AdvertiserCampaignDetailPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
                           <span className="font-extrabold text-gray-900 text-sm">{m.creator.full_name}</span>
-                          {!m.budget_fit && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-orange-50 text-orange-600 border border-orange-100 font-bold">מחוץ לתקציב</span>
-                          )}
                         </div>
                         <div className="flex flex-wrap gap-1.5 text-[10px] text-gray-400">
                           {cp?.instagram_username && <span>@{cp.instagram_username}</span>}
@@ -312,9 +324,22 @@ export default function AdvertiserCampaignDetailPage() {
                             <StatChip icon={<TrendingUp size={9} />} label={`${cp.engagement_rate}%`} highlight={cp.engagement_rate >= 3} />
                           )}
                           {cp?.location && <StatChip icon={<MapPin size={9} />} label={cp.location} />}
-                          {cp?.price_min != null && cp?.price_max != null && (
-                            <StatChip icon={<DollarSign size={9} />} label={`₪${cp.price_min.toLocaleString()}–₪${cp.price_max.toLocaleString()}`} highlight={m.budget_fit} />
-                          )}
+                          {(() => {
+                            const pricing = (cp as any)?.content_pricing as Record<string, number> | null | undefined;
+                            const formatKeyMap: Record<string, string> = { "פוסט": "post", "סטורי": "story", "ריל": "reel" };
+                            const formats = campaign.content_format ?? [];
+                            const perTypeTotal = formats.reduce((sum: number, fmt: string) => {
+                              const key = formatKeyMap[fmt];
+                              return sum + (key && pricing?.[key] ? pricing[key] : 0);
+                            }, 0);
+                            if (perTypeTotal > 0) {
+                              return <StatChip icon={<Tag size={9} />} label={`מחיר לקמפיין: ₪${perTypeTotal.toLocaleString()}`} highlight />;
+                            }
+                            if (cp?.price_min != null && cp?.price_max != null) {
+                              return <StatChip icon={<Tag size={9} />} label={`הערכת מחיר: ₪${cp.price_min.toLocaleString()}–₪${cp.price_max.toLocaleString()}`} highlight />;
+                            }
+                            return null;
+                          })()}
                         </div>
                       </div>
 
@@ -357,10 +382,13 @@ export default function AdvertiserCampaignDetailPage() {
                         className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold text-white"
                         style={{ background: "var(--gradient-brand)" }}
                       >
-                        <Send size={12} /> שלח הזמנה
+                        <Tag size={12} /> בקש הצעת מחיר
                       </button>
-                      <button className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors">
-                        <Eye size={12} /> ראה פרופיל
+                      <button
+                        onClick={() => navigate("/app/messages")}
+                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors"
+                      >
+                        <MessageSquare size={12} /> שלח הודעה
                       </button>
                     </div>
                   </div>
@@ -390,22 +418,35 @@ export default function AdvertiserCampaignDetailPage() {
         )}
       </div>
 
-      {/* Proposals */}
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-4">
+      {/* Proposals — reordered before AI matches when bids exist */}
+      <div className={`bg-white rounded-3xl shadow-sm overflow-hidden mb-4 ${
+        proposals.length > 0
+          ? "border-2 border-purple-100 shadow-purple-50"
+          : "border border-gray-100"
+      }`}>
         <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="font-extrabold text-gray-900 text-sm">הצעות שהתקבלו ({proposals.length})</h2>
+          <div>
+            <h2 className="font-extrabold text-gray-900 text-sm">הצעות מחיר שהתקבלו</h2>
+            {proposals.length > 0 && (
+              <p className="text-[11px] text-gray-400 mt-0.5">{proposals.length} יוצרים הגישו הצעות</p>
+            )}
+          </div>
           {proposals.filter(p => p.status === "pending").length > 0 && (
-            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-orange-50 text-orange-600 border border-orange-100">
-              {proposals.filter(p => p.status === "pending").length} ממתינות
+            <span className="text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-orange-50 text-orange-600 border border-orange-100 animate-pulse">
+              {proposals.filter(p => p.status === "pending").length} ממתינות לבדיקה
             </span>
           )}
         </div>
 
         {proposals.length === 0 ? (
-          <div className="py-10 text-center">
-            <Clock size={26} className="mx-auto text-gray-200 mb-3" />
-            <p className="text-sm font-bold text-gray-500">אין הצעות עדיין</p>
-            <p className="text-xs text-gray-400 mt-1">יוצרים יכולים לשלוח הצעות לקמפיין</p>
+          <div className="py-12 text-center px-6">
+            <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center mx-auto mb-3">
+              <Clock size={22} className="text-orange-300" />
+            </div>
+            <p className="text-sm font-bold text-gray-600 mb-1">אין הצעות עדיין</p>
+            <p className="text-xs text-gray-400 leading-relaxed">
+              יוצרים בוחנים את הקמפיין שלך ויגישו הצעות מחיר בקרוב!
+            </p>
           </div>
         ) : (
           <div className="divide-y divide-gray-50">
@@ -422,7 +463,7 @@ export default function AdvertiserCampaignDetailPage() {
                     className="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 transition-colors"
                     onClick={() => setExpanded(isOpen ? null : p.id)}
                   >
-                    <img src={getAvatar(p.creator_id)} alt={name} className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm shrink-0" />
+                    <img src={getAvatar(p.creator_id)} alt={name} loading="lazy" decoding="async" className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-sm shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-bold text-sm text-gray-900">{name}</span>
@@ -473,7 +514,7 @@ export default function AdvertiserCampaignDetailPage() {
                       {p.status === "accepted" && (
                         <div className="flex items-center gap-2 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
                           <Shield size={14} className="text-emerald-600 shrink-0" />
-                          <p className="text-xs font-bold text-emerald-700">הצעה אושרה — ניתן להפקיד את התקציב ולהגן על הכסף</p>
+                          <p className="text-xs font-bold text-emerald-700">הצעת המחיר אושרה — ניתן להפקיד את הסכום ולהגן על הכסף</p>
                         </div>
                       )}
                     </div>

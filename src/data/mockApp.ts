@@ -18,6 +18,7 @@ export type AppCampaign = {
   cover: string; // gradient class (fallback)
   coverImage: string; // real photo URL
   description: string;
+  contentFormat: string[]; // e.g. ["ריל", "סטורי", "פוסט"]
 };
 
 export type Proposal = {
@@ -87,6 +88,7 @@ export const mockCampaigns: AppCampaign[] = [
     cover: covers[0],
     coverImage: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&q=80",
     description: "אנחנו מחפשים יוצרי תוכן בתחום האופנה והלייפסטייל להציג את הקולקציה החדשה שלנו.",
+    contentFormat: ["ריל", "פוסט"],
   },
   {
     id: "c2",
@@ -102,6 +104,7 @@ export const mockCampaigns: AppCampaign[] = [
     cover: covers[1],
     coverImage: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&q=80",
     description: "סדרת ביקורות אותנטיות על מוצרי הטיפוח הטבעיים שלנו עם דגש על מרכיבים פעילים.",
+    contentFormat: ["סטורי", "ריל"],
   },
   {
     id: "c3",
@@ -117,6 +120,7 @@ export const mockCampaigns: AppCampaign[] = [
     cover: covers[2],
     coverImage: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80",
     description: "מותג מזון אורגני חדש מחפש יוצרים בעלי קהל מחויב לאורח חיים בריא.",
+    contentFormat: ["פוסט", "סטורי"],
   },
   {
     id: "c4",
@@ -132,6 +136,7 @@ export const mockCampaigns: AppCampaign[] = [
     cover: covers[3],
     coverImage: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80",
     description: "אפליקציית כושר חדשה מחפשת יוצרי תוכן בתחום הספורט והבריאות לקמפיין השקה.",
+    contentFormat: ["ריל"],
   },
   {
     id: "c5",
@@ -147,6 +152,7 @@ export const mockCampaigns: AppCampaign[] = [
     cover: covers[4],
     coverImage: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80",
     description: "בית קפה חדש שמחפש יוצרי תוכן קולינריים להפקת פוסטים וסטוריז של פתיחה.",
+    contentFormat: ["פוסט", "סטורי"],
   },
 ];
 

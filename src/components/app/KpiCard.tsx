@@ -80,7 +80,7 @@ export function CreatorAvatar({ name, avatar, size = "md" }: { name: string; ava
   return (
     <div className={cn("rounded-full shrink-0 overflow-hidden ring-2 ring-white shadow-md", sizes[size])}>
       {avatar ? (
-        <img src={avatar} alt={name} className="w-full h-full object-cover" />
+        <img src={avatar} alt={name} loading="lazy" decoding="async" className="w-full h-full object-cover" />
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center text-white font-bold">
           {initials}

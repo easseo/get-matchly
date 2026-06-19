@@ -114,7 +114,6 @@ export default function AdvertiserDashboard() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-extrabold text-white text-sm">צרו קמפיין חדש וקבלו התאמות</p>
-                <p className="text-white/75 text-xs mt-0.5">AI ימצא לכם את יוצרי התוכן המתאימים ביותר</p>
               </div>
               <Link
                 to="/app/create"
@@ -153,9 +152,9 @@ export default function AdvertiserDashboard() {
           </div>
           <Link
             to="/app/campaigns"
-            className="text-xs font-bold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all"
+            className="text-sm font-bold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all"
           >
-            לכולם <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
+            לכל הקמפיינים <ArrowLeft className="w-4 h-4 rotate-180" />
           </Link>
         </div>
 

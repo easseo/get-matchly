@@ -11,6 +11,7 @@ type CreatorProfile = {
   price_min: number | null;
   price_max: number | null;
   content_types: string[] | null;
+  content_pricing: Record<string, number> | null;
   bio: string | null;
   availability: boolean | null;
   // joined from profiles (may be null if RLS blocks)
