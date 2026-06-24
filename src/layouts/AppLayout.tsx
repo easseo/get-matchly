@@ -4,12 +4,14 @@ import { AppSidebar } from "@/components/app/AppSidebar";
 import { AppHeader } from "@/components/app/AppHeader";
 import { BottomNav } from "@/components/app/BottomNav";
 import { useUser } from "@/context/UserContext";
+import { useDemoAuth } from "@/hooks/useDemoAuth";
 
 export default function AppLayout({ role }: { role: "advertiser" | "creator" }) {
   const { user, profile, loading } = useUser();
+  const { user: demoUser } = useDemoAuth();
 
   if (loading) return null;
-  if (!user) return <Navigate to={`/auth?role=${role}`} replace />;
+  if (!user && !demoUser) return <Navigate to={`/auth?role=${role}`} replace />;
   if (profile && profile.role !== role) {
     return <Navigate to={profile.role === "advertiser" ? "/app/dashboard" : "/app/creator/dashboard"} replace />;
   }
