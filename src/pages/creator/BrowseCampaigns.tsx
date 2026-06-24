@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Search, Calendar, Send, X, Check,
-  Eye, Briefcase, Info, Loader2,
+  Eye, Briefcase, Info, Loader2, UserPlus,
 } from "lucide-react";
 import { PageHeader } from "@/components/app/KpiCard";
 import { supabase } from "@/lib/supabase";
 import type { Campaign } from "@/lib/supabase";
 import { CREATOR_PRICING_KEY } from "@/pages/creator/PricingSetup";
+import { useDemoAuth } from "@/hooks/useDemoAuth";
 
 const ALL = "הכל";
 const deliveryOptions = ["3 ימים", "5 ימים", "שבוע", "שבועיים"];
@@ -47,6 +48,23 @@ function getCampaignPhoto(c: Campaign): string {
 function getFakeViews(c: Campaign): number {
   const seed = c.id.split("").reduce((s, ch) => s + ch.charCodeAt(0), 0);
   return 300 + (seed % 2500);
+}
+
+const NICHE_GRADIENT: Record<string, string> = {
+  "ביוטי": "from-pink-400 to-purple-500",
+  "אופנה": "from-blue-400 to-purple-500",
+  "אוכל ומסעדות": "from-orange-400 to-red-500",
+  "אוכל": "from-orange-400 to-red-500",
+  "כושר ובריאות": "from-green-400 to-emerald-600",
+  "כושר": "from-green-400 to-emerald-600",
+  "טכנולוגיה": "from-sky-400 to-blue-600",
+  "תיירות": "from-teal-400 to-cyan-600",
+  "גיימינג": "from-violet-500 to-purple-700",
+  "בית ועיצוב": "from-amber-400 to-orange-500",
+  "חינוך": "from-blue-400 to-indigo-600",
+};
+function heroGradient(niche: string) {
+  return NICHE_GRADIENT[niche] ?? "from-pink-500 to-purple-600";
 }
 
 const MOCK_CAMPAIGNS: Campaign[] = [
@@ -118,11 +136,15 @@ function ProposalModal({
   onClose: () => void;
   onDone: () => void;
 }) {
+  const { user: demoUser } = useDemoAuth();
+  const isDemo = demoUser?.email === "guest@matchly.net";
+
   const savedPricing: Record<string, string> = (() => {
     try { return JSON.parse(localStorage.getItem(CREATOR_PRICING_KEY) || "{}"); } catch { return {}; }
   })();
 
-  const suggested = getSuggestedPrice(campaign.content_format ?? [], savedPricing);
+  const formats = Array.isArray(campaign.content_format) ? campaign.content_format : [];
+  const suggested = getSuggestedPrice(formats, savedPricing);
   const hasSavedPricing = Object.values(savedPricing).some(v => v && parseInt(v) > 0);
 
   const [price, setPrice] = useState(suggested);
@@ -139,19 +161,24 @@ function ProposalModal({
     if (!canSubmit) return;
     setError("");
     setLoading(true);
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { setError("יש להתחבר מחדש"); setLoading(false); return; }
-    const { error: err } = await supabase.from("proposals").insert({
-      campaign_id: campaign.id,
-      creator_id: session.user.id,
-      price: Number(price),
-      message: `${message.trim()}\n\nתוצרים: ${deliverables.trim()}`,
-      estimated_delivery: delivery,
-      status: "pending",
-    });
-    setLoading(false);
-    if (err) { setError(err.message); return; }
-    setSubmitted(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { setError("יש להתחבר מחדש"); setLoading(false); return; }
+      const { error: err } = await supabase.from("proposals").insert({
+        campaign_id: campaign.id,
+        creator_id: session.user.id,
+        price: Number(price),
+        message: `${message.trim()}\n\nתוצרים: ${deliverables.trim()}`,
+        estimated_delivery: delivery,
+        status: "pending",
+      });
+      setLoading(false);
+      if (err) { setError(err.message); return; }
+      setSubmitted(true);
+    } catch (e) {
+      setLoading(false);
+      setError("שגיאה בשליחה, נסו שוב");
+    }
   };
 
   return (
@@ -178,7 +205,28 @@ function ProposalModal({
           </div>
         </div>
 
-        {submitted ? (
+        {isDemo ? (
+          <div className="flex-1 flex flex-col items-center justify-center px-6 py-10 text-center">
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style={{ background: "var(--gradient-brand)" }}>
+              <UserPlus className="w-7 h-7 text-white" />
+            </div>
+            <h3 className="font-extrabold text-gray-900 text-lg mb-2">כדי להגיש הצעה</h3>
+            <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+              יש ליצור חשבון יוצר תוכן חינמי<br />ולהתחיל להרוויח מקמפיינים.
+            </p>
+            <Link
+              to="/auth?role=creator&mode=signup"
+              className="px-8 py-3 rounded-2xl text-white font-bold text-sm inline-block"
+              style={{ background: "var(--gradient-brand)" }}
+              onClick={onClose}
+            >
+              יצירת חשבון חינמי
+            </Link>
+            <button onClick={onClose} className="mt-3 text-sm text-gray-400 hover:text-gray-600 transition-colors">
+              חזרה לדפדוף
+            </button>
+          </div>
+        ) : submitted ? (
           <div className="flex-1 flex flex-col items-center justify-center px-6 py-10 text-center">
             <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4 shadow-lg" style={{ background: "var(--gradient-brand)" }}>
               <Check className="w-8 h-8 text-white" strokeWidth={3} />
@@ -219,9 +267,9 @@ function ProposalModal({
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl pr-8 pl-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white transition-colors"
                 />
               </div>
-              {hasSavedPricing && campaign.content_format?.length > 0 && (
+              {hasSavedPricing && formats.length > 0 && (
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  {campaign.content_format.map(fmt => {
+                  {formats.map(fmt => {
                     const key = FORMAT_TO_KEY[fmt];
                     const p = key ? parseInt(savedPricing[key] || "0", 10) : 0;
                     if (!p) return null;
@@ -284,7 +332,7 @@ function ProposalModal({
           </div>
         )}
 
-        {!submitted && (
+        {!submitted && !isDemo && (
           <div className="px-5 py-4 border-t border-gray-100 shrink-0 safe-bottom">
             <button
               onClick={handleSubmit}

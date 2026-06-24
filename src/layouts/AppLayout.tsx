@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/app/AppSidebar";
 import { AppHeader } from "@/components/app/AppHeader";
 import { BottomNav } from "@/components/app/BottomNav";
 import { useDemoAuth } from "@/hooks/useDemoAuth";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 function PageLoader() {
   return (
@@ -35,9 +36,11 @@ export default function AppLayout({ role }: { role: "advertiser" | "creator" }) 
         <div className="flex-1 flex flex-col min-w-0">
           <AppHeader />
           <main className="flex-1 px-4 md:px-8 py-6 pb-24 md:pb-6 max-w-[1400px] w-full mx-auto">
-            <Suspense fallback={<PageLoader />}>
-              <Outlet />
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <Outlet />
+              </Suspense>
+            </ErrorBoundary>
           </main>
         </div>
       </div>
