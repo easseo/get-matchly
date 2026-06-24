@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 
 export type AppRole = "advertiser" | "creator";
 
@@ -20,18 +20,15 @@ const STORAGE_KEY = "matchly_demo_user";
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<DemoUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+  const [user, setUser] = useState<DemoUser | null>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setUser(JSON.parse(raw));
+      return raw ? (JSON.parse(raw) as DemoUser) : null;
     } catch {
-      // ignore
+      return null;
     }
-    setLoading(false);
-  }, []);
+  });
+  const [loading] = useState(false);
 
   const signIn = (email: string, fullName: string, role: AppRole) => {
     const next: DemoUser = { email, fullName, role };
