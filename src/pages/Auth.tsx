@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { flushSync } from "react-dom";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Sparkles, ArrowLeft, Loader2, Instagram, Eye, EyeOff, Building2 } from "lucide-react";
 import { useDemoAuth, type AppRole } from "@/hooks/useDemoAuth";
@@ -262,7 +263,7 @@ export default function Auth() {
             <button
               type="button"
               onClick={() => {
-                signIn("guest@matchly.net", "אורח", role);
+                flushSync(() => signIn("guest@matchly.net", "אורח", role));
                 navigate(role === "creator" ? "/app/creator/dashboard" : "/app/dashboard");
               }}
               className="w-full py-3 rounded-2xl text-sm font-semibold text-muted-foreground border border-border hover:bg-muted/50 transition-colors tap-scale"
