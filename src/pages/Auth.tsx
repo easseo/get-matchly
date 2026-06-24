@@ -260,6 +260,17 @@ export default function Auth() {
             )}
 
             <button
+              type="button"
+              onClick={() => {
+                signIn("guest@matchly.net", "אורח", role);
+                navigate(role === "creator" ? "/app/creator/dashboard" : "/app/dashboard");
+              }}
+              className="w-full py-3 rounded-2xl text-sm font-semibold text-muted-foreground border border-border hover:bg-muted/50 transition-colors tap-scale"
+            >
+              המשך ללא הרשמה
+            </button>
+
+            <button
               type="submit"
               disabled={loading}
               className="w-full py-3.5 rounded-2xl text-primary-foreground font-bold shadow-cta btn-glow tap-scale flex items-center justify-center gap-2 disabled:opacity-60"
