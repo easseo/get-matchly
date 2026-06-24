@@ -71,3 +71,4 @@ React Hook Form + Zod throughout. Define a Zod schema, pass it to `useForm` via 
 - **Vercel**: `vercel.json` rewrites all routes to `/index.html` (SPA).
 - **Netlify**: `.netlify/` config present as alternative.
 - This project was scaffolded via [Lovable](https://lovable.dev) (see `.lovable/`).
+do not touch payments integrations for now
