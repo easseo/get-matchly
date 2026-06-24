@@ -15,10 +15,8 @@ export default function Auth() {
 
   const initialRole = (params.get("role") as AppRole) || "creator";
   const initialMode = params.get("mode") === "signup" ? "signup" : "signin";
-  // If role was explicitly passed in URL, skip to auth step
-  const initialStep: Step = params.get("role") ? "auth" : "role";
 
-  const [step, setStep]     = useState<Step>(initialStep);
+  const [step, setStep]     = useState<Step>("role");
   const [role, setRole]     = useState<AppRole>(initialRole);
   const [mode, setMode]     = useState<"signin" | "signup">(initialMode);
 
