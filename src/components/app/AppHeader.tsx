@@ -133,7 +133,7 @@ export function AppHeader() {
               <p className="font-extrabold text-sm text-gray-900">{isGuest ? "אורח/ת" : user?.fullName}</p>
               <p className="text-[11px] text-gray-400 truncate">{user?.email}</p>
               {isGuest && (
-                <span className="inline-block mt-1 text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-100">
+                <span className="inline-block mt-1 text-xs font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 border border-amber-100">
                   מצב אורח
                 </span>
               )}
