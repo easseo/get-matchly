@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Search, Calendar, Wallet, Send, X, Check,
+  Search, Calendar, Send, X, Check,
   Eye, Briefcase, Info, Loader2,
 } from "lucide-react";
 import { PageHeader } from "@/components/app/KpiCard";
@@ -18,20 +18,87 @@ const FORMAT_TO_KEY: Record<string, string> = {
   "פוסט": "post",
 };
 
-const nicheGradient: Record<string, string> = {
-  "ביוטי":          "from-pink-400 to-purple-500",
-  "אופנה":          "from-blue-400 to-purple-500",
-  "אוכל ומסעדות":  "from-orange-400 to-red-500",
-  "כושר ובריאות":  "from-green-400 to-emerald-600",
-  "טכנולוגיה":     "from-sky-400 to-blue-600",
-  "תיירות":        "from-teal-400 to-cyan-600",
-  "גיימינג":        "from-violet-500 to-purple-700",
-  "בית ועיצוב":    "from-amber-400 to-orange-500",
-  "חינוך":          "from-blue-400 to-indigo-600",
+const NICHE_IMAGES: Record<string, string> = {
+  "ביוטי":          "photo-1596462502278-27bfdc403348",
+  "אופנה":          "photo-1558769132-cb1aea458c5e",
+  "אוכל ומסעדות":  "photo-1490645935967-10de6ba17061",
+  "אוכל":           "photo-1490645935967-10de6ba17061",
+  "כושר ובריאות":  "photo-1534438327276-14e5300c3a48",
+  "כושר":           "photo-1534438327276-14e5300c3a48",
+  "טכנולוגיה":     "photo-1518770660439-4636190af475",
+  "תיירות":        "photo-1488646953014-85cb44e25828",
+  "גיימינג":        "photo-1538481199705-c710c4e965fc",
+  "בית ועיצוב":    "photo-1586023492125-27b2c045efd7",
+  "חינוך":          "photo-1503676260728-1c00da094a0b",
 };
-function heroGradient(niche: string) {
-  return nicheGradient[niche] ?? "from-pink-500 to-purple-600";
+
+const FALLBACK_PHOTOS = [
+  "photo-1493723843671-1d655e66ac1c",
+  "photo-1485955900006-10f4d324d411",
+  "photo-1496181133206-80ce9b88a853",
+];
+
+function getCampaignPhoto(c: Campaign): string {
+  if (NICHE_IMAGES[c.business_type]) return NICHE_IMAGES[c.business_type];
+  const idx = c.id.split("").reduce((s, ch) => s + ch.charCodeAt(0), 0) % FALLBACK_PHOTOS.length;
+  return FALLBACK_PHOTOS[idx];
 }
+
+function getFakeViews(c: Campaign): number {
+  const seed = c.id.split("").reduce((s, ch) => s + ch.charCodeAt(0), 0);
+  return 300 + (seed % 2500);
+}
+
+const MOCK_CAMPAIGNS: Campaign[] = [
+  {
+    id: "demo-1", advertiser_id: "", title: "הפצת אפליקציית כושר", business_name: "FitLab",
+    business_type: "כושר", goal: "הגדלת הורדות", description: "אפליקציית כושר חדשה מחפשת יוצרים לקמפיין השקה.",
+    platform: "instagram", content_format: ["ריל"], content_count: 1,
+    budget_min: 600, budget_max: 1000, target_location: "ישראל",
+    deadline: "2026-07-18", requirements: null, status: "receiving_proposals",
+    created_at: "", updated_at: "",
+  },
+  {
+    id: "demo-2", advertiser_id: "", title: "ביקורת מוצרי טיפוח טבעיים", business_name: "PureGlow",
+    business_type: "ביוטי", goal: "מודעות מותג", description: "סדרת ביקורות על מוצרי הטיפוח הטבעיים שלנו.",
+    platform: "instagram", content_format: ["סטורי", "ריל"], content_count: 2,
+    budget_min: 800, budget_max: 1500, target_location: "ישראל",
+    deadline: "2026-07-10", requirements: null, status: "receiving_proposals",
+    created_at: "", updated_at: "",
+  },
+  {
+    id: "demo-3", advertiser_id: "", title: "השקת קולקציית קיץ אקולוגית", business_name: "EcoStyle",
+    business_type: "אופנה", goal: "מכירות", description: "יוצרי לייפסטייל לקולקציה האקולוגית החדשה שלנו.",
+    platform: "instagram", content_format: ["ריל", "פוסט"], content_count: 2,
+    budget_min: 500, budget_max: 1200, target_location: "ישראל",
+    deadline: "2026-06-25", requirements: null, status: "receiving_proposals",
+    created_at: "", updated_at: "",
+  },
+  {
+    id: "demo-4", advertiser_id: "", title: "קמפיין מזון אורגני", business_name: "FarmFresh",
+    business_type: "אוכל", goal: "מודעות מותג", description: "מותג מזון אורגני מחפש יוצרים עם קהל בריאות.",
+    platform: "instagram", content_format: ["פוסט", "סטורי"], content_count: 2,
+    budget_min: 1000, budget_max: 2000, target_location: "ישראל",
+    deadline: "2026-08-01", requirements: null, status: "receiving_proposals",
+    created_at: "", updated_at: "",
+  },
+  {
+    id: "demo-5", advertiser_id: "", title: "חוויית טיול מושלמת לאירופה", business_name: "WanderIL",
+    business_type: "תיירות", goal: "הגדלת הזמנות", description: "סוכנות תיירות מחפשת יוצרי תוכן לחווית נסיעה.",
+    platform: "instagram", content_format: ["ריל"], content_count: 1,
+    budget_min: 1200, budget_max: 2500, target_location: "ישראל",
+    deadline: "2026-08-15", requirements: null, status: "receiving_proposals",
+    created_at: "", updated_at: "",
+  },
+  {
+    id: "demo-6", advertiser_id: "", title: "עיצוב הבית החדש שלכם", business_name: "DecoHome",
+    business_type: "בית ועיצוב", goal: "מכירות", description: "חנות עיצוב בית מחפשת יוצרים לתוכן אינטריאור.",
+    platform: "instagram", content_format: ["פוסט", "ריל"], content_count: 2,
+    budget_min: 700, budget_max: 1300, target_location: "ישראל",
+    deadline: "2026-07-30", requirements: null, status: "receiving_proposals",
+    created_at: "", updated_at: "",
+  },
+];
 
 function getSuggestedPrice(contentFormat: string[], pricing: Record<string, string>): string {
   const total = contentFormat.reduce((sum, fmt) => {
@@ -252,9 +319,10 @@ export default function BrowseCampaigns() {
         .select("id, advertiser_id, title, business_name, business_type, goal, description, platform, content_format, content_count, budget_min, budget_max, target_location, deadline, requirements, status, created_at, updated_at")
         .eq("status", "receiving_proposals")
         .order("created_at", { ascending: false });
-      const list = (data as Campaign[]) ?? [];
-      setCampaigns(list);
-      const niches = [...new Set(list.map(c => c.business_type).filter(Boolean))];
+      const list = ((data as Campaign[]) ?? []);
+      const final = list.length > 0 ? list : MOCK_CAMPAIGNS;
+      setCampaigns(final);
+      const niches = [...new Set(final.map(c => c.business_type).filter(Boolean))];
       setCategories([ALL, ...niches]);
       setLoadingCampaigns(false);
     })();
@@ -301,75 +369,72 @@ export default function BrowseCampaigns() {
           <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {list.map((c) => (
-            <div key={c.id} className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 group flex flex-col">
-              {/* Hero gradient */}
-              <div className={`relative h-32 bg-gradient-to-br ${heroGradient(c.business_type)} overflow-hidden shrink-0`}>
-                <div className="absolute inset-0 bg-black/20" />
-                <div className="absolute top-2.5 right-2.5">
-                  <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
+            <div
+              key={c.id}
+              className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group flex flex-col cursor-pointer"
+              onClick={() => setModalCampaign(c)}
+            >
+              {/* Image hero */}
+              <div className="relative shrink-0 overflow-hidden" style={{ height: 190 }}>
+                <img
+                  src={`https://images.unsplash.com/${getCampaignPhoto(c)}?auto=format&fit=crop&w=600&q=80`}
+                  alt={c.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+
+                {/* Category badge — top right */}
+                <div className="absolute top-3 right-3">
+                  <span className="bg-white/95 backdrop-blur-sm text-gray-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">
                     {c.business_type}
                   </span>
                 </div>
-                <div className="absolute top-2.5 left-2.5">
-                  <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200">
-                    מקבל הצעות
-                  </span>
-                </div>
-                <div className="absolute bottom-0 right-0 left-0 p-3">
-                  <p className="font-extrabold text-white text-sm leading-tight line-clamp-2">{c.title}</p>
-                  <p className="text-white/70 text-[11px] font-medium mt-0.5">{c.business_name}</p>
+
+                {/* Title + brand overlaid at bottom */}
+                <div className="absolute bottom-0 right-0 left-0 px-4 pb-3.5 pt-8">
+                  <p className="font-extrabold text-white text-[15px] leading-tight line-clamp-2 mb-0.5">
+                    {c.title}
+                  </p>
+                  <p className="text-white/65 text-[12px] font-medium">{c.business_name}</p>
                 </div>
               </div>
 
-              {/* Content */}
-              <div className="p-4 flex-1 flex flex-col">
-                {c.description && (
-                  <p className="text-xs text-gray-500 mb-3 line-clamp-2 flex-1 leading-relaxed">{c.description}</p>
-                )}
-
-                <div className="grid grid-cols-2 gap-2 mb-3.5">
-                  <div className="bg-gray-50 rounded-xl px-2.5 py-2 flex items-center gap-2">
-                    <Wallet className="w-3.5 h-3.5 text-primary shrink-0" />
-                    <div>
-                      <div className="text-[9px] text-gray-400 font-semibold">תמחור</div>
-                      <div className="font-extrabold text-gray-900 text-[11px]">חופשי</div>
-                    </div>
-                  </div>
-                  <div className="bg-gray-50 rounded-xl px-2.5 py-2 flex items-center gap-2">
-                    <Calendar className="w-3.5 h-3.5 text-primary shrink-0" />
-                    <div>
-                      <div className="text-[9px] text-gray-400 font-semibold">דדליין</div>
-                      <div className="font-extrabold text-gray-900 text-[10px] line-clamp-1">
-                        {c.deadline ? new Date(c.deadline).toLocaleDateString("he-IL") : "ללא"}
-                      </div>
-                    </div>
-                  </div>
+              {/* Budget + Views row */}
+              <div className="flex items-center justify-between px-4 py-3.5 border-b border-gray-100">
+                <div className="flex items-center gap-1.5 text-gray-400 text-[13px] font-medium">
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>{getFakeViews(c).toLocaleString()}</span>
                 </div>
-
-                {c.content_format?.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {c.content_format.map(fmt => (
-                      <span key={fmt} className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-100 font-medium">
-                        {fmt}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setModalCampaign(c)}
-                    className="flex-1 py-3 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity min-h-[44px]"
-                    style={{ background: "var(--gradient-brand)" }}
-                  >
-                    <Send className="w-4 h-4" /> הגשת הצעה
-                  </button>
-                  <button className="w-11 h-11 rounded-2xl border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-gray-50 transition-colors shrink-0">
-                    <Eye className="w-4 h-4" />
-                  </button>
+                <div className="font-extrabold text-gray-900 text-[14px]">
+                  ₪{c.budget_min.toLocaleString()} - ₪{c.budget_max.toLocaleString()}
                 </div>
+              </div>
+
+              {/* Format tags + action */}
+              <div className="px-4 py-3 flex items-center justify-between gap-3">
+                <div className="flex flex-wrap gap-1 flex-1 min-w-0">
+                  {c.content_format?.map(fmt => (
+                    <span key={fmt} className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-100 font-semibold">
+                      {fmt}
+                    </span>
+                  ))}
+                  {c.deadline && (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-50 text-gray-500 border border-gray-100 font-medium flex items-center gap-1">
+                      <Calendar className="w-2.5 h-2.5" />
+                      {new Date(c.deadline).toLocaleDateString("he-IL")}
+                    </span>
+                  )}
+                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setModalCampaign(c); }}
+                  className="shrink-0 px-4 py-2 rounded-2xl text-white font-bold text-xs flex items-center gap-1.5 hover:opacity-90 transition-opacity"
+                  style={{ background: "var(--gradient-brand)" }}
+                >
+                  <Send className="w-3 h-3" /> הגשת הצעה
+                </button>
               </div>
             </div>
           ))}
