@@ -265,9 +265,27 @@ export default function Auth() {
                 signIn("guest@matchly.net", "אורח", role);
                 window.location.href = role === "creator" ? "/app/creator/dashboard" : "/app/dashboard";
               }}
-              className="w-full py-3 rounded-2xl text-sm font-semibold text-muted-foreground border border-border hover:bg-muted/50 transition-colors tap-scale"
+              className="w-full py-3 rounded-2xl text-sm font-semibold transition-all tap-scale flex items-center justify-center gap-2 relative overflow-hidden group"
+              style={{
+                background: "linear-gradient(135deg, rgba(168,85,247,0.08) 0%, rgba(236,72,153,0.08) 100%)",
+                border: "1.5px solid transparent",
+                backgroundClip: "padding-box",
+              }}
             >
-              המשך ללא הרשמה
+              <span
+                className="absolute inset-0 rounded-2xl pointer-events-none"
+                style={{
+                  background: "linear-gradient(135deg, rgba(168,85,247,0.35), rgba(236,72,153,0.35))",
+                  WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                  WebkitMaskComposite: "xor",
+                  maskComposite: "exclude",
+                  padding: "1.5px",
+                }}
+              />
+              <span className="text-transparent bg-clip-text font-bold" style={{ backgroundImage: "var(--gradient-brand)" }}>
+                המשך ללא הרשמה
+              </span>
+              <span className="text-xs opacity-60 text-muted-foreground">←</span>
             </button>
 
             <button
