@@ -174,7 +174,7 @@ export default function Auth() {
               style={{ background: cardGradient }}
             >
               <Sparkles className="w-4 h-4" />
-              המשך
+              המשך להרשמה
             </button>
 
             {/* Guest */}
