@@ -5,8 +5,14 @@ import { AppHeader } from "@/components/app/AppHeader";
 import { BottomNav } from "@/components/app/BottomNav";
 import { useDemoAuth } from "@/hooks/useDemoAuth";
 
+function readUserFromStorage() {
+  try { return JSON.parse(localStorage.getItem("matchly_demo_user") || "null"); }
+  catch { return null; }
+}
+
 export default function AppLayout({ role }: { role: "advertiser" | "creator" }) {
-  const { user } = useDemoAuth();
+  const { user: ctxUser } = useDemoAuth();
+  const user = ctxUser ?? readUserFromStorage();
 
   if (!user) return <Navigate to={`/auth?role=${role}`} replace />;
   if (user.role !== role) {
