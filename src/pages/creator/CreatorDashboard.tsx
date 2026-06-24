@@ -38,8 +38,8 @@ export default function CreatorDashboard() {
       <section className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 mb-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-extrabold text-gray-900">קמפיינים מומלצים</h2>
-          <Link to="/app/creator/browse" className="text-sm font-bold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all">
-            עוד <ArrowLeft className="w-4 h-4 rotate-180" />
+          <Link to="/app/creator/browse" className="text-base font-bold text-primary inline-flex items-center gap-1.5 hover:gap-2.5 transition-all">
+            עוד <ArrowLeft className="w-5 h-5 rotate-180" />
           </Link>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -85,8 +85,8 @@ export default function CreatorDashboard() {
       <section className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-extrabold text-gray-900">תשלומים אחרונים</h2>
-          <Link to="/app/creator/earnings" className="text-sm font-bold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all">
-            לכל הרווחים <ArrowLeft className="w-4 h-4 rotate-180" />
+          <Link to="/app/creator/earnings" className="text-base font-bold text-primary inline-flex items-center gap-1.5 hover:gap-2.5 transition-all">
+            לכל הרווחים <ArrowLeft className="w-5 h-5 rotate-180" />
           </Link>
         </div>
         <div className="divide-y divide-gray-50">
