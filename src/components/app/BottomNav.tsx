@@ -25,7 +25,7 @@ export function BottomNav({ role }: { role: "advertiser" | "creator" }) {
   const items = role === "advertiser" ? advertiserItems : creatorItems;
 
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-gray-100 safe-bottom"
+    <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-background/85 backdrop-blur-xl backdrop-saturate-150 border-t border-border/60 safe-bottom"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div className="flex items-stretch h-[60px]">
         {items.map(({ label, url, icon: Icon }) => (
@@ -35,7 +35,7 @@ export function BottomNav({ role }: { role: "advertiser" | "creator" }) {
             end={url.endsWith("dashboard")}
             className={({ isActive }) =>
               cn(
-                "flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-bold transition-colors",
+                "flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors",
                 isActive ? "text-transparent" : "text-gray-400 hover:text-gray-600"
               )
             }
@@ -44,20 +44,16 @@ export function BottomNav({ role }: { role: "advertiser" | "creator" }) {
               <>
                 <span
                   className={cn(
-                    "w-9 h-9 rounded-2xl flex items-center justify-center transition-all",
-                    isActive ? "shadow-md" : ""
+                    "w-11 h-8 rounded-full flex items-center justify-center transition-all duration-300",
+                    isActive ? "bg-primary/10" : ""
                   )}
-                  style={isActive ? { background: "var(--gradient-brand)" } : undefined}
-                >
+                  >
                   <Icon
-                    className={cn("w-5 h-5", isActive ? "text-white" : "text-gray-400")}
-                    strokeWidth={isActive ? 2.5 : 1.8}
+                    className={cn("w-5 h-5", isActive ? "text-primary" : "text-muted-foreground")}
+                    strokeWidth={isActive ? 2.2 : 1.8}
                   />
                 </span>
-                <span className={isActive ? "text-transparent bg-clip-text font-extrabold"
-                  : "text-gray-400"}
-                  style={isActive ? { backgroundImage: "var(--gradient-brand)" } : undefined}
-                >
+                <span className={isActive ? "text-foreground font-bold" : "text-muted-foreground"}>
                   {label}
                 </span>
               </>

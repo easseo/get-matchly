@@ -3,13 +3,13 @@ import { cn } from "@/lib/utils";
 
 type Tone = "pink" | "violet" | "amber" | "emerald" | "blue" | "rose";
 
-const tones: Record<Tone, { gradient: string; text: string; iconBg: string; iconText: string }> = {
-  pink:    { gradient: "from-pink-500 to-rose-500",       text: "text-white", iconBg: "bg-white/20", iconText: "text-white" },
-  violet:  { gradient: "from-violet-500 to-purple-600",   text: "text-white", iconBg: "bg-white/20", iconText: "text-white" },
-  amber:   { gradient: "from-amber-400 to-orange-500",    text: "text-white", iconBg: "bg-white/20", iconText: "text-white" },
-  emerald: { gradient: "from-emerald-400 to-teal-500",    text: "text-white", iconBg: "bg-white/20", iconText: "text-white" },
-  blue:    { gradient: "from-sky-400 to-blue-600",        text: "text-white", iconBg: "bg-white/20", iconText: "text-white" },
-  rose:    { gradient: "from-rose-400 to-pink-600",       text: "text-white", iconBg: "bg-white/20", iconText: "text-white" },
+const tones: Record<Tone, { chip: string; bar: string }> = {
+  pink:    { chip: "bg-pink-50 text-pink-600 ring-pink-100",          bar: "from-pink-500 to-fuchsia-500" },
+  violet:  { chip: "bg-violet-50 text-violet-600 ring-violet-100",    bar: "from-violet-500 to-purple-600" },
+  amber:   { chip: "bg-amber-50 text-amber-700 ring-amber-100",       bar: "from-amber-400 to-orange-400" },
+  emerald: { chip: "bg-emerald-50 text-emerald-600 ring-emerald-100", bar: "from-emerald-400 to-teal-500" },
+  blue:    { chip: "bg-sky-50 text-sky-600 ring-sky-100",             bar: "from-sky-400 to-blue-500" },
+  rose:    { chip: "bg-rose-50 text-rose-600 ring-rose-100",          bar: "from-rose-400 to-pink-500" },
 };
 
 export function KpiCard({
@@ -27,29 +27,26 @@ export function KpiCard({
 }) {
   const t = tones[tone];
   return (
-    <div className={cn("rounded-2xl p-5 bg-gradient-to-br shadow-lg hover-lift relative overflow-hidden", t.gradient)}>
-      <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 80% 20%, white 0%, transparent 60%)" }} />
-      <div className="relative">
-        <div className="flex items-start justify-between mb-4">
-          <span className={cn("w-10 h-10 rounded-xl flex items-center justify-center backdrop-blur-sm", t.iconBg)}>
-            <Icon className="w-5 h-5 text-white" />
-          </span>
-        </div>
-        <div className="text-3xl font-black text-white ltr-num mb-1">{value}</div>
-        <div className="text-white/80 text-xs font-semibold">{label}</div>
-        {hint && <div className="text-white/60 text-[10px] font-medium mt-0.5">{hint}</div>}
+    <div className="card-premium hover-lift relative overflow-hidden p-5 md:p-6">
+      <span className={cn("absolute top-0 right-6 left-6 h-px bg-gradient-to-l opacity-70", t.bar)} />
+      <div className="flex items-start justify-between gap-3 mb-5">
+        <div className="text-[13px] font-semibold text-muted-foreground">{label}</div>
+        <span className={cn("w-9 h-9 rounded-xl flex items-center justify-center ring-1 shrink-0", t.chip)}>
+          <Icon className="w-[18px] h-[18px]" strokeWidth={1.8} />
+        </span>
       </div>
+      <div className="font-display text-[34px] leading-none font-bold text-foreground ltr-num">{value}</div>
+      {hint && <div className="text-muted-foreground/80 text-xs font-medium mt-2">{hint}</div>}
     </div>
   );
 }
 
 export function PageHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: React.ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-4 mb-6 flex-wrap">
+    <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
       <div>
-        <h1 className="text-2xl md:text-3xl font-black tracking-tight">{title}</h1>
-        {subtitle && <p className="text-sm text-muted-foreground font-medium mt-1">{subtitle}</p>}
+        <h1 className="font-display text-[28px] md:text-[36px] leading-tight font-bold">{title}</h1>
+        {subtitle && <p className="text-sm md:text-[15px] text-muted-foreground mt-1.5">{subtitle}</p>}
       </div>
       {action}
     </div>

@@ -30,10 +30,10 @@ function NotifBell() {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <button className="relative p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
-          <Bell className="w-5 h-5 text-gray-500" />
+        <button className="relative w-10 h-10 flex items-center justify-center rounded-full border border-border/70 bg-card hover:bg-muted transition-colors">
+          <Bell className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.8} />
           {unreadCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-pink-500 ring-2 ring-white flex items-center justify-center text-[9px] text-white font-black">
+            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-brand ring-2 ring-background flex items-center justify-center text-[9px] text-white font-black">
               {unreadCount}
             </span>
           )}
@@ -59,7 +59,7 @@ function NotifBell() {
                 {n.icon}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-gray-900 leading-tight">{n.title}</p>
+                <p className="text-sm font-semibold text-foreground leading-tight">{n.title}</p>
                 <p className="text-[11px] text-gray-400 mt-0.5 leading-snug">{n.sub}</p>
                 <p className="text-[10px] text-gray-300 mt-1 font-medium">{n.time}</p>
               </div>
@@ -96,11 +96,13 @@ export function AppHeader() {
   };
 
   return (
-    <header className="h-16 sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100 flex items-center gap-3 px-4 md:px-6">
+    <header className="h-16 sticky top-0 z-20 bg-background/75 backdrop-blur-xl backdrop-saturate-150 border-b border-border/60 flex items-center gap-3 px-4 md:px-6">
       <SidebarTrigger className="shrink-0 text-gray-500 hover:text-gray-900" />
 
       <Link to={dashboardUrl} className="shrink-0 hover:opacity-80 transition-opacity">
-        <img src={matchlyIcon} alt="Matchly" className="h-10 w-10 object-contain rounded-xl" />
+        <span className="md:hidden h-9 w-9 rounded-xl bg-card border border-border/70 flex items-center justify-center shadow-soft">
+          <img src={matchlyIcon} alt="Matchly" className="h-5 w-5 object-contain" />
+        </span>
       </Link>
 
       <div className="flex-1" />
@@ -110,7 +112,7 @@ export function AppHeader() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
+            <button className="flex items-center gap-2.5 pl-3 pr-1.5 py-1.5 rounded-full hover:bg-card transition-colors border border-transparent hover:border-border/70">
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-md shrink-0"
                 style={{ background: "var(--gradient-brand)" }}
@@ -118,7 +120,7 @@ export function AppHeader() {
                 {initials}
               </div>
               <div className="hidden sm:block text-right">
-                <div className="text-sm font-bold text-gray-900 leading-tight">
+                <div className="text-sm font-semibold text-foreground leading-tight">
                   {isGuest ? "אורח/ת" : user?.fullName || "משתמש"}
                 </div>
                 <div className="text-[10px] text-gray-400 truncate max-w-[120px]">{user?.email}</div>

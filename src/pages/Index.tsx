@@ -123,9 +123,9 @@ const Index = () => {
   const FloatingAuthBtn = (
     <Link
       to={dashboardHref}
-      className="fixed top-3 left-3 z-50 inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-card/90 backdrop-blur border border-border text-xs font-bold shadow-soft hover:bg-card transition-colors"
+      className="fixed top-4 left-4 md:top-[22px] md:left-8 z-50 inline-flex items-center gap-1.5 h-9 md:h-10 px-4 rounded-full bg-white/[0.06] text-white/85 backdrop-blur-xl border border-white/15 text-xs md:text-sm font-semibold hover:bg-white/[0.12] hover:text-white transition-colors"
     >
-      <LogIn className="w-3.5 h-3.5" />
+      <LogIn className="w-3.5 h-3.5 md:w-4 md:h-4" />
       {user ? "אזור אישי" : "התחברות"}
     </Link>
   );

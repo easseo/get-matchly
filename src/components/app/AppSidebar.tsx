@@ -39,14 +39,16 @@ export function AppSidebar({ role }: { role: "advertiser" | "creator" }) {
   const items = role === "advertiser" ? advertiserItems : creatorItems;
 
   return (
-    <Sidebar collapsible="icon" side="right" className="border-l border-gray-100 bg-white">
-      <SidebarHeader className="border-b border-gray-100 bg-white">
+    <Sidebar collapsible="icon" side="right" className="border-l border-border/70 bg-card">
+      <SidebarHeader className="bg-card">
         <div className={cn("flex items-center gap-2.5 px-3 py-3.5", collapsed && "justify-center")}>
-          <img src={matchlyIcon} alt="" className="h-8 w-8 object-contain shrink-0 rounded-xl" />
+          <span className="h-9 w-9 shrink-0 rounded-xl bg-card border border-border/70 flex items-center justify-center shadow-soft">
+            <img src={matchlyIcon} alt="" className="h-5 w-5 object-contain" />
+          </span>
           {!collapsed && (
             <div className="flex flex-col leading-tight">
-              <span className="text-base font-extrabold tracking-tight text-gray-900">Matchly</span>
-              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full w-fit text-gray-500">
+              <span className="text-base font-bold tracking-tight text-foreground">Matchly</span>
+              <span className="text-[11px] font-medium w-fit text-muted-foreground">
                 {role === "advertiser" ? "בעל עסק / מפרסם" : "יוצר/ת תוכן"}
               </span>
             </div>
@@ -54,8 +56,9 @@ export function AppSidebar({ role }: { role: "advertiser" | "creator" }) {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="bg-white">
-        <SidebarGroup className="px-2 pt-2">
+      <SidebarContent className="bg-card">
+        <SidebarGroup className="px-3 pt-3">
+          {!collapsed && <div className="px-3 pb-2 text-[11px] font-semibold text-muted-foreground/70">ניווט</div>}
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => {
@@ -66,14 +69,14 @@ export function AppSidebar({ role }: { role: "advertiser" | "creator" }) {
                       <NavLink
                         to={item.url}
                         className={cn(
-                          "flex items-center gap-3 rounded-xl transition-all py-2.5 px-3",
+                          "relative flex items-center gap-3 rounded-xl transition-all duration-200 py-2.5 px-3",
                           active
-                            ? "text-white shadow-md font-bold"
-                            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 font-medium"
+                            ? "bg-primary/[0.07] text-foreground font-semibold"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted font-medium"
                         )}
-                        style={active ? { background: "var(--gradient-brand)" } : undefined}
                       >
-                        <item.icon className="h-4 w-4 shrink-0" />
+                        {active && <span className="absolute right-0 top-2 bottom-2 w-[3px] rounded-full bg-brand" />}
+                        <item.icon className={cn("h-[18px] w-[18px] shrink-0", active && "text-primary")} strokeWidth={active ? 2.1 : 1.8} />
                         {!collapsed && <span className="text-sm">{item.title}</span>}
                       </NavLink>
                     </SidebarMenuButton>
@@ -86,23 +89,23 @@ export function AppSidebar({ role }: { role: "advertiser" | "creator" }) {
 
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-gray-100 bg-white">
+      <SidebarFooter className="border-t border-border/70 bg-card">
         {!collapsed && user && (
           <div className="flex items-center gap-2.5 px-3 py-2">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+            <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 ring-2 ring-card shadow-soft"
               style={{ background: "var(--gradient-brand)" }}>
               {(user.fullName || "U").split(" ").map(s => s[0]).join("").slice(0, 2).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-xs font-bold text-gray-900 truncate">{user.fullName}</div>
-              <div className="text-[10px] text-gray-400 truncate">{user.email}</div>
+              <div className="text-[13px] font-semibold text-foreground truncate">{user.fullName}</div>
+              <div className="text-[11px] text-muted-foreground truncate">{user.email}</div>
             </div>
           </div>
         )}
         <button
           onClick={signOut}
           className={cn(
-            "flex items-center gap-2 px-3 py-2.5 mx-2 mb-1 rounded-xl text-sm font-bold text-red-400 hover:bg-red-50 hover:text-red-500 transition-colors",
+            "flex items-center gap-2 px-3 py-2.5 mx-2 mb-1 rounded-xl text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-500 transition-colors",
             collapsed && "justify-center px-0"
           )}
         >

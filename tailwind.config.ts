@@ -43,6 +43,15 @@ export default {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
+        ink: {
+          DEFAULT: "hsl(var(--ink))",
+          2: "hsl(var(--ink-2))",
+          3: "hsl(var(--ink-3))",
+        },
+        gold: {
+          DEFAULT: "hsl(var(--gold))",
+          soft: "hsl(var(--gold-soft))",
+        },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
@@ -65,6 +74,7 @@ export default {
       },
       fontFamily: {
         sans: ['Heebo', 'system-ui', 'sans-serif'],
+        display: ['"Frank Ruhl Libre"', 'Heebo', 'serif'],
       },
       backgroundImage: {
         'gradient-brand': 'var(--gradient-brand)',
